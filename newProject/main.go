@@ -96,7 +96,7 @@ func (s *Service) Init(env svc.Environment) error {
 		config.GetConfigInt("logs", "keep_days"),
 		config.GetConfigInt("logs", "rate_hours"),
 	)
-	println("init logger success")
+	println("logger init success")
 
 	// init mysql
 	dbInfo := config.GetSection("dbInfo")
@@ -110,7 +110,7 @@ func (s *Service) Init(env svc.Environment) error {
 			return err
 		}
 	}
-	println("mysql logger success")
+	println("mysql init success")
 
 	// init redis
 	if err := common.AddRedisInstance(
@@ -121,7 +121,7 @@ func (s *Service) Init(env svc.Environment) error {
 		config.GetConfigInt("redis", "db_num")); err != nil {
 		return err
 	}
-	println("redis logger success")
+	println("redis init success")
 
 	//
 
