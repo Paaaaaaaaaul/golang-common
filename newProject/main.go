@@ -82,6 +82,10 @@ type Service struct {
 
 func (s *Service) Init(env svc.Environment) error {
 	config.InitConfig()
+	println("RunMode:", config.CURMODE)
+	for key, val := range config.GetSection("system") {
+		println(key, val)
+	}
 
 	// init log
 	common.ConfigLogger(
@@ -92,6 +96,7 @@ func (s *Service) Init(env svc.Environment) error {
 		config.GetConfigInt("logs", "keep_days"),
 		config.GetConfigInt("logs", "rate_hours"),
 	)
+	println("init logger success")
 
 	// init mysql
 	dbInfo := config.GetSection("dbInfo")
@@ -105,6 +110,7 @@ func (s *Service) Init(env svc.Environment) error {
 			return err
 		}
 	}
+	println("mysql logger success")
 
 	// init redis
 	if err := common.AddRedisInstance(
@@ -115,6 +121,7 @@ func (s *Service) Init(env svc.Environment) error {
 		config.GetConfigInt("redis", "db_num")); err != nil {
 		return err
 	}
+	println("redis logger success")
 
 	//
 
@@ -137,6 +144,7 @@ func (s *Service) Start() error {
 			}
 		}
 	}()
+	println("http service start success")
 
 	// launch gRpc service here
 	var err error
@@ -146,6 +154,7 @@ func (s *Service) Start() error {
 	if err != nil {
 		return err
 	}
+	println("gRpc service start success")
 
 	return nil
 }
@@ -153,7 +162,7 @@ func (s *Service) Start() error {
 func (s *Service) Stop() error {
 	// stop gRpc server
 	s.gRpcSvr.GracefulStop()
-	common.InfoLog("SystemStop", nil, "gRpc server graceful stop")
+	println("http server graceful stop")
 
 	// stop http server
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
@@ -162,7 +171,7 @@ func (s *Service) Stop() error {
 	if err := s.httpServer.Shutdown(ctx); err != nil {
 		println("Server Shutdown:", err)
 	}
-	common.InfoLog("SystemStop", nil, "http server graceful stop")
+	println("http server graceful stop")
 
 	// release source here
 	common.ReleaseMysqlDBPool()

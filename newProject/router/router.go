@@ -45,7 +45,7 @@ func NewGinEngine() *gin.Engine {
 	engine.Any("/", lvsHealthCheck)
 
 	// TODO add your router here...
-	engine.Get("/hello", handler.Hello)
+	engine.GET("/hello", handler.Hello)
 
 	return engine
 }

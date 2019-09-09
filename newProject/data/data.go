@@ -65,7 +65,7 @@ app_name = {{projectName}}
 http_listen_port = 8081
 
 # 服务器监听的gRpc端口
-gRpc_listem_port = 18081
+gRpc_listen_port = 18081
 
 
 
