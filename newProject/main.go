@@ -9,6 +9,7 @@ import (
 	"github.com/becent/commom/newProject/handler"
 	"github.com/becent/commom/newProject/model"
 	"github.com/becent/commom/newProject/router"
+	"github.com/becent/commom/newProject/service"
 	"os"
 	"strings"
 )
@@ -48,6 +49,7 @@ func main() {
 		gRpcHandler.G_gRpcHandler, // 创建gRpcHandler
 		model.G_model,             // 创建model
 		router.G_router,           // 创建router
+		service.G_service,         // 创建service
 	}...)
 
 	for _, f := range funcs {
