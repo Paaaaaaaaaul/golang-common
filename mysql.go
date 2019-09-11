@@ -34,7 +34,7 @@ func (p MysqlDBPool) AddDB(name string, sqlInfo string, maxConn int, idleConn in
 
 	// Mysql usually close a conn if it doesn't use in eight hours,
 	// So maxLeftTime best less than eight hours,
-	// We close it active if don't use in maxLeftTime. avoid it trun into a broke pipe
+	// We close it active if don't use in maxLeftTime. avoid it turn into a broke pipe
 	db.DB().SetConnMaxLifetime(maxLeftTime)
 
 	if err = db.DB().Ping(); err != nil {

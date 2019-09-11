@@ -9,7 +9,7 @@ func G_handler(projectName string) error {
 		return err
 	}
 
-	file, err := os.OpenFile(projectName+"/handler/excample.go", os.O_CREATE|os.O_RDWR, 755)
+	file, err := os.OpenFile(projectName+"/handler/handler.go", os.O_CREATE|os.O_RDWR, 755)
 	if err != nil {
 		return err
 	}

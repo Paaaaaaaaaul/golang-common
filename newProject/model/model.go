@@ -9,7 +9,7 @@ func G_model(projectName string) error {
 		return err
 	}
 
-	file, err := os.OpenFile(projectName+"/model/example.go", os.O_CREATE|os.O_RDWR, 755)
+	file, err := os.OpenFile(projectName+"/model/user.go", os.O_CREATE|os.O_RDWR, 755)
 	if err != nil {
 		return err
 	}
