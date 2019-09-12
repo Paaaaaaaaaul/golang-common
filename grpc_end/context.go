@@ -2,6 +2,7 @@ package grpc_end
 
 import (
 	"context"
+	"github.com/becent/commom/exception"
 	json "github.com/json-iterator/go"
 	"math"
 	"strconv"
@@ -281,12 +282,12 @@ func (c *GRpcContext) SuccessResponse(v interface{}) {
 	c.resp.Data = jsonStr
 }
 
-func (c *GRpcContext) ErrorResponse(code int, message string) {
+func (c *GRpcContext) ErrorResponse(exp *exception.Exception) {
 	jsonStr, _ := json.Marshal(&EResponse{
 		Success: false,
 		Err: Error{
-			Code:    code,
-			Message: message,
+			Code:    exp.Code,
+			Message: exp.Message,
 		},
 	})
 	c.resp.Data = jsonStr
