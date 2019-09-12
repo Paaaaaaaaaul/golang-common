@@ -108,6 +108,12 @@ func (c *GRpcContext) GetStringMap(key string) map[string]string {
 
 // ---------------------------------------------------------------------------------------------------------------------
 
+// IsParamExist returns true is param exist
+func (c *GRpcContext) IsParamExist(key string) bool {
+	_, ok := c.req.Params[key]
+	return ok
+}
+
 // StringParam returns string val from request's Params for the given key
 // and returns empty string if val not exists
 func (c *GRpcContext) StringParam(key string) string {
