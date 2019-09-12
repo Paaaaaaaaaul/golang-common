@@ -24,7 +24,6 @@ type User struct {
 	BirthDay   string `json:"birthDay"`
 	Status     int    `json:"status"`
 	CreateTime int64  `json:"createTime"`
-	UpdateTime int64  `json:"updateTime"`
 	Ext        string `json:"ext"`
 }
 

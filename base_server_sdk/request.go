@@ -39,6 +39,10 @@ type Error struct {
 	Message string `json:"message"`
 }
 
+func (e *Error) String() string {
+	return strconv.Itoa(e.Code) + ": " + e.Message
+}
+
 func (c *BaseServerSdkClient) DoRequest(host string, controller, action string, params map[string]string) ([]byte, *Error) {
 	if host == "" {
 		return nil, ErrHostEmpty
@@ -96,7 +100,7 @@ func (c *BaseServerSdkClient) DoRequest(host string, controller, action string, 
 
 func (c *BaseServerSdkClient) doHttpRequest(host string, controller, action string, params map[string]string) ([]byte, error) {
 	// Assembly body
-	var v url.Values
+	v := make(url.Values)
 	for key, val := range params {
 		v.Set(key, val)
 	}
