@@ -166,6 +166,7 @@ func (c *BaseServerSdkClient) makeSignature() string {
 
 	b := c.cp.Get().(*strings.Builder)
 	defer c.cp.Put(b)
+	b.Reset()
 
 	b.WriteString(c.appId)
 	b.WriteString("-")
