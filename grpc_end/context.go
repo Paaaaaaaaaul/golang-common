@@ -108,25 +108,25 @@ func (c *GRpcContext) GetStringMap(key string) map[string]string {
 
 // ---------------------------------------------------------------------------------------------------------------------
 
-// ParamString returns string val from request's Params for the given key
+// StringParam returns string val from request's Params for the given key
 // and returns empty string if val not exists
-func (c *GRpcContext) ParamString(key string) string {
+func (c *GRpcContext) StringParam(key string) string {
 	return c.req.Params[key]
 }
 
-// ParamString returns string val from request's Params for the given key
+// StringParamDefault returns string val from request's Params for the given key
 // and returns defVal if val not exists.
-func (c *GRpcContext) ParamStringDefault(key string, defVal string) string {
+func (c *GRpcContext) StringParamDefault(key string, defVal string) string {
 	if val, ok := c.req.Params[key]; ok && val != "" {
 		return val
 	}
 	return defVal
 }
 
-// ParamInt returns int val from request's Params for the given key
+// IntParam returns int val from request's Params for the given key
 // and returns zero if val not exists.
-func (c *GRpcContext) ParamInt(key string) int {
-	if val := c.ParamString(key); val != "" {
+func (c *GRpcContext) IntParam(key string) int {
+	if val := c.StringParam(key); val != "" {
 		if n, err := strconv.Atoi(val); err == nil {
 			return n
 		}
@@ -134,10 +134,10 @@ func (c *GRpcContext) ParamInt(key string) int {
 	return 0
 }
 
-// ParamInt returns int val from request's Params for the given key
+// IntParamDefault returns int val from request's Params for the given key
 // and returns defVal if val not exists.
-func (c *GRpcContext) ParamIntDefault(key string, defVal int) int {
-	if val := c.ParamString(key); val != "" {
+func (c *GRpcContext) IntParamDefault(key string, defVal int) int {
+	if val := c.StringParam(key); val != "" {
 		if n, err := strconv.Atoi(val); err == nil {
 			return n
 		}
@@ -145,10 +145,10 @@ func (c *GRpcContext) ParamIntDefault(key string, defVal int) int {
 	return defVal
 }
 
-// ParamInt returns int64 val from request's Params for the given key
+// Int64Param returns int64 val from request's Params for the given key
 // and returns zero if val not exists.
-func (c *GRpcContext) ParamInt64(key string) int64 {
-	if val := c.ParamString(key); val != "" {
+func (c *GRpcContext) Int64Param(key string) int64 {
+	if val := c.StringParam(key); val != "" {
 		if n, err := strconv.ParseInt(val, 10, 64); err == nil {
 			return n
 		}
@@ -156,10 +156,10 @@ func (c *GRpcContext) ParamInt64(key string) int64 {
 	return 0
 }
 
-// ParamInt returns int64 val from request's Params for the given key
+// Int64ParamDefault returns int64 val from request's Params for the given key
 // and returns defVal if val not exists.
-func (c *GRpcContext) ParamInt64Default(key string, defVal int64) int64 {
-	if val := c.ParamString(key); val != "" {
+func (c *GRpcContext) Int64ParamDefault(key string, defVal int64) int64 {
+	if val := c.StringParam(key); val != "" {
 		if n, err := strconv.ParseInt(val, 10, 64); err == nil {
 			return n
 		}
@@ -197,24 +197,24 @@ var (
 	HeaderKeyAccount = "account"
 )
 
-func (c *GRpcContext) HeaderString(key string) string {
+func (c *GRpcContext) StringHeader(key string) string {
 	return c.req.Header[key]
 }
 
-// HeaderString returns string val from request's Header for the given key
+// StringHeaderDefault returns string val from request's Header for the given key
 // and returns defVal if val not exists
-func (c *GRpcContext) HeaderStringDefault(key string, defVal string) string {
+func (c *GRpcContext) StringHeaderDefault(key string, defVal string) string {
 	if _, ok := c.req.Header[key]; !ok {
 		return defVal
 	}
 
-	return c.HeaderString(key)
+	return c.StringHeader(key)
 }
 
-// HeaderString returns int val from request's Header for the given key
+// IntHeader returns int val from request's Header for the given key
 // and returns zero if val not exists
-func (c *GRpcContext) HeaderInt(key string) int {
-	if val := c.HeaderString(key); val != "" {
+func (c *GRpcContext) IntHeader(key string) int {
+	if val := c.StringHeader(key); val != "" {
 		if n, err := strconv.Atoi(val); err == nil {
 			return n
 		}
@@ -222,10 +222,10 @@ func (c *GRpcContext) HeaderInt(key string) int {
 	return 0
 }
 
-// HeaderString returns int64 val from request's Header for the given key
+// Int64Header returns int64 val from request's Header for the given key
 // and returns zero if val not exists
-func (c *GRpcContext) HeaderInt64(key string) int64 {
-	if val := c.HeaderString(key); val != "" {
+func (c *GRpcContext) Int64Header(key string) int64 {
+	if val := c.StringHeader(key); val != "" {
 		if n, err := strconv.ParseInt(val, 10, 64); err == nil {
 			return n
 		}
@@ -282,7 +282,7 @@ func (c *GRpcContext) SuccessResponse(v interface{}) {
 	c.resp.Data = jsonStr
 }
 
-func (c *GRpcContext) ErrorResponse(exp *exception.Exception) {
+func (c *GRpcContext) ErrResponse(exp *exception.Exception) {
 	jsonStr, _ := json.Marshal(&EResponse{
 		Success: false,
 		Err: Error{
