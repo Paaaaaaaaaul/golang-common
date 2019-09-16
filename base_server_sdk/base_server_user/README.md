@@ -1,4 +1,4 @@
-# base_server_user 接口说明文档
+# base-server-user 接口说明文档
 
 ## 初始化base_server_sdk
 ```go
@@ -278,11 +278,11 @@ func (u UserFields) SetExt(ext string)
 5. ext
 
 用例:
-info := make(base_server_user.UserFields)
+info := make(base-server-user.UserFields)
 info.SetNickName("jak")
-info.SetSex(base_server_user.Boy)
+info.SetSex(base-server-user.Boy)
 
-base_server_user.UpdateUserInfo(1, 1000, info)
+base-server-user.UpdateUserInfo(1, 1000, info)
 
 
 异常返回:

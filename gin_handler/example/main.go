@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/becent/commom/config"
-	"github.com/becent/commom/gin_handler"
+	"github.com/becent/golang-common/config"
+	"github.com/becent/golang-common/gin_handler"
 	"github.com/gin-gonic/gin"
 )
 

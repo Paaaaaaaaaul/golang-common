@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/becent/commom/base_server_sdk/end"
+	"github.com/becent/golang-common/base_server_sdk/end"
 	"net"
 
 	"golang.org/x/net/context"

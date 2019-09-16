@@ -30,9 +30,9 @@ import (
 	"{{projectName}}/gRpcHandler"
 	"{{projectName}}/config"
 	"github.com/gin-gonic/gin"
-	"github.com/becent/commom/gin_handler"
-	"github.com/becent/commom/grpc_end"
-	"github.com/becent/commom/grpc_end/middleware"
+	"github.com/becent/golang-common/gin_handler"
+	"github.com/becent/golang-common/grpc_end"
+	"github.com/becent/golang-common/grpc_end/middleware"
 )
 
 func NewGinEngine() *gin.Engine {

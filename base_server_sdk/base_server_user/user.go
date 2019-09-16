@@ -1,8 +1,8 @@
-package base_server_user
+package base-server-user
 
 import (
-	"github.com/becent/commom"
-	"github.com/becent/commom/base_server_sdk"
+	"github.com/becent/golang-common"
+	"github.com/becent/golang-common/base_server_sdk"
 	json "github.com/json-iterator/go"
 	"strconv"
 )
@@ -459,11 +459,11 @@ func (u UserFields) SetExt(ext string) {
 // 5、ext
 //
 // 用例:
-// info := make(base_server_user.UserFields)
+// info := make(base-server-user.UserFields)
 // info.SetNickName("jak")
-// info.SetSex(base_server_user.Boy)
+// info.SetSex(base-server-user.Boy)
 //
-// base_server_user.UpdateUserInfo(1, 1000, info)
+// base-server-user.UpdateUserInfo(1, 1000, info)
 //
 //
 // 异常返回：

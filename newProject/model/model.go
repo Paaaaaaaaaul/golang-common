@@ -3,7 +3,7 @@ package model
 import (
 	"bytes"
 	"fmt"
-	"github.com/becent/commom"
+	"github.com/becent/golang-common"
 	"os"
 	"strings"
 )
@@ -44,14 +44,16 @@ func G_model(projectName string) error {
 			return err
 		}
 
-		file, err := os.OpenFile(fmt.Sprintf(projectName+"/model/%s.go", tableName), os.O_CREATE|os.O_RDWR, 755)
+		camelTableName := CamelCase([]byte(tableName))
+
+		file, err := os.OpenFile(fmt.Sprintf(projectName+"/model/%s.go", camelTableName), os.O_CREATE|os.O_RDWR, 755)
 		if err != nil {
 			return err
 		}
 
 		buf.WriteString("package model\n\n")
 
-		buf.WriteString(fmt.Sprintf("type %s struct {\n", strings.Title(tableName)))
+		buf.WriteString(fmt.Sprintf("type %s struct {\n", strings.Title(camelTableName)))
 
 		structRows, err := db.DB().Query("select column_name,COLUMN_TYPE,COLUMN_KEY from information_schema.columns where table_schema=? and table_name=?", curDatabase, tableName)
 		if err != nil {
@@ -63,6 +65,9 @@ func G_model(projectName string) error {
 			if err = structRows.Scan(&columnName, &columnType, &columnKey); err != nil {
 				return err
 			}
+
+			columnName = CamelCase([]byte(columnName))
+
 			// println(columnName, columnType, columnKey)
 			buf.WriteString(fmt.Sprintf("	%s ", strings.Title(columnName)))
 			if strings.Index(columnType, "bigint") != -1 {
@@ -92,7 +97,7 @@ func G_model(projectName string) error {
 
 		buf.WriteString("}\n\n")
 
-		buf.WriteString(fmt.Sprintf("func (*%s) TableName() string {\n", strings.Title(tableName)))
+		buf.WriteString(fmt.Sprintf("func (*%s) TableName() string {\n", strings.Title(camelTableName)))
 		buf.WriteString(fmt.Sprintf("	return \"%s\"\n", tableName))
 		buf.WriteString("}\n")
 
@@ -102,6 +107,24 @@ func G_model(projectName string) error {
 	}
 
 	return nil
+}
+
+func CamelCase(v []byte) string {
+	buf := bytes.NewBuffer(nil)
+	t := false
+	for _, c := range v {
+		if c == '_' {
+			t = true
+			continue
+		}
+
+		if t {
+			t = false
+			c -= 'a' - 'A'
+		}
+		buf.WriteByte(c)
+	}
+	return buf.String()
 }
 
 var model_temple = `package model

@@ -3,8 +3,8 @@ package base_server_sdk
 import (
 	"context"
 	"encoding/json"
-	"github.com/becent/commom"
-	"github.com/becent/commom/base_server_sdk/end"
+	"github.com/becent/golang-common"
+	"github.com/becent/golang-common/base_server_sdk/end"
 	"io/ioutil"
 	"net/http"
 	"net/url"

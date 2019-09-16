@@ -2,8 +2,8 @@ package gin_handler
 
 import (
 	"errors"
-	"github.com/becent/commom"
-	"github.com/becent/commom/exception"
+	"github.com/becent/golang-common"
+	"github.com/becent/golang-common/exception"
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 	"strconv"

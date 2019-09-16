@@ -2,15 +2,15 @@ package main
 
 import (
 	"flag"
-	"github.com/becent/commom"
-	"github.com/becent/commom/newProject/config"
-	"github.com/becent/commom/newProject/data"
-	"github.com/becent/commom/newProject/exception"
-	"github.com/becent/commom/newProject/gRpcHandler"
-	"github.com/becent/commom/newProject/handler"
-	"github.com/becent/commom/newProject/model"
-	"github.com/becent/commom/newProject/router"
-	"github.com/becent/commom/newProject/service"
+	"github.com/becent/golang-common"
+	"github.com/becent/golang-common/newProject/config"
+	"github.com/becent/golang-common/newProject/data"
+	"github.com/becent/golang-common/newProject/exception"
+	"github.com/becent/golang-common/newProject/gRpcHandler"
+	"github.com/becent/golang-common/newProject/handler"
+	"github.com/becent/golang-common/newProject/model"
+	"github.com/becent/golang-common/newProject/router"
+	"github.com/becent/golang-common/newProject/service"
 	"os"
 	"strings"
 	"time"
@@ -75,7 +75,7 @@ var main_temple = `package main
 
 import (
 	"context"
-	"github.com/becent/commom"
+	"github.com/becent/golang-common"
 	"{{projectName}}/config"
 	"{{projectName}}/router"
 	"github.com/judwhite/go-svc/svc"

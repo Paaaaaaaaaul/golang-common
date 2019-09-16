@@ -24,7 +24,7 @@ func G_exception(projectName string) error {
 var exception_temple = `package exception
 
 import (
-	"github.com/becent/commom/exception"
+	"github.com/becent/golang-common/exception"
 )
 
 var (

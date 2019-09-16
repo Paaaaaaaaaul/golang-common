@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"github.com/becent/commom/base_server_sdk"
-	"github.com/becent/commom/base_server_sdk/base_server_user"
+	"github.com/becent/golang-common/base_server_sdk"
+	"github.com/becent/golang-common/base_server_sdk/base-server-user"
 	"time"
 )
 
@@ -27,7 +27,7 @@ func main() {
 	}(now)
 
 	// 注册用户
-	user, err := base_server_user.Register(&base_server_user.User{
+	user, err := base-server-user.Register(&base-server-user.User{
 		OrgId:    5,
 		Phone:    "13560487593",
 		LoginPwd: "123456",
@@ -42,7 +42,7 @@ func main() {
 	}
 
 	// 通过手机找回登录密码
-	err = base_server_user.GetBackLoginPwdByPhone(5, "13560487593", "", "654321")
+	err = base-server-user.GetBackLoginPwdByPhone(5, "13560487593", "", "654321")
 	if err != nil {
 		println(err.String())
 	} else {
@@ -50,7 +50,7 @@ func main() {
 	}
 
 	// 登录
-	user, err = base_server_user.LoginByPhone(5, "13560487593", "", "654321")
+	user, err = base-server-user.LoginByPhone(5, "13560487593", "", "654321")
 	if err != nil {
 		println(err.String())
 	} else {
@@ -58,7 +58,7 @@ func main() {
 	}
 
 	// 获取用户信息
-	user, err = base_server_user.GetUserInfo(5, user.UserId)
+	user, err = base-server-user.GetUserInfo(5, user.UserId)
 	if err != nil {
 		println(err.String())
 	} else {
@@ -66,7 +66,7 @@ func main() {
 	}
 
 	// 修改登录密码
-	err = base_server_user.UpdateLoginPwd(user.OrgId, user.UserId, "654321", "123456")
+	err = base-server-user.UpdateLoginPwd(user.OrgId, user.UserId, "654321", "123456")
 	if err != nil {
 		println(err.String())
 	} else {
@@ -74,7 +74,7 @@ func main() {
 	}
 
 	// 再次登录
-	user, err = base_server_user.LoginByPhone(5, "13560487593", "", "654321")
+	user, err = base-server-user.LoginByPhone(5, "13560487593", "", "654321")
 	if err != nil {
 		println(err.String())
 	} else {
@@ -82,7 +82,7 @@ func main() {
 	}
 
 	// 改变密码再次登录
-	user, err = base_server_user.LoginByPhone(5, "13560487593", "", "123456")
+	user, err = base-server-user.LoginByPhone(5, "13560487593", "", "123456")
 	if err != nil {
 		println(err.String())
 	} else {
@@ -90,14 +90,14 @@ func main() {
 	}
 
 	// 实名认证
-	if err = base_server_user.AuthRealName(5, user.UserId, "song", "liang", "360721199001040204"); err != nil {
+	if err = base-server-user.AuthRealName(5, user.UserId, "song", "liang", "360721199001040204"); err != nil {
 		println(err.String())
 	} else {
 		println("实名认证成功")
 	}
 
 	// 获取用户信息
-	user, err = base_server_user.GetUserInfo(5, user.UserId)
+	user, err = base-server-user.GetUserInfo(5, user.UserId)
 	if err != nil {
 		println(err.String())
 	} else {
@@ -105,7 +105,7 @@ func main() {
 	}
 
 	// 通过手机找回交易密码
-	err = base_server_user.GetBackTransPwdByPhone(5, "13560487593", "", "asdqwe")
+	err = base-server-user.GetBackTransPwdByPhone(5, "13560487593", "", "asdqwe")
 	if err != nil {
 		println(err.String())
 	} else {
@@ -113,40 +113,40 @@ func main() {
 	}
 
 	// 验证交易密码
-	if err = base_server_user.AuthTransPwd(5, user.UserId, "123456"); err != nil {
+	if err = base-server-user.AuthTransPwd(5, user.UserId, "123456"); err != nil {
 		println(err.String())
 	} else {
 		println("验证交易密码成功")
 	}
 
 	// 验证交易密码
-	if err = base_server_user.AuthTransPwd(5, user.UserId, "asdqwe"); err != nil {
+	if err = base-server-user.AuthTransPwd(5, user.UserId, "asdqwe"); err != nil {
 		println(err.String())
 	} else {
 		println("验证交易密码成功")
 	}
 
 	// 更新交易密码
-	if err = base_server_user.UpdateTransPwd(5, user.UserId, "asdqwe", "123465"); err != nil {
+	if err = base-server-user.UpdateTransPwd(5, user.UserId, "asdqwe", "123465"); err != nil {
 		println(err.String())
 	} else {
 		println("更新交易密码成功")
 	}
 
-	info := make(base_server_user.UserFields)
+	info := make(base-server-user.UserFields)
 	info.SetNickName("新昵称")
 	info.SetBirthDay("2000-10-10")
 	info.SetAvatar("new.png")
 	info.SetExt("456")
-	info.SetSex(base_server_user.Boy)
-	if err = base_server_user.UpdateUserInfo(5, user.UserId, info); err != nil {
+	info.SetSex(base-server-user.Boy)
+	if err = base-server-user.UpdateUserInfo(5, user.UserId, info); err != nil {
 		println(err.String())
 	} else {
 		println("更新用户信息成功")
 	}
 
 	// 获取用户信息
-	user, err = base_server_user.GetUserInfo(5, user.UserId)
+	user, err = base-server-user.GetUserInfo(5, user.UserId)
 	if err != nil {
 		println(err.String())
 	} else {
