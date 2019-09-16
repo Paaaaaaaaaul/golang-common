@@ -10,14 +10,14 @@ import (
 func main() {
 	base_server_sdk.InitBaseServerSdk(&base_server_sdk.Config{
 		OrgId:           5,
-		AppId:           "10000",
-		AppSecretKey:    "hiojklsankldlksdnlsdasd",
+		AppId:           "10002",
+		AppSecretKey:    "12345678910",
 		RequestTimeout:  5 * time.Second,
 		IdleConnTimeout: 10 * time.Minute,
 		Hosts: base_server_sdk.Hosts{
-			UserServerHost: "127.0.0.1:18081",
+			UserServerHost: "http://127.0.0.1:8081",
 		},
-		GRpcOnly: true,
+		GRpcOnly: false,
 	})
 	defer base_server_sdk.ReleaseBaseServerSdk()
 

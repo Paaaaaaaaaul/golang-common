@@ -48,8 +48,10 @@ type Config struct {
 	// OrgId is important, ask the project leader to get it
 	OrgId int
 	// AppId use to generate signature, see makeSignature() for more detail
+	// Ignore if GRpcOnly is true
 	AppId string
 	// AppSecretKey work like AppId
+	// Ignore if GRpcOnly is true
 	AppSecretKey string
 	// RequestTimeout represent both request timeout and response timeout
 	RequestTimeout time.Duration
