@@ -88,6 +88,8 @@ func InitBaseServerSdk(c *Config) {
 
 		OrgId: c.OrgId,
 
+		requestTimeout: c.RequestTimeout,
+
 		appId:        c.AppId,
 		appSecretKey: c.AppSecretKey,
 

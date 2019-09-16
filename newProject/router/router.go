@@ -32,6 +32,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/becent/commom/gin_handler"
 	"github.com/becent/commom/grpc_end"
+	"github.com/becent/commom/grpc_end/middleware"
 )
 
 func NewGinEngine() *gin.Engine {
@@ -59,7 +60,8 @@ func NewGRpcEngine() *grpc_end.GRpcEngine {
 	engine.RegisterFunc("", "hello", gRpcHandler.Hello)
 
 	// TODO use your middleware here
-	// engine.Use(xxx)
+	engine.Use(middleware.Recover)
+	engine.Use(middleware.Logger)
 
 	return engine
 }

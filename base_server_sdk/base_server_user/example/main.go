@@ -15,9 +15,9 @@ func main() {
 		RequestTimeout:  5 * time.Second,
 		IdleConnTimeout: 10 * time.Minute,
 		Hosts: base_server_sdk.Hosts{
-			UserServerHost: "http://127.0.0.1:8081",
+			UserServerHost: "127.0.0.1:18081",
 		},
-		GRpcOnly: false,
+		GRpcOnly: true,
 	})
 	defer base_server_sdk.ReleaseBaseServerSdk()
 
@@ -133,4 +133,23 @@ func main() {
 		println("更新交易密码成功")
 	}
 
+	info := make(base_server_user.UserFields)
+	info.SetNickName("新昵称")
+	info.SetBirthDay("2000-10-10")
+	info.SetAvatar("new.png")
+	info.SetExt("456")
+	info.SetSex(base_server_user.Boy)
+	if err = base_server_user.UpdateUserInfo(5, user.UserId, info); err != nil {
+		println(err.String())
+	} else {
+		println("更新用户信息成功")
+	}
+
+	// 获取用户信息
+	user, err = base_server_user.GetUserInfo(5, user.UserId)
+	if err != nil {
+		println(err.String())
+	} else {
+		fmt.Printf("获取用户信息成功：[%v]\n", *user)
+	}
 }
