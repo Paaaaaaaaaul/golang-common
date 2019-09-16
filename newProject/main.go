@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"github.com/becent/commom"
 	"github.com/becent/commom/newProject/config"
 	"github.com/becent/commom/newProject/data"
 	"github.com/becent/commom/newProject/exception"
@@ -12,16 +13,25 @@ import (
 	"github.com/becent/commom/newProject/service"
 	"os"
 	"strings"
+	"time"
 )
 
 var (
 	projectName = flag.String("projectName", "helloWorld", "project name")
+	mysqlInfo   = flag.String("mysqlInfo", "", "mysql connect info, format like \"root:root@tcp(127.0.0.1:3306)/user\"")
 )
 
 type Func func(string) error
 
 func main() {
 	flag.Parse()
+
+	if *mysqlInfo != "" {
+		if err := common.AddDB("database", *mysqlInfo, 5, 2, time.Hour); err != nil {
+			println(err.Error())
+			return
+		}
+	}
 
 	// 创建项目文件
 	if err := os.Mkdir(*projectName, 755); err != nil {
