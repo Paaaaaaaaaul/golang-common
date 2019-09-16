@@ -1,22 +1,22 @@
 # base_server_user 接口说明文档
 
-## 1、初始化base_server_sdk
+## 初始化base_server_sdk
 ```go
-    base_server_sdk.InitBaseServerSdk(&base_server_sdk.Config{
-		OrgId:           5,
-		AppId:           "10000",
-		AppSecretKey:    "hiojklsankldlksdnlsdasd",
-		RequestTimeout:  5 * time.Second,
-		IdleConnTimeout: 10 * time.Minute,
-		Hosts: base_server_sdk.Hosts{
-			UserServerHost: "http://127.0.0.1:8081",
-		},
-		GRpcOnly: false,
-	})
+base_server_sdk.InitBaseServerSdk(&base_server_sdk.Config{
+    OrgId:           5,
+    AppId:           "10000",
+    AppSecretKey:    "hiojklsankldlksdnlsdasd",
+    RequestTimeout:  5 * time.Second,
+    IdleConnTimeout: 10 * time.Minute,
+    Hosts: base_server_sdk.Hosts{
+        UserServerHost: "http://127.0.0.1:8081",
+    },
+    GRpcOnly: false,
+})
 
-        // ....
+// ....
 
-	defer base_server_sdk.ReleaseBaseServerSdk()
+defer base_server_sdk.ReleaseBaseServerSdk()
 ```
 
 ## 相关model

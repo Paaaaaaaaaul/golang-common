@@ -12,10 +12,10 @@ import (
 )
 
 type Hosts struct {
-	UserServerHost       string
-	AccountServerHost    string
-	StatisticServerHost  string
-	ThirdPartyServerHost string
+	UserServerHost      string
+	AccountServerHost   string
+	StatisticServerHost string
+	OctopusServerHost   string
 	// TODO add server host here
 }
 
