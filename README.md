@@ -1,8 +1,8 @@
 # golang-common
 
-- gin_handler: 基于gin.Context的封装，类似一个baseController
+- gin-handler: 基于gin.Context的封装，类似一个baseController
 
-- grpc_end: 实现类似gin.Engine的引擎，方便快速进行gRpc服务器开发
+- grpc-end: 实现类似gin.Engine的引擎，方便快速进行gRpc服务器开发
 
 - base-server-sdk: base-server相关的sdk实现
 
