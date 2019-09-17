@@ -1,8 +1,8 @@
-package base-server-user
+package base_server_user
 
 import (
 	"github.com/becent/golang-common"
-	"github.com/becent/golang-common/base_server_sdk"
+	"github.com/becent/golang-common/base-server-sdk"
 	json "github.com/json-iterator/go"
 	"strconv"
 )
@@ -197,7 +197,7 @@ func GetUserInfo(orgId int, userId int64) (*User, *base_server_sdk.Error) {
 
 	user := &User{}
 	if err := json.Unmarshal(data, user); err != nil {
-		common.ErrorLog("baseServerSdk_LoginByEmail", params, "unmarshal user fail: "+string(data))
+		common.ErrorLog("baseServerSdk_GetUserInfo", params, "unmarshal user fail: "+string(data))
 		return nil, base_server_sdk.ErrServiceBusy
 	}
 
@@ -459,11 +459,11 @@ func (u UserFields) SetExt(ext string) {
 // 5、ext
 //
 // 用例:
-// info := make(base-server-user.UserFields)
+// info := make(base_server_user.UserFields)
 // info.SetNickName("jak")
-// info.SetSex(base-server-user.Boy)
+// info.SetSex(base_server_user.Boy)
 //
-// base-server-user.UpdateUserInfo(1, 1000, info)
+// base_server_user.UpdateUserInfo(1, 1000, info)
 //
 //
 // 异常返回：

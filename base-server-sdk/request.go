@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"github.com/becent/golang-common"
-	"github.com/becent/golang-common/base_server_sdk/end"
+	"github.com/becent/golang-common/base-server-sdk/end"
 	"io/ioutil"
 	"net/http"
 	"net/url"
