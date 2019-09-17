@@ -1,19 +1,11 @@
 package main
 
 import (
-	"github.com/becent/golang-common/config"
-	"github.com/becent/golang-common/gin_handler"
+	"github.com/becent/golang-common/gin-handler"
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
-
-	config.InitConfig()
-
-	println(config.GetConfig("system", "a"))
-	println(config.GetConfig("system", "b"))
-	println(config.GetConfig("system", "c"))
-
 	engine := gin.New()
 
 	cfg := &gin_handler.Config{
