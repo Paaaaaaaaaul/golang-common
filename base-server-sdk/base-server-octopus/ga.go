@@ -11,15 +11,14 @@ type GenerateGaRes struct {
 	SecretKey string `json:"secretKey"`
 }
 
-func GenerateGa(orgId int, email string, phone string) (*GenerateGaRes, *base_server_sdk.Error) {
-	if orgId == 0 || (email == "" && phone == "") {
+func GenerateGa(orgId int, account string) (*GenerateGaRes, *base_server_sdk.Error) {
+	if orgId == 0 || account == "" {
 		return nil, base_server_sdk.ErrInvalidParams
 	}
 
 	params := make(map[string]string)
 	params["orgId"] = strconv.Itoa(orgId)
-	params["email"] = email
-	params["phone"] = phone
+	params["account"] = account
 
 	client := base_server_sdk.Instance
 	data, err := client.DoRequest(client.Hosts.OctopusServerHost, "ga", "generateGa", params)
