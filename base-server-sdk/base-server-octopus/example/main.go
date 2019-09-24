@@ -27,20 +27,25 @@ func main() {
 	}(now)
 
 	// email
-	//err := base_server_octopus.SendEmailCode(5, 1000, "xxx@qq.com", "zh")
+	//err := base_server_octopus.SendEmailCode(5, base_server_octopus.BusinessLogin, "xxx@qq.com", "zh")
+	//ret, err := base_server_octopus.VerifyEmailCode(5,base_server_octopus.BusinessLogin, "xxx@qq.com", "1235")
+	//ret, err := base_server_octopus.CheckLastEmailVerifyResult(5,base_server_octopus.BusinessLogin,"email")
 	//if err != nil {
 	//	println(err.String())
 	//}
 
 	// sim
-	//err := base_server_octopus.SendSimCode(5,1000, "130xxxx1234", "zh")
-	//res, err := base_server_octopus.VerifySimCode(5,1000, "130xxxx1234", "284770")
+	//err := base_server_octopus.SendSimCode(5,base_server_octopus.BusinessLogin, "130xxxx1234", "zh")
+	//ret, err := base_server_octopus.VerifySimCode(5, base_server_octopus.BusinessLogin, "130xxxx1234", "54321")
+	//res, err := base_server_octopus.CheckLastSimVerifyResult(5,base_server_octopus.BusinessLogin, "130xxxx1234")
 
 	// captcha
-	//res, err := base_server_octopus.InitCaptcha(5, "130xxxx1234", "284770")
+	//res, err := base_server_octopus.InitCaptcha(5, base_server_octopus.BusinessLogin,"130xxxx1234", "284770")
+	//base_server_octopus.VerifyCaptcha(1, base_server_octopus.BusinessLogin, "130xxxx1234", "ip", "challenge", "validate", "seccode")
 
 	// ga
-	//res, err := base_server_octopus.GenerateGa(5, "130xxxx1234")
+	//res, err := base_server_octopus.GenerateGa(5, base_server_octopus.BusinessLogin, "130xxxx1234")
+	//ret, err := base_server_octopus.VerifyGa(5, base_server_octopus.BusinessLogin, "130xxxx1234", "secret", "code")
 
 	// idCard
 	res, err := base_server_octopus.AuthRealName(5, "张三", "010203201909201234")

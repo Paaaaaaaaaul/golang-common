@@ -13,13 +13,22 @@ type InitCaptchaRes struct {
 	NewCaptcha int    `json:"new_captcha"`
 }
 
-func InitCaptcha(orgId int, account string, ip string) (*InitCaptchaRes, *base_server_sdk.Error) {
+//初始化验证码
+//业务码请查看types.
+//{
+//"success": 0/1, //标识是否走本地验证
+//"gt": "极验账户密钥",
+//"challenge": "验证码唯一id",
+//"new_captcha": 0/1 //标识是否走本地验证
+//}
+func InitCaptcha(orgId int, businessId BusinessId, account string, ip string) (*InitCaptchaRes, *base_server_sdk.Error) {
 	if orgId == 0 || account == "" || ip == "" {
 		return nil, base_server_sdk.ErrInvalidParams
 	}
 
 	params := make(map[string]string)
 	params["orgId"] = strconv.Itoa(orgId)
+	params["businessId"] = strconv.Itoa(int(businessId))
 	params["account"] = account
 	params["ip"] = ip
 
@@ -35,13 +44,15 @@ func InitCaptcha(orgId int, account string, ip string) (*InitCaptchaRes, *base_s
 	return &resp, nil
 }
 
-func VerifyCaptcha(orgId int, account string, ip string, challenge, validate, seccode string) (bool, *base_server_sdk.Error) {
+//校验验证码
+func VerifyCaptcha(orgId int, businessId BusinessId, account string, ip string, challenge, validate, seccode string) (bool, *base_server_sdk.Error) {
 	if orgId == 0 || account == "" || ip == "" || challenge == "" || validate == "" || seccode == "" {
 		return false, base_server_sdk.ErrInvalidParams
 	}
 
 	params := make(map[string]string)
 	params["orgId"] = strconv.Itoa(orgId)
+	params["businessId"] = strconv.Itoa(int(businessId))
 	params["account"] = account
 	params["ip"] = ip
 	params["challenge"] = challenge
@@ -49,10 +60,9 @@ func VerifyCaptcha(orgId int, account string, ip string, challenge, validate, se
 	params["seccode"] = seccode
 
 	client := base_server_sdk.Instance
-	_, err := client.DoRequest(client.Hosts.OctopusServerHost, "captcha", "initCaptcha", params)
+	_, err := client.DoRequest(client.Hosts.OctopusServerHost, "captcha", "verifyCaptcha", params)
 	if err != nil {
 		return false, err
 	}
-
 	return true, nil
 }

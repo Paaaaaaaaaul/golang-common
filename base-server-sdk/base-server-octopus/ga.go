@@ -11,13 +11,14 @@ type GenerateGaRes struct {
 	SecretKey string `json:"secretKey"`
 }
 
-func GenerateGa(orgId int, account string) (*GenerateGaRes, *base_server_sdk.Error) {
+func GenerateGa(orgId int, businessId BusinessId, account string) (*GenerateGaRes, *base_server_sdk.Error) {
 	if orgId == 0 || account == "" {
 		return nil, base_server_sdk.ErrInvalidParams
 	}
 
 	params := make(map[string]string)
 	params["orgId"] = strconv.Itoa(orgId)
+	params["businessId"] = strconv.Itoa(int(businessId))
 	params["account"] = account
 
 	client := base_server_sdk.Instance
@@ -32,18 +33,39 @@ func GenerateGa(orgId int, account string) (*GenerateGaRes, *base_server_sdk.Err
 	return &resp, nil
 }
 
-func VerifyGa(orgId int, secret string, gaCode string) (bool, *base_server_sdk.Error) {
+func VerifyGa(orgId int, businessId BusinessId, account string, secret string, gaCode string) (bool, *base_server_sdk.Error) {
 	if orgId == 0 || secret == "" || gaCode== "" {
 		return false, base_server_sdk.ErrInvalidParams
 	}
 
 	params := make(map[string]string)
 	params["orgId"] = strconv.Itoa(orgId)
+	params["businessId"] = strconv.Itoa(int(businessId))
+	params["account"] = account
 	params["secret"] = secret
 	params["gaCode"] = gaCode
 
 	client := base_server_sdk.Instance
 	_, err := client.DoRequest(client.Hosts.OctopusServerHost, "ga", "verifyGa", params)
+	if err != nil {
+		return false, err
+	}
+
+	return true, nil
+}
+
+func CheckLastGaVerifyResult(orgId int, businessId BusinessId, account string) (bool, *base_server_sdk.Error) {
+	if orgId == 0 || businessId == 0 || account == "" {
+		return false, base_server_sdk.ErrInvalidParams
+	}
+
+	params := make(map[string]string)
+	params["orgId"] = strconv.Itoa(orgId)
+	params["businessId"] = strconv.Itoa(int(businessId))
+	params["account"] = account
+
+	client := base_server_sdk.Instance
+	_, err := client.DoRequest(client.Hosts.OctopusServerHost, "ga", "checkLastVerifyResult", params)
 	if err != nil {
 		return false, err
 	}
