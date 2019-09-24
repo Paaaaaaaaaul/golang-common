@@ -33,7 +33,7 @@ func main() {
 		NickName: "song",
 		Avatar:   "shuai.png",
 		Ext:      "123",
-	}, "")
+	}, "", nil)
 	if err != nil {
 		println(err.String())
 	} else {
