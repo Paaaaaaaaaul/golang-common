@@ -9,7 +9,6 @@ import (
 
 func main() {
 	base_server_sdk.InitBaseServerSdk(&base_server_sdk.Config{
-		OrgId:           5,
 		AppId:           "10002",
 		AppSecretKey:    "12345678910",
 		RequestTimeout:  5 * time.Second,
