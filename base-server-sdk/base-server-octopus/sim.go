@@ -15,14 +15,14 @@ import (
 //  1005 // 绑定邮箱
 //  1006 // 找回密码
 
-func SendSimCode(orgId int, businessId int, phone, lang string) *base_server_sdk.Error {
+func SendSimCode(orgId int, businessId BusinessId, phone, lang string) *base_server_sdk.Error {
 	if orgId == 0 || businessId == 0 || phone == "" {
 		return base_server_sdk.ErrInvalidParams
 	}
 
 	params := make(map[string]string)
 	params["orgId"] = strconv.Itoa(orgId)
-	params["businessId"] = strconv.Itoa(businessId)
+	params["businessId"] = strconv.Itoa(int(businessId))
 	params["phone"] = phone
 	params["lang"] = lang
 
@@ -35,14 +35,14 @@ func SendSimCode(orgId int, businessId int, phone, lang string) *base_server_sdk
 	return nil
 }
 
-func SendSimMsg(orgId int, businessId int, phone, lang, message string) *base_server_sdk.Error {
+func SendSimMsg(orgId int, businessId BusinessId, phone, lang, message string) *base_server_sdk.Error {
 	if orgId == 0 || businessId == 0 || phone == "" {
 		return base_server_sdk.ErrInvalidParams
 	}
 
 	params := make(map[string]string)
 	params["orgId"] = strconv.Itoa(orgId)
-	params["businessId"] = strconv.Itoa(businessId)
+	params["businessId"] = strconv.Itoa(int(businessId))
 	params["phone"] = phone
 	params["lang"] = lang
 	params["message"] = message
@@ -56,14 +56,14 @@ func SendSimMsg(orgId int, businessId int, phone, lang, message string) *base_se
 	return nil
 }
 
-func VerifySimCode(orgId int, businessId int, phone, code string) (bool, *base_server_sdk.Error) {
+func VerifySimCode(orgId int, businessId BusinessId, phone, code string) (bool, *base_server_sdk.Error) {
 	if orgId == 0 || businessId == 0 || phone == "" {
 		return false, base_server_sdk.ErrInvalidParams
 	}
 
 	params := make(map[string]string)
 	params["orgId"] = strconv.Itoa(orgId)
-	params["businessId"] = strconv.Itoa(businessId)
+	params["businessId"] = strconv.Itoa(int(businessId))
 	params["phone"] = phone
 	params["code"] = code
 
@@ -76,14 +76,14 @@ func VerifySimCode(orgId int, businessId int, phone, code string) (bool, *base_s
 	return true, nil
 }
 
-func CheckLastSimVerifyResult(orgId int, businessId int, phone string) (bool, *base_server_sdk.Error) {
+func CheckLastSimVerifyResult(orgId int, businessId BusinessId, phone string) (bool, *base_server_sdk.Error) {
 	if orgId == 0 || businessId == 0 || phone == "" {
 		return false, base_server_sdk.ErrInvalidParams
 	}
 
 	params := make(map[string]string)
 	params["orgId"] = strconv.Itoa(orgId)
-	params["businessId"] = strconv.Itoa(businessId)
+	params["businessId"] = strconv.Itoa(int(businessId))
 	params["phone"] = phone
 
 	client := base_server_sdk.Instance
