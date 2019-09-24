@@ -5,6 +5,7 @@ import (
 	"github.com/becent/golang-common/base-server-sdk"
 	json "github.com/json-iterator/go"
 	"strconv"
+	"strings"
 )
 
 type User struct {
@@ -39,7 +40,7 @@ type User struct {
 // 1000 服务繁忙
 // 1001 参数异常
 // 1002 账户已经注册
-func Register(user *User, code string) (*User, *base_server_sdk.Error) {
+func Register(user *User, code string, currencyTypes []string) (*User, *base_server_sdk.Error) {
 	params := make(map[string]string)
 	params["orgId"] = strconv.Itoa(user.OrgId)
 	params["phone"] = user.Phone
@@ -53,6 +54,9 @@ func Register(user *User, code string) (*User, *base_server_sdk.Error) {
 	params["birthDay"] = user.BirthDay
 	params["ext"] = user.Ext
 	params["code"] = code
+	if currencyTypes != nil && len(currencyTypes) > 0 {
+		params["currencyTypes"] = strings.Join(currencyTypes, ",")
+	}
 
 	if params["orgId"] == "0" || (params["phone"] == "" && params["account"] == "" && params["email"] == "") || (params["account"] != "" && params["loginPwd"] == "") {
 		return nil, base_server_sdk.ErrInvalidParams

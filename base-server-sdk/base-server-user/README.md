@@ -3,7 +3,6 @@
 ## 初始化base_server_sdk
 ```go
 base_server_sdk.InitBaseServerSdk(&base_server_sdk.Config{
-    OrgId:           5,
     AppId:           "10000",
     AppSecretKey:    "hiojklsankldlksdnlsdasd",
     RequestTimeout:  5 * time.Second,
@@ -67,14 +66,15 @@ type base_server_sdk.Error struct {
 
 - 注册用户
 
-func Register(user *User, code string) (*User, *base_server_sdk.Error)
+func Register(user *User, code string, currencyTypes []string) (*User, *base_server_sdk.Error)
 
 ```go
 1. orgId必须大于0
 2. account, phone, email至少要有一个有值
 3. account有值时,password必须有值
 4. code有值时,将会校验短信或者邮件验证码
-5. 其他字段非必填
+5. currencyTypes 有值的话,会顺便创建相关的account账户
+6. 其他字段非必填
 
 异常返回:
 1000 服务繁忙

@@ -3,7 +3,6 @@
 ## 初始化base_server_sdk
 ```go
 base_server_sdk.InitBaseServerSdk(&base_server_sdk.Config{
-    OrgId:           1,
     AppId:           "10000",
     AppSecretKey:    "hiojklsankldlksdnlsdasd",
     RequestTimeout:  5 * time.Second,

@@ -12,6 +12,7 @@ import (
 )
 
 var (
+	KEY_APPNAME        = "keyPrefix_AppName"
 	KEY_PARAMS         = "keyPrefix_Params"
 	KEY_GIN_CONTROLLER = "keyPrefix_Gin_Controller"
 	KEY_RESPONSE       = "keyPrefix_Response"
@@ -36,6 +37,8 @@ func NewHandler(cfg *Config) gin.HandlerFunc {
 		}
 
 		now := time.Now()
+
+		c.Set(KEY_APPNAME, cfg.AppName)
 
 		// get params
 		params := make(map[string]string)

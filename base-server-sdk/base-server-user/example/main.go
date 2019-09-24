@@ -9,7 +9,6 @@ import (
 
 func main() {
 	base_server_sdk.InitBaseServerSdk(&base_server_sdk.Config{
-		OrgId:           5,
 		AppId:           "10002",
 		AppSecretKey:    "12345678910",
 		RequestTimeout:  5 * time.Second,
@@ -34,7 +33,7 @@ func main() {
 		NickName: "song",
 		Avatar:   "shuai.png",
 		Ext:      "123",
-	}, "")
+	}, "", nil)
 	if err != nil {
 		println(err.String())
 	} else {
