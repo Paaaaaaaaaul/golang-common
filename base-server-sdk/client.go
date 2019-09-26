@@ -45,8 +45,6 @@ func DialFunc(addr string) (*grpc.ClientConn, error) {
 }
 
 type Config struct {
-	// OrgId is important, ask the project leader to get it
-	OrgId int
 	// AppId use to generate signature, see makeSignature() for more detail
 	// Ignore if GRpcOnly is true
 	AppId string
@@ -69,10 +67,6 @@ type Config struct {
 var Instance *BaseServerSdkClient
 
 func InitBaseServerSdk(c *Config) {
-	if c.OrgId <= 0 {
-		panic("orgId invalid")
-	}
-
 	Instance = &BaseServerSdkClient{
 		gRpcMapPool: grpc_pool.NewMapPool(DialFunc, 0, c.IdleConnTimeout),
 
