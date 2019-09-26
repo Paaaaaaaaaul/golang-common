@@ -42,6 +42,17 @@ type LogList struct {
 	CreateTime int64	`json:"createTime"`
 }
 
+type TaskDetail struct {
+	OpType    int    `json:"opType"`        //操作类型
+	BsType    int    `json:"bsType"`        //业务类型
+	AccountId int64  `json:"accountId"`     //账户id
+	Amount 	  string `json:"amount"`        //金额
+	UserId    int64  `json:"userId"`        //用户id
+	Currency  string `json:"currency"`      //货币类型
+	Detail    string `json:"detail"`        //操作详情
+	Ext       string `json:"ext"`           //扩展字段
+}
+
 type base_server_sdk.Error struct {
 	Code    int    `json:"code"`
 	Message string `json:"message"`
@@ -69,7 +80,7 @@ type base_server_sdk.Error struct {
 
 - 创建账户
 
-func CreateAccount(account *Account) (*Account, *base_server_sdk.Error)
+func CreateAccount(orgId int, userId int64, currency []string) (*[]Account, *base_server_sdk.Error)
 
 ```go
 注意:
@@ -96,6 +107,10 @@ func AccountInfo(orgId int, userId int64, currency string) (*Account, *base_serv
 func UpdateStatus(orgId int, accountId int64, status int) *base_server_sdk.Error
 
 ```go
+status状态枚举:
+1：正常
+2：冻结
+
 异常错误:
 1001 参数错误
 2003 账户不存在
@@ -104,15 +119,18 @@ func UpdateStatus(orgId int, accountId int64, status int) *base_server_sdk.Error
 
 - 金额操作
 
-func OperateAmount(orgId int, accountId int64, opType int, amount string) *base_server_sdk.Error
+func OperateAmount(orgId int, accountId int64, opType, bsType int, amount, detail, ext string) *base_server_sdk.Error
 
 ```go
-类型枚举:
+opType 类型枚举:
 1	//可用-加
 2	//可用-减
 3	//冻结-加
 4	//冻结-减
 5	//解冻-冻结进可用
+
+bsType 类型为项目特有业务类型
+
 
 异常错误:
 1001 参数错误
@@ -126,20 +144,70 @@ func OperateAmount(orgId int, accountId int64, opType int, amount string) *base_
 2011 账户日志创建失败
 ```
 
-- 账户日志列表
+- 批量金额操作
 
-func AccountLogList(orgId int, userId int64, opType int, currency string, page, limit int) (*[]LogList, *base_server_sdk.Error)
+func BatchOperateAmount(orgId int, details []*TaskDetail) *base_server_sdk.Error
 
 ```go
-类型枚举:
+注意：
+此操作为异步任务操作，如接口返回成功则会保证最终成功，目前每两秒执行一次
+
+opType 类型枚举:
 1	//可用-加
 2	//可用-减
 3	//冻结-加
 4	//冻结-减
 5	//解冻-冻结进可用
 
+bsType 类型为项目特有业务类型
+
+type TaskDetail struct {
+	OpType    int    `json:"opType"`        //操作类型
+	BsType    int    `json:"bsType"`        //业务类型
+	AccountId int64  `json:"accountId"`     //账户id
+	Amount 	  string `json:"amount"`        //金额
+	UserId    int64  `json:"userId"`        //用户id
+	Currency  string `json:"currency"`      //货币类型
+	Detail    string `json:"detail"`        //操作详情
+	Ext       string `json:"ext"`           //扩展字段
+}
+
+```
+
+- 账户日志列表
+
+func AccountLogList(orgId int, userId int64, opType, bsType int, currency string, beginTime, endTime int, page, limit int) (*[]LogList, *base_server_sdk.Error) 
+
+```go
+opType 类型枚举:
+1	//可用-加
+2	//可用-减
+3	//冻结-加
+4	//冻结-减
+5	//解冻-冻结进可用
+
+bsType 类型为项目特有业务类型
+
+
 异常错误:
 1001 参数错误
-2003 账户不存在
-2004 更新状态失败
+```
+
+- 账户日志列表
+
+func SumLog(orgId int, userId int64, opType, bsType int, currency string, beginTime, endTime int) (string, *base_server_sdk.Error) 
+
+```go
+opType 类型枚举:
+1	//可用-加
+2	//可用-减
+3	//冻结-加
+4	//冻结-减
+5	//解冻-冻结进可用
+
+bsType 类型为项目特有业务类型
+
+
+异常错误:
+1001 参数错误
 ```
