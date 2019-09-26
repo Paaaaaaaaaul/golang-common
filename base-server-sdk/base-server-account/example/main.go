@@ -9,15 +9,14 @@ import (
 
 func main() {
 	base_server_sdk.InitBaseServerSdk(&base_server_sdk.Config{
-		OrgId:           8,
 		AppId:           "10008",
 		AppSecretKey:    "12345678910",
 		RequestTimeout:  5 * time.Second,
 		IdleConnTimeout: 10 * time.Minute,
-		Hosts:           base_server_sdk.Hosts{
+		Hosts: base_server_sdk.Hosts{
 			AccountServerHost: "http://127.0.0.1:8081",
 		},
-		GRpcOnly:        false,
+		GRpcOnly: false,
 	})
 	defer base_server_sdk.ReleaseBaseServerSdk()
 
@@ -26,49 +25,81 @@ func main() {
 		println(time.Since(now).String())
 	}(now)
 
-	// 创建账户
-	account, err := base_server_account.CreateAccount(&base_server_account.Account{
-		OrgId:        8,
-		UserId:       100000,
-		Currency:     "CC",
+	//// 创建账户
+	//account, err := base_server_account.CreateAccount(8, 100000, []string{"CC", "USD"})
+	//
+	//if err != nil {
+	//	println(err.String())
+	//} else {
+	//	fmt.Printf("创建成功: {%v}\n", *account)
+	//}
+
+	//// 账户信息
+	//accounts, err := base_server_account.AccountInfo(8, 100000, "CC")
+	//
+	//if err != nil {
+	//	println(err.String())
+	//} else {
+	//	fmt.Printf("账户信息: {%v}\n", *accounts)
+	//}
+	//
+	//// 账户状态更新
+	//err = base_server_account.UpdateStatus(8, 9, 2)
+	//if err != nil {
+	//	println(err.String())
+	//} else {
+	//	println("状态更新成功")
+	//}
+	//
+	//// 金额操作
+	//err = base_server_account.OperateAmount(8, 9, 1, 1, "100", "custom json string", "custom json string")
+	//if err != nil {
+	//	println(err.String())
+	//} else {
+	//	println("操作成功")
+	//}
+	//
+	//// 账户日志列表
+	//logList, err := base_server_account.AccountLogList(8, 1, 2, 1, "", 1568776001, 1569228191, 1, 10)
+	//if err != nil {
+	//	println(err.String())
+	//} else {
+	//	fmt.Printf("账户列表： {%v}", *logList)
+	//}
+
+	// 账户日志总计
+	//sumAmount, err := base_server_account.SumLog(8, 100000, 1, 1, "CC", 0, 0)
+	//if err != nil {
+	//	println(err.String())
+	//} else {
+	//	fmt.Printf("总和： {%v}", sumAmount)
+	//}
+
+	// 批量账户操作
+	var taskDetails []*base_server_account.TaskDetail
+	taskDetails = append(taskDetails, &base_server_account.TaskDetail{
+		OpType:    1,
+		BsType:    1,
+		AccountId: 1,
+		UserId:    100000,
+		Currency:  "CC",
+		Amount:    "100",
+		Detail:    "sss",
+		Ext:       "ddd",
+	}, &base_server_account.TaskDetail{
+		OpType:    1,
+		BsType:    1,
+		AccountId: 1,
+		UserId:    100001,
+		Currency:  "CC",
+		Amount:    "200",
+		Detail:    "SS",
+		Ext:       "DD",
 	})
-
+	err := base_server_account.BatchOperateAmount(8, taskDetails)
 	if err != nil {
 		println(err.String())
 	} else {
-		fmt.Printf("创建成功: {%v}\n", *account)
-	}
-
-	// 账户信息
-	account, err = base_server_account.AccountInfo(8, 100000, "CC")
-
-	if err != nil {
-		println(err.String())
-	} else {
-		fmt.Printf("账户信息: {%v}\n", *account)
-	}
-
-	// 账户状态更新
-	err = base_server_account.UpdateStatus(8, 9, 2)
-	if err != nil {
-		println(err.String())
-	} else {
-		println("状态更新成功")
-	}
-
-	// 金额操作
-	err = base_server_account.OperateAmount(8, 9, 1, "100")
-	if err != nil {
-		println(err.String())
-	} else {
-		println("操作成功")
-	}
-
-	// 账户日志列表
-	logList, err := base_server_account.AccountLogList(8, 1, 2, "", 1, 10)
-	if err != nil {
-		println(err.String())
-	} else {
-		fmt.Printf("账户列表： {%v}", *logList)
+		fmt.Printf("操作成功")
 	}
 }
