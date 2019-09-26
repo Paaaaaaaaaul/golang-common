@@ -3,13 +3,12 @@ package main
 import (
 	"fmt"
 	"github.com/becent/golang-common/base-server-sdk"
-	base_server_account "github.com/becent/golang-common/base-server-sdk/base-server-account"
+	"github.com/becent/golang-common/base-server-sdk/base-server-account"
 	"time"
 )
 
 func main() {
 	base_server_sdk.InitBaseServerSdk(&base_server_sdk.Config{
-		OrgId:           8,
 		AppId:           "10008",
 		AppSecretKey:    "12345678910",
 		RequestTimeout:  5 * time.Second,
