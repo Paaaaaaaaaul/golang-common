@@ -601,3 +601,35 @@ func AuthTransPwd(orgId int, userId int64, password string) *base_server_sdk.Err
 
 	return nil
 }
+
+type Status int
+
+const (
+	Normal Status = 1 + iota
+	Forbidden
+)
+
+// UpdateUserStatus 修改用户状态
+//
+// 异常返回：
+// 1000 服务繁忙
+// 1001 参数异常
+// 1003 用户不存在
+func UpdateUserStatus(orgId int, userId int64, status Status) *base_server_sdk.Error {
+	if orgId == 0 || userId == 0 || (status != Normal && status != Forbidden) {
+		return base_server_sdk.ErrInvalidParams
+	}
+
+	params := make(map[string]string)
+	params["orgId"] = strconv.Itoa(orgId)
+	params["userId"] = strconv.FormatInt(userId, 10)
+	params["status"] = strconv.Itoa(int(status))
+
+	client := base_server_sdk.Instance
+	_, err := client.DoRequest(client.Hosts.UserServerHost, "user", "updateStatus", params)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
