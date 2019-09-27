@@ -1,9 +1,9 @@
 package base_server_octopus
 
 import (
+	"encoding/json"
 	"github.com/becent/golang-common/base-server-sdk"
 	"strconv"
-	"encoding/json"
 )
 
 // 发送邮件验证码

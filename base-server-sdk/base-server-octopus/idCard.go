@@ -3,7 +3,7 @@ package base_server_octopus
 import (
 	"github.com/becent/golang-common/base-server-sdk"
 	"strconv"
-	)
+)
 
 func AuthRealName(orgId int, name string, cardNo string) (bool, *base_server_sdk.Error) {
 	if orgId == 0 || name == "" || cardNo == "" {

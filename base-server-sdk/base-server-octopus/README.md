@@ -186,14 +186,14 @@ ret, err := base_server_octopus.VerifyGa(5, base_server_octopus.BusinessLogin, "
 ```
 
 
-## 验证服务
+## 极验验证服务
 
 **验证码初始化**
-func InitCaptcha(orgId int, businessId BusinessId, account string, ip string) (*InitCaptchaRes, *base_server_sdk.Error)
+func InitGt(orgId int, businessId BusinessId, account string, ip string) (*InitCaptchaRes, *base_server_sdk.Error)
 
 - 示例
 ```go
-res, err := base_server_octopus.InitCaptcha(1, base_server_octopus.BusinessLogin, "130xxxx1234", "127.0.0.1")
+res, err := base_server_octopus.InitGt(1, base_server_octopus.BusinessLogin, "130xxxx1234", "127.0.0.1")
 ```
 - 异常返回
 ```go
@@ -211,11 +211,11 @@ res, err := base_server_octopus.InitCaptcha(1, base_server_octopus.BusinessLogin
 ```
 
 **服务端校验验证码
-func VerifyCaptcha(orgId int, businessId BusinessId, account string, ip string, challenge, validate, seccode string) (bool, *base_server_sdk.Error)
+func VerifyGt(orgId int, businessId BusinessId, account string, ip string, challenge, validate, seccode string) (bool, *base_server_sdk.Error)
 
 - 示例
 ```go
-ret, err := base_server_octopus.VerifyCaptcha(1, base_server_octopus.BusinessLogin, "130xxxx1234", "ip", "challenge", "validate", "seccode")
+ret, err := base_server_octopus.VerifyGt(1, base_server_octopus.BusinessLogin, "130xxxx1234", "ip", "challenge", "validate", "seccode")
 ```
 - 异常返回
 ```go
