@@ -1,13 +1,13 @@
 package base_server_octopus
 
 import (
+	"encoding/json"
 	"github.com/becent/golang-common/base-server-sdk"
 	"strconv"
-	"encoding/json"
 )
 
 type GenerateGaRes struct {
-	QrCode string `json:"qrCode"`
+	QrCode    string `json:"qrCode"`
 	SecretKey string `json:"secretKey"`
 }
 
@@ -34,7 +34,7 @@ func GenerateGa(orgId int, businessId BusinessId, account string) (*GenerateGaRe
 }
 
 func VerifyGa(orgId int, businessId BusinessId, account string, secret string, gaCode string) (bool, *base_server_sdk.Error) {
-	if orgId == 0 || secret == "" || gaCode== "" {
+	if orgId == 0 || secret == "" || gaCode == "" {
 		return false, base_server_sdk.ErrInvalidParams
 	}
 

@@ -1,9 +1,9 @@
 package base_server_octopus
 
 import (
+	"encoding/json"
 	"github.com/becent/golang-common/base-server-sdk"
 	"strconv"
-	"encoding/json"
 )
 
 type InitCaptchaRes struct {
@@ -13,7 +13,7 @@ type InitCaptchaRes struct {
 	NewCaptcha int    `json:"new_captcha"`
 }
 
-//初始化验证码
+//初始化极验
 //业务码请查看types.
 //{
 //"success": 0/1, //标识是否走本地验证
@@ -21,7 +21,7 @@ type InitCaptchaRes struct {
 //"challenge": "验证码唯一id",
 //"new_captcha": 0/1 //标识是否走本地验证
 //}
-func InitCaptcha(orgId int, businessId BusinessId, account string, ip string) (*InitCaptchaRes, *base_server_sdk.Error) {
+func InitGt(orgId int, businessId BusinessId, account string, ip string) (*InitCaptchaRes, *base_server_sdk.Error) {
 	if orgId == 0 || account == "" || ip == "" {
 		return nil, base_server_sdk.ErrInvalidParams
 	}
@@ -33,7 +33,7 @@ func InitCaptcha(orgId int, businessId BusinessId, account string, ip string) (*
 	params["ip"] = ip
 
 	client := base_server_sdk.Instance
-	data, err := client.DoRequest(client.Hosts.OctopusServerHost, "captcha", "initCaptcha", params)
+	data, err := client.DoRequest(client.Hosts.OctopusServerHost, "gt", "initGt", params)
 	if err != nil {
 		return nil, err
 	}
@@ -45,7 +45,7 @@ func InitCaptcha(orgId int, businessId BusinessId, account string, ip string) (*
 }
 
 //校验验证码
-func VerifyCaptcha(orgId int, businessId BusinessId, account string, ip string, challenge, validate, seccode string) (bool, *base_server_sdk.Error) {
+func VerifyGt(orgId int, businessId BusinessId, account string, ip string, challenge, validate, seccode string) (bool, *base_server_sdk.Error) {
 	if orgId == 0 || account == "" || ip == "" || challenge == "" || validate == "" || seccode == "" {
 		return false, base_server_sdk.ErrInvalidParams
 	}
@@ -60,7 +60,7 @@ func VerifyCaptcha(orgId int, businessId BusinessId, account string, ip string, 
 	params["seccode"] = seccode
 
 	client := base_server_sdk.Instance
-	_, err := client.DoRequest(client.Hosts.OctopusServerHost, "captcha", "verifyCaptcha", params)
+	_, err := client.DoRequest(client.Hosts.OctopusServerHost, "gt", "verifyGt", params)
 	if err != nil {
 		return false, err
 	}

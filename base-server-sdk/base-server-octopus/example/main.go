@@ -38,9 +38,9 @@ func main() {
 	//ret, err := base_server_octopus.VerifySimCode(5, base_server_octopus.BusinessLogin, "130xxxx1234", "54321")
 	//res, err := base_server_octopus.CheckLastSimVerifyResult(5,base_server_octopus.BusinessLogin, "130xxxx1234")
 
-	// captcha
-	//res, err := base_server_octopus.InitCaptcha(5, base_server_octopus.BusinessLogin,"130xxxx1234", "284770")
-	//base_server_octopus.VerifyCaptcha(1, base_server_octopus.BusinessLogin, "130xxxx1234", "ip", "challenge", "validate", "seccode")
+	// gt
+	//res, err := base_server_octopus.InitGT(5, base_server_octopus.BusinessLogin,"130xxxx1234", "284770")
+	//base_server_octopus.VerifyGt(1, base_server_octopus.BusinessLogin, "130xxxx1234", "ip", "challenge", "validate", "seccode")
 
 	// ga
 	//res, err := base_server_octopus.GenerateGa(5, base_server_octopus.BusinessLogin, "130xxxx1234")
