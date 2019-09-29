@@ -48,8 +48,6 @@ func (c *BaseServerSdkClient) DoRequest(host string, controller, action string, 
 		return nil, ErrHostEmpty
 	}
 
-	params["orgId"] = strconv.Itoa(c.OrgId)
-
 	var (
 		data []byte
 		err  error
