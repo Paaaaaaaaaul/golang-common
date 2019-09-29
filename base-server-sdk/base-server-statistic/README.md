@@ -20,7 +20,7 @@ defer base_server_sdk.ReleaseBaseServerSdk()
 
 ## 相关model
 ```go
-type StaticticItem struct {
+type StatisticItem struct {
 	ItemId      int64  `json:"ItemId"`
 	OrgId       int    `json:"OrgId"`
 	Tag         string `json:"Tag"`
@@ -43,7 +43,7 @@ type StaticticItem struct {
 
 - 注册用户
 
-func ListStatisticItems(orgId int, tag string, keyFieldVal string, granularity string, beginTime int, endTime int, limit int, page int) (*[]StaticticItem, *base_server_sdk.Error)
+func ListStatisticItems(orgId int, tag string, keyFieldVal string, granularity string, beginTime int, endTime int, limit int, page int) (*[]StatisticItem, *base_server_sdk.Error)
 
 ```go
 1.orgId 应用ID ,0 查询所有
