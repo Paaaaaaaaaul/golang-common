@@ -29,7 +29,7 @@ func main() {
 	if err != nil {
 		println(err.String())
 	} else {
-		fmt.Printf("获取统计数据成功：[%v]\n", *response)
+		fmt.Printf("获取统计数据成功：[%v]\n", response)
 	}
 
 }

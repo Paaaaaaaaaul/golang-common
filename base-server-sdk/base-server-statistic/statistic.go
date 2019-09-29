@@ -29,7 +29,7 @@ type StatisticItem struct {
 //endTime 结束时间,0 查询所有
 //limit 页大小,默认20
 //page 页码, 0 开始
-func ListStatisticItems(orgId int, tag string, keyFieldVal string, granularity string, beginTime int, endTime int, limit int, page int) (*[]StatisticItem, *base_server_sdk.Error) {
+func ListStatisticItems(orgId int, tag string, keyFieldVal string, granularity string, beginTime int, endTime int, limit int, page int) ([]*StatisticItem, *base_server_sdk.Error) {
 	params := make(map[string]string)
 	params["orgId"] = strconv.Itoa(orgId)
 	params["tag"] = tag
@@ -47,10 +47,10 @@ func ListStatisticItems(orgId int, tag string, keyFieldVal string, granularity s
 		return nil, err
 	}
 
-	statisticDatas := &[]StatisticItem{}
+	statisticDatas := &[]*StatisticItem{}
 	if err := json.Unmarshal(response, statisticDatas); err != nil {
 		common.ErrorLog("baseServerSdk_ListStatisticData", params, "unmarshal fail: "+string(response))
 		return nil, base_server_sdk.ErrServiceBusy
 	}
-	return statisticDatas, nil
+	return *statisticDatas, nil
 }
