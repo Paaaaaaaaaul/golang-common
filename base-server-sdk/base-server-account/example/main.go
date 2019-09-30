@@ -52,7 +52,7 @@ func main() {
 	//}
 	//
 	//// 金额操作
-	//err = base_server_account.OperateAmount(8, 9, 1, 1, "100", "custom json string", "custom json string")
+	//err = base_server_account.OperateAmount(8, 9, 1, 1, "100", "custom json string", "custom json string", "callbackUrl")
 	//if err != nil {
 	//	println(err.String())
 	//} else {
@@ -96,7 +96,8 @@ func main() {
 		Detail:    "SS",
 		Ext:       "DD",
 	})
-	err := base_server_account.BatchOperateAmount(8, taskDetails)
+
+	err := base_server_account.BatchOperateAmount(8, taskDetails, "callbackUrl")
 	if err != nil {
 		println(err.String())
 	} else {
