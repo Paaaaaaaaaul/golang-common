@@ -252,12 +252,13 @@ func SumLog(orgId int, userId int64, opType, bsType int, currency string, beginT
 }
 
 // 批量操作金额
-func BatchOperateAmount(orgId int, details []*TaskDetail, callback string) *base_server_sdk.Error {
+func BatchOperateAmount(orgId int, details []*TaskDetail, callback *TaskCallBack) *base_server_sdk.Error {
 	params := make(map[string]string)
 	params["orgId"] = strconv.Itoa(orgId)
 	taskDetailByte, _ := json.Marshal(details)
 	params["detail"] = string(taskDetailByte)
-	params["callback"] = callback
+	callbackData, _ := json.Marshal(callback)
+	params["callback"] = string(callbackData)
 
 	if params["orgId"] == "0" || params["detail"] == "" {
 		return base_server_sdk.ErrInvalidParams

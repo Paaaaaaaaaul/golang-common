@@ -96,8 +96,15 @@ func main() {
 		Detail:    "SS",
 		Ext:       "DD",
 	})
+	callback := &base_server_account.TaskCallBack{
+		CallBackUrl: "xyz.com/callback",
+		Data: map[string]string{
+			"field1": "val1",
+			"field2": "val2",
+		},
+	}
 
-	err := base_server_account.BatchOperateAmount(8, taskDetails, "callbackUrl")
+	err := base_server_account.BatchOperateAmount(8, taskDetails, callback)
 	if err != nil {
 		println(err.String())
 	} else {
