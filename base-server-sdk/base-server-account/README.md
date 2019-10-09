@@ -119,7 +119,7 @@ status状态枚举:
 
 - 金额操作
 
-func OperateAmount(orgId int, accountId int64, opType, bsType int, amount, detail, ext string) *base_server_sdk.Error
+func OperateAmount(orgId int, accountId int64, opType, bsType int, amount, detail, ext, callback string) *base_server_sdk.Error
 
 ```go
 opType 类型枚举:
@@ -146,7 +146,7 @@ bsType 类型为项目特有业务类型
 
 - 批量金额操作
 
-func BatchOperateAmount(orgId int, details []*TaskDetail) *base_server_sdk.Error
+func BatchOperateAmount(orgId int, details []*TaskDetail, callback string) *base_server_sdk.Error
 
 ```go
 注意：
@@ -193,7 +193,7 @@ bsType 类型为项目特有业务类型
 1001 参数错误
 ```
 
-- 账户日志列表
+- 账户日志总和
 
 func SumLog(orgId int, userId int64, opType, bsType int, currency string, beginTime, endTime int) (string, *base_server_sdk.Error) 
 
@@ -211,3 +211,4 @@ bsType 类型为项目特有业务类型
 异常错误:
 1001 参数错误
 ```
+

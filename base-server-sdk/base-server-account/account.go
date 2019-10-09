@@ -40,6 +40,11 @@ type TaskDetail struct {
 	Ext       string `json:"ext"`
 }
 
+type TaskCallBack struct {
+	CallBackUrl string            `json:"callBackUrl"`
+	Data        map[string]string `json:"data"`
+}
+
 //  POST CreateAccount 创建账户
 //
 //	注意:
@@ -49,7 +54,7 @@ type TaskDetail struct {
 //	1001 参数错误
 //	2001 账户已存在
 //	2002 账户创建失败
-func CreateAccount(orgId int, userId int64, currency []string) (*[]Account, *base_server_sdk.Error) {
+func CreateAccount(orgId int, userId int64, currency []string) ([]*Account, *base_server_sdk.Error) {
 	params := make(map[string]string)
 	params["orgId"] = strconv.Itoa(orgId)
 	params["userId"] = strconv.FormatInt(userId, 10)
@@ -64,8 +69,8 @@ func CreateAccount(orgId int, userId int64, currency []string) (*[]Account, *bas
 	if err != nil {
 		return nil, err
 	}
-	account := &[]Account{}
-	if err := json.Unmarshal(data, account); err != nil {
+	var account []*Account
+	if err := json.Unmarshal(data, &account); err != nil {
 		common.ErrorLog("baseServerSdk_CreateAccount", params, "unmarshal account fail"+string(data))
 		return nil, base_server_sdk.ErrServiceBusy
 	}
@@ -78,7 +83,7 @@ func CreateAccount(orgId int, userId int64, currency []string) (*[]Account, *bas
 //	异常错误:
 //	1001 参数错误
 //	2003 账户不存在
-func AccountInfo(orgId int, userId int64, currency string) (*[]Account, *base_server_sdk.Error) {
+func AccountInfo(orgId int, userId int64, currency string) ([]*Account, *base_server_sdk.Error) {
 	params := make(map[string]string)
 	params["orgId"] = strconv.Itoa(orgId)
 	params["userId"] = strconv.FormatInt(userId, 10)
@@ -94,12 +99,12 @@ func AccountInfo(orgId int, userId int64, currency string) (*[]Account, *base_se
 		return nil, err
 	}
 
-	var account []Account
+	var account []*Account
 	if err := json.Unmarshal(data, &account); err != nil {
 		common.ErrorLog("baseServerSdk_AccountInfo", params, "unmarshal account fail"+string(data))
 		return nil, base_server_sdk.ErrServiceBusy
 	}
-	return &account, nil
+	return account, nil
 }
 
 //	状态变更
@@ -148,7 +153,7 @@ func UpdateStatus(orgId int, accountId int64, status int) *base_server_sdk.Error
 //	2009 账户可用减少失败
 //	2010 账户冻结减少失败
 //	2011 账户日志创建失败
-func OperateAmount(orgId int, accountId int64, opType, bsType int, amount, detail, ext string) *base_server_sdk.Error {
+func OperateAmount(orgId int, accountId int64, opType, bsType int, amount, detail, ext, callback string) *base_server_sdk.Error {
 	params := make(map[string]string)
 	params["orgId"] = strconv.Itoa(orgId)
 	params["accountId"] = strconv.FormatInt(accountId, 10)
@@ -157,6 +162,7 @@ func OperateAmount(orgId int, accountId int64, opType, bsType int, amount, detai
 	params["amount"] = amount
 	params["detail"] = detail
 	params["ext"] = ext
+	params["callback"] = callback
 
 	if params["orgId"] == "0" || params["accountId"] == "0" || params["opType"] == "0" || params["bsType"] == "0" || amount == "" {
 		return base_server_sdk.ErrInvalidParams
@@ -184,7 +190,7 @@ func OperateAmount(orgId int, accountId int64, opType, bsType int, amount, detai
 //	1001 参数错误
 //	2003 账户不存在
 //	2004 更新状态失败
-func AccountLogList(orgId int, userId int64, opType, bsType int, currency string, beginTime, endTime int, page, limit int) (*[]LogList, *base_server_sdk.Error) {
+func AccountLogList(orgId int, userId int64, opType, bsType int, currency string, beginTime, endTime int, page, limit int) ([]*LogList, *base_server_sdk.Error) {
 	params := make(map[string]string)
 	params["orgId"] = strconv.Itoa(orgId)
 	params["userId"] = strconv.FormatInt(userId, 10)
@@ -207,8 +213,8 @@ func AccountLogList(orgId int, userId int64, opType, bsType int, currency string
 		return nil, err
 	}
 
-	logList := &[]LogList{}
-	if err := json.Unmarshal(data, logList); err != nil {
+	var logList []*LogList
+	if err := json.Unmarshal(data, &logList); err != nil {
 		common.ErrorLog("baseServerSdk_AccountLogList", params, "unmarshal account list fail"+string(data))
 		return nil, base_server_sdk.ErrServiceBusy
 	}
@@ -246,11 +252,13 @@ func SumLog(orgId int, userId int64, opType, bsType int, currency string, beginT
 }
 
 // 批量操作金额
-func BatchOperateAmount(orgId int, details []*TaskDetail) *base_server_sdk.Error {
+func BatchOperateAmount(orgId int, details []*TaskDetail, callback *TaskCallBack) *base_server_sdk.Error {
 	params := make(map[string]string)
 	params["orgId"] = strconv.Itoa(orgId)
 	taskDetailByte, _ := json.Marshal(details)
 	params["detail"] = string(taskDetailByte)
+	callbackData, _ := json.Marshal(callback)
+	params["callback"] = string(callbackData)
 
 	if params["orgId"] == "0" || params["detail"] == "" {
 		return base_server_sdk.ErrInvalidParams

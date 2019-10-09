@@ -338,3 +338,14 @@ func AuthTransPwd(orgId int, userId int64, password string) *base_server_sdk.Err
 1003 用户不存在
 1005 密码错误
 ```
+
+- 修改用户状态
+
+func UpdateUserStatus(orgId int, userId int64, status Status) *base_server_sdk.Error
+
+```go
+异常返回:
+1000 服务繁忙
+1001 参数异常
+1003 用户不存在
+```

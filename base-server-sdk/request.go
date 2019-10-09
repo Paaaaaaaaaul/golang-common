@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"github.com/becent/golang-common"
-	"github.com/becent/golang-common/base-server-sdk/end"
+	"github.com/becent/golang-common/grpc-end"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -47,8 +47,6 @@ func (c *BaseServerSdkClient) DoRequest(host string, controller, action string, 
 	if host == "" {
 		return nil, ErrHostEmpty
 	}
-
-	params["orgId"] = strconv.Itoa(c.OrgId)
 
 	var (
 		data []byte
