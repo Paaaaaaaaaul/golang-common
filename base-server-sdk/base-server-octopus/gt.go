@@ -6,7 +6,7 @@ import (
 	"strconv"
 )
 
-type InitCaptchaRes struct {
+type InitGtResponse struct {
 	Success    int8   `json:"success"`
 	CaptchaID  string `json:"gt"`
 	Challenge  string `json:"challenge"`
@@ -21,7 +21,7 @@ type InitCaptchaRes struct {
 //"challenge": "验证码唯一id",
 //"new_captcha": 0/1 //标识是否走本地验证
 //}
-func InitGt(orgId int, businessId BusinessId, account string, ip string) (*InitCaptchaRes, *base_server_sdk.Error) {
+func InitGt(orgId int, businessId BusinessId, account string, ip string) (*InitGtResponse, *base_server_sdk.Error) {
 	if orgId == 0 || account == "" || ip == "" {
 		return nil, base_server_sdk.ErrInvalidParams
 	}
@@ -37,7 +37,7 @@ func InitGt(orgId int, businessId BusinessId, account string, ip string) (*InitC
 	if err != nil {
 		return nil, err
 	}
-	var resp InitCaptchaRes
+	var resp InitGtResponse
 	if err := json.Unmarshal(data, &resp); err != nil {
 		return nil, base_server_sdk.ErrServiceBusy
 	}

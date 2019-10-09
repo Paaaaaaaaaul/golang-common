@@ -222,3 +222,65 @@ ret, err := base_server_octopus.VerifyGt(1, base_server_octopus.BusinessLogin, "
 1001 参数错误
 1013 验证码校验失败
 ```
+
+## 验证码服务
+
+**验证码初始化**
+//length:验证码长度，默认6位(0~9); width:图片宽度，默认240; height:图片高度，默认80; 传0则用默认值
+func InitCaptcha(orgId int, businessId BusinessId, length, width, height int) (*InitCaptchaResponse, *base_server_sdk.Error)
+
+- 示例
+```go
+res, err := base_server_octopus.InitCaptcha(1, base_server_octopus.BusinessLogin, 0, 0, 0)
+```
+- 异常返回
+```go
+1001 参数错误
+1012 验证码初始化失败
+```
+- 成功返回
+```go
+{
+"success": ture,
+"captchaId": "验证码Id",
+"image": "base64图片验证码",
+}
+```
+
+**刷新验证码**
+```go
+//length:验证码长度，默认6位(0~9); width:图片宽度，默认240; height:图片高度，默认80; 传0则用默认值
+func ReloadCaptcha(orgId int, businessId BusinessId, captchaId string, width, height int) (*InitCaptchaResponse, *base_server_sdk.Error)
+```
+
+- 示例
+```go
+res, err := base_server_octopus.ReloadCaptcha(1, base_server_octopus.BusinessLogin, "captchaId", 0, 0)
+```
+- 异常返回
+```go
+1001 参数错误
+1017 刷新验证码失败
+```
+- 成功返回
+```go
+{
+"success": ture,
+"captchaId": "验证码Id",
+"image": "base64图片验证码",
+}
+```
+
+**服务端校验验证码
+
+func VerifyCaptcha(orgId int, businessId BusinessId, captchaId string, digits string) (bool, *base_server_sdk.Error)
+
+- 示例
+```go
+ret, err := base_server_octopus.VerifyCaptcha(1, base_server_octopus.BusinessLogin, "captchaId", "535096")
+```
+- 异常返回
+```go
+1001 参数错误
+1013 验证码校验失败
+```
