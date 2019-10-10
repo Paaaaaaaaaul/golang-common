@@ -32,8 +32,8 @@ import (
 // a example for grpc request
 func Hello(c *grpc_end.GRpcContext) {
 	// init params here
-	name := c.ParamStringDefault("name", "Tom")
-	age := c.ParamInt("age")
+	name := c.StringParamDefault("name", "Tom")
+	age := c.IntParam("age")
 
 	// do service here
 	// ...

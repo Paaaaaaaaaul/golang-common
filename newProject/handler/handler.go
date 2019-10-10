@@ -37,7 +37,7 @@ func Hello(c *gin.Context) {
 	// init the request' param here
 	var (
 		name = h.StringParam("name")
-		age = h.IntParam("age")
+		age  = h.IntParam("age")
 	)
 
 	// do service here

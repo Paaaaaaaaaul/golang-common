@@ -26,9 +26,9 @@ func G_router(projectName string) error {
 var router_temple = `package router
 
 import (
-	"{{projectName}}/handler"
-	"{{projectName}}/gRpcHandler"
-	"{{projectName}}/config"
+	"base_server_interact/handler"
+	"base_server_interact/gRpcHandler"
+	"base_server_interact/config"
 	"github.com/gin-gonic/gin"
 	"github.com/becent/golang-common/gin-handler"
 	"github.com/becent/golang-common/grpc-end"
