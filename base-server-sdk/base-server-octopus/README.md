@@ -80,8 +80,9 @@ const (
 ## 邮件服务
 
 **发送邮件验证码**
+```go
 func SendEmailCode(orgId int, businessId BusinessId, email, lang string) *base_server_sdk.Error
-
+```
 - 示例
 ```go
 err := base_server_octopus.SendEmailCode(5, base_server_octopus.BusinessLogin, "xxx@qq.com", "zh")
@@ -95,16 +96,18 @@ err := base_server_octopus.SendEmailCode(5, base_server_octopus.BusinessLogin, "
 ```
 
 **校验邮件验证码**
+```go
 func VerifyEmailCode(orgId int, businessId int, email, code string) (bool, *base_server_sdk.Error)
-
+```
 - 示例
 ```go
 ret, err := base_server_octopus.VerifyEmailCode(5,base_server_octopus.BusinessLogin, "xxx@qq.com", "1235")
 ```
 
 **校验上次邮件验证码是否通过**
+```go
 func CheckLastEmailVerifyResult(orgId int, businessId BusinessId, email string) (bool, *base_server_sdk.Error)
-
+```
 - 示例
 ```go
 ret, err := base_server_octopus.CheckLastEmailVerifyResult(5,base_server_octopus.BusinessLogin,"email")
@@ -114,8 +117,9 @@ ret, err := base_server_octopus.CheckLastEmailVerifyResult(5,base_server_octopus
 ## 短信服务
 
 **发送短信验证码**
+```go
 func SendSimCode(orgId int, businessId BusinessId, phone, lang string) *base_server_sdk.Error
-
+```
 - 示例
 ```go
 err := base_server_octopus.SendEmailCode(5, base_server_octopus.BusinessLogin, "xxx@qq.com", "zh")
@@ -129,16 +133,18 @@ err := base_server_octopus.SendEmailCode(5, base_server_octopus.BusinessLogin, "
 ```
 
 **校验短信验证码**
+```go
 func VerifySimCode(orgId int, businessId BusinessId, phone, code string) (bool, *base_server_sdk.Error)
-
+```
 - 示例
 ```go
 ret, err := base_server_octopus.VerifySimCode(5, base_server_octopus.BusinessLogin, "130xxxx1234", "54321")
 ```
 
 **校验上次短信验证码是否通过**
+```go
 func CheckLastSimVerifyResult(orgId int, businessId int, email, code string) (bool, *base_server_sdk.Error)
-
+```
 - 示例
 ```go
 ret, err := base_server_octopus.CheckLastSimVerifyResult(5,base_server_octopus.BusinessLogin, "xxx@qq.com", "1235")
@@ -147,8 +153,9 @@ ret, err := base_server_octopus.CheckLastSimVerifyResult(5,base_server_octopus.B
 ## 实名验证
 
 **实名验证**
+```go
 func AuthRealName(orgId int, name string, cardNo string) (bool, *base_server_sdk.Error)
-
+```
 - 示例
 ```go
 res, err := base_server_octopus.AuthRealName(5, "张三", "010203201909201234")
@@ -158,8 +165,9 @@ res, err := base_server_octopus.AuthRealName(5, "张三", "010203201909201234")
 ## 谷歌验证
 
 **谷歌验证初始化（获取密钥）**
+```go
 func GenerateGa(orgId int, businessId BusinessId, account string) (*GenerateGaRes, *base_server_sdk.Error)
-
+```
 - 示例
 ```go
 res, err := base_server_octopus.GenerateGa(5, base_server_octopus.BusinessLogin, "130xxxx1234")
@@ -178,8 +186,9 @@ res, err := base_server_octopus.GenerateGa(5, base_server_octopus.BusinessLogin,
 ```
 
 **校验code**
+```go
 func VerifyGa(orgId int, businessId BusinessId, account string, secret string, gaCode string) (bool, *base_server_sdk.Error)
-
+```
 - 示例
 ```go 
 ret, err := base_server_octopus.VerifyGa(5, base_server_octopus.BusinessLogin, "130xxxx1234", "secret", "code")
@@ -189,8 +198,9 @@ ret, err := base_server_octopus.VerifyGa(5, base_server_octopus.BusinessLogin, "
 ## 极验验证服务
 
 **验证码初始化**
+```go
 func InitGt(orgId int, businessId BusinessId, account string, ip string) (*InitCaptchaRes, *base_server_sdk.Error)
-
+```
 - 示例
 ```go
 res, err := base_server_octopus.InitGt(1, base_server_octopus.BusinessLogin, "130xxxx1234", "127.0.0.1")
@@ -211,11 +221,74 @@ res, err := base_server_octopus.InitGt(1, base_server_octopus.BusinessLogin, "13
 ```
 
 **服务端校验验证码
+```go
 func VerifyGt(orgId int, businessId BusinessId, account string, ip string, challenge, validate, seccode string) (bool, *base_server_sdk.Error)
-
+```
 - 示例
 ```go
 ret, err := base_server_octopus.VerifyGt(1, base_server_octopus.BusinessLogin, "130xxxx1234", "ip", "challenge", "validate", "seccode")
+```
+- 异常返回
+```go
+1001 参数错误
+1013 验证码校验失败
+```
+
+## 验证码服务
+
+**验证码初始化**
+```go
+//length:验证码长度，默认6位(0~9); width:图片宽度，默认240; height:图片高度，默认80; 传0则用默认值
+func InitCaptcha(orgId int, businessId BusinessId, length, width, height int) (*InitCaptchaResponse, *base_server_sdk.Error)
+```
+- 示例
+```go
+res, err := base_server_octopus.InitCaptcha(1, base_server_octopus.BusinessLogin, 0, 0, 0)
+```
+- 异常返回
+```go
+1001 参数错误
+1012 验证码初始化失败
+```
+- 成功返回
+```go
+{
+"success": ture,
+"captchaId": "验证码Id",
+"image": "base64图片验证码",
+}
+```
+
+**刷新验证码**
+```go
+//length:验证码长度，默认6位(0~9); width:图片宽度，默认240; height:图片高度，默认80; 传0则用默认值
+func ReloadCaptcha(orgId int, businessId BusinessId, captchaId string, width, height int) (*InitCaptchaResponse, *base_server_sdk.Error)
+```
+- 示例
+```go
+res, err := base_server_octopus.ReloadCaptcha(1, base_server_octopus.BusinessLogin, "captchaId", 0, 0)
+```
+- 异常返回
+```go
+1001 参数错误
+1017 刷新验证码失败
+```
+- 成功返回
+```go
+{
+"success": ture,
+"captchaId": "验证码Id",
+"image": "base64图片验证码",
+}
+```
+
+**服务端校验验证码
+```go
+func VerifyCaptcha(orgId int, businessId BusinessId, captchaId string, digits string) (bool, *base_server_sdk.Error)
+```
+- 示例
+```go
+ret, err := base_server_octopus.VerifyCaptcha(1, base_server_octopus.BusinessLogin, "captchaId", "535096")
 ```
 - 异常返回
 ```go
