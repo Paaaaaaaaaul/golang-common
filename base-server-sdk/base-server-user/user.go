@@ -84,7 +84,7 @@ func Register(user *User, code string, currencyTypes []string) (*User, *base_ser
 // 1004 用户已被冻结
 // 1005 密码错误
 func LoginByAccount(orgId int, account string, password string) (*User, *base_server_sdk.Error) {
-	if orgId == 0 || account == "" {
+	if orgId <= 0 || account == "" {
 		return nil, base_server_sdk.ErrInvalidParams
 	}
 
@@ -119,7 +119,7 @@ func LoginByAccount(orgId int, account string, password string) (*User, *base_se
 // 1005 密码错误
 // 1008 短信验证码错误
 func LoginByPhone(orgId int, phone string, code string, password string) (*User, *base_server_sdk.Error) {
-	if orgId == 0 || phone == "" {
+	if orgId <= 0 || phone == "" {
 		return nil, base_server_sdk.ErrInvalidParams
 	}
 
@@ -155,7 +155,7 @@ func LoginByPhone(orgId int, phone string, code string, password string) (*User,
 // 1005 密码错误
 // 1009 邮件验证码错误
 func LoginByEmail(orgId int, email string, code string, password string) (*User, *base_server_sdk.Error) {
-	if orgId == 0 || email == "" {
+	if orgId <= 0 || email == "" {
 		return nil, base_server_sdk.ErrInvalidParams
 	}
 
@@ -185,7 +185,7 @@ func LoginByEmail(orgId int, email string, code string, password string) (*User,
 // 异常返回：
 // 1003 用户不存在
 func GetUserInfo(orgId int, userId int64) (*User, *base_server_sdk.Error) {
-	if orgId == 0 || userId == 0 {
+	if orgId <= 0 || userId <= 0 {
 		return nil, base_server_sdk.ErrInvalidParams
 	}
 
@@ -208,6 +208,44 @@ func GetUserInfo(orgId int, userId int64) (*User, *base_server_sdk.Error) {
 	return user, nil
 }
 
+// GetUsersInfo 批量获取用户信息
+//
+// 返回值：
+// []*User 查询到的用户
+// []int64 未找到的用户
+func GetUsersInfo(orgId int, userIds []int64) ([]*User, []int64, *base_server_sdk.Error) {
+	if orgId <= 0 || len(userIds) == 0 {
+		return nil, nil, base_server_sdk.ErrInvalidParams
+	}
+
+	params := make(map[string]string)
+	params["orgId"] = strconv.Itoa(orgId)
+	strUserIds := make([]string, 0)
+	for _, userId := range userIds {
+		strUserIds = append(strUserIds, strconv.FormatInt(userId, 10))
+	}
+	params["userIds"] = strings.Join(strUserIds, ",")
+
+	client := base_server_sdk.Instance
+	data, err := client.DoRequest(client.Hosts.UserServerHost, "user", "getUsersInfo", params)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	type Info struct {
+		Users    []*User `json:"users"`
+		NotFound []int64 `json:"notFound"`
+	}
+
+	info := &Info{}
+	if err := json.Unmarshal(data, &info); err != nil {
+		common.ErrorLog("baseServerSdk_GetUsersInfo", params, "unmarshal users info fail: "+string(data))
+		return nil, nil, base_server_sdk.ErrServiceBusy
+	}
+
+	return info.Users, info.NotFound, nil
+}
+
 // GetBackLoginPwdByPhone 通过手机找回登录密码
 //
 // 1、code有值的话会进行短信校验，为空则忽略
@@ -220,7 +258,7 @@ func GetUserInfo(orgId int, userId int64) (*User, *base_server_sdk.Error) {
 // 1005 密码错误
 // 1008 短信验证码错误
 func GetBackLoginPwdByPhone(orgId int, phone, code, password string) *base_server_sdk.Error {
-	if orgId == 0 || phone == "" || password == "" {
+	if orgId <= 0 || phone == "" || password == "" {
 		return base_server_sdk.ErrInvalidParams
 	}
 
@@ -251,7 +289,7 @@ func GetBackLoginPwdByPhone(orgId int, phone, code, password string) *base_serve
 // 1005 密码错误
 // 1009 邮箱验证码错误
 func GetBackLoginPwdByEmail(orgId int, email, code, password string) *base_server_sdk.Error {
-	if orgId == 0 || email == "" || password == "" {
+	if orgId <= 0 || email == "" || password == "" {
 		return base_server_sdk.ErrInvalidParams
 	}
 
@@ -282,7 +320,7 @@ func GetBackLoginPwdByEmail(orgId int, email, code, password string) *base_serve
 // 1005 密码错误
 // 1008 短信验证码错误
 func GetBackTransPwdByPhone(orgId int, phone, code, password string) *base_server_sdk.Error {
-	if orgId == 0 || phone == "" || password == "" {
+	if orgId <= 0 || phone == "" || password == "" {
 		return base_server_sdk.ErrInvalidParams
 	}
 
@@ -313,7 +351,7 @@ func GetBackTransPwdByPhone(orgId int, phone, code, password string) *base_serve
 // 1005 密码错误
 // 1009 邮箱验证码错误
 func GetBackTransPwdByEmail(orgId int, email, code, password string) *base_server_sdk.Error {
-	if orgId == 0 || email == "" || password == "" {
+	if orgId <= 0 || email == "" || password == "" {
 		return base_server_sdk.ErrInvalidParams
 	}
 
@@ -343,7 +381,7 @@ func GetBackTransPwdByEmail(orgId int, email, code, password string) *base_serve
 // 1003 用户不存在
 // 1005 密码错误
 func UpdateLoginPwd(orgId int, userId int64, oldPassword, newPassword string) *base_server_sdk.Error {
-	if orgId == 0 || userId == 0 || newPassword == "" {
+	if orgId <= 0 || userId <= 0 || newPassword == "" {
 		return base_server_sdk.ErrInvalidParams
 	}
 
@@ -373,7 +411,7 @@ func UpdateLoginPwd(orgId int, userId int64, oldPassword, newPassword string) *b
 // 1003 用户不存在
 // 1005 密码错误
 func UpdateTransPwd(orgId int, userId int64, oldPassword, newPassword string) *base_server_sdk.Error {
-	if orgId == 0 || userId == 0 || newPassword == "" {
+	if orgId <= 0 || userId <= 0 || newPassword == "" {
 		return base_server_sdk.ErrInvalidParams
 	}
 
@@ -403,7 +441,7 @@ func UpdateTransPwd(orgId int, userId int64, oldPassword, newPassword string) *b
 // 1003 用户不存在
 // 1010 身份证认证失败
 func AuthRealName(orgId int, userId int64, firstName, lastName, idCard string) *base_server_sdk.Error {
-	if orgId == 0 || userId == 0 {
+	if orgId <= 0 || userId <= 0 {
 		return base_server_sdk.ErrInvalidParams
 	}
 
@@ -475,7 +513,7 @@ func (u UserFields) SetExt(ext string) {
 // 1001 参数异常
 // 1003 用户不存在
 func UpdateUserInfo(orgId int, userId int64, info UserFields) *base_server_sdk.Error {
-	if orgId == 0 || userId == 0 {
+	if orgId <= 0 || userId <= 0 {
 		return base_server_sdk.ErrInvalidParams
 	}
 
@@ -503,7 +541,7 @@ func UpdateUserInfo(orgId int, userId int64, info UserFields) *base_server_sdk.E
 // 1003 用户不存在
 // 1006 重复绑定
 func BindAccount(orgId int, userId int64, account, password string) *base_server_sdk.Error {
-	if orgId == 0 || userId == 0 || account == "" || password == "" {
+	if orgId <= 0 || userId <= 0 || account == "" || password == "" {
 		return base_server_sdk.ErrInvalidParams
 	}
 
@@ -530,7 +568,7 @@ func BindAccount(orgId int, userId int64, account, password string) *base_server
 // 1003 用户不存在
 // 1006 重复绑定
 func BindPhone(orgId int, userId int64, phone, code string) *base_server_sdk.Error {
-	if orgId == 0 || userId == 0 || phone == "" {
+	if orgId <= 0 || userId <= 0 || phone == "" {
 		return base_server_sdk.ErrInvalidParams
 	}
 
@@ -557,7 +595,7 @@ func BindPhone(orgId int, userId int64, phone, code string) *base_server_sdk.Err
 // 1003 用户不存在
 // 1006 重复绑定
 func BindEmail(orgId int, userId int64, email, code string) *base_server_sdk.Error {
-	if orgId == 0 || userId == 0 || email == "" {
+	if orgId <= 0 || userId <= 0 || email == "" {
 		return base_server_sdk.ErrInvalidParams
 	}
 
@@ -584,7 +622,7 @@ func BindEmail(orgId int, userId int64, email, code string) *base_server_sdk.Err
 // 1003 用户不存在
 // 1005 密码错误
 func AuthTransPwd(orgId int, userId int64, password string) *base_server_sdk.Error {
-	if orgId == 0 || userId == 0 || password == "" {
+	if orgId <= 0 || userId <= 0 || password == "" {
 		return base_server_sdk.ErrInvalidParams
 	}
 
@@ -616,7 +654,7 @@ const (
 // 1001 参数异常
 // 1003 用户不存在
 func UpdateUserStatus(orgId int, userId int64, status Status) *base_server_sdk.Error {
-	if orgId == 0 || userId == 0 || (status != Normal && status != Forbidden) {
+	if orgId <= 0 || userId <= 0 || (status != Normal && status != Forbidden) {
 		return base_server_sdk.ErrInvalidParams
 	}
 

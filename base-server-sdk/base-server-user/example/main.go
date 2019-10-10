@@ -25,6 +25,19 @@ func main() {
 		println(time.Since(now).String())
 	}(now)
 
+	// 批量查询用户
+	users, notFound, err := base_server_user.GetUsersInfo(2, []int64{10000001, 10000002})
+	if err != nil {
+		println(err.String())
+	} else {
+		for _, u := range users {
+			fmt.Printf("找到用户 %v\n", *u)
+		}
+		for _, u := range notFound {
+			fmt.Printf("未找到 %v\n", u)
+		}
+	}
+
 	// 注册用户
 	user, err := base_server_user.Register(&base_server_user.User{
 		OrgId:    5,

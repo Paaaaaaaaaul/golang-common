@@ -134,6 +134,15 @@ func GetUserInfo(orgId int, userId int64) (*User, *base_server_sdk.Error)
 1003 用户不存在
 ```
 
+- 批量获取用户信息
+func GetUsersInfo(orgId int, userIds []int64) ([]*User, []int64, *base_server_sdk.Error)
+
+```go
+返回值:
+[]*User 查询到的用户
+[]int64 未找到的用户
+```
+
 - 通过手机号找回登录密码
 
 func GetBackLoginPwdByPhone(orgId int, phone, code, password string) *base_server_sdk.Error
