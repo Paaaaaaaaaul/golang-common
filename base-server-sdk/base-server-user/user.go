@@ -213,7 +213,7 @@ func GetUserInfo(orgId int, userId int64) (*User, *base_server_sdk.Error) {
 // 返回值：
 // []*User 查询到的用户
 // []int64 未找到的用户
-func GetUsersInfo(orgId int, userIds []int64) ([]*User, []int64, *base_server_sdk.Error) {
+func GetUsersInfo(orgId int, userIds []int64) (map[int64]*User, []int64, *base_server_sdk.Error) {
 	if orgId <= 0 || len(userIds) == 0 {
 		return nil, nil, base_server_sdk.ErrInvalidParams
 	}
@@ -233,8 +233,8 @@ func GetUsersInfo(orgId int, userIds []int64) ([]*User, []int64, *base_server_sd
 	}
 
 	type Info struct {
-		Users    []*User `json:"users"`
-		NotFound []int64 `json:"notFound"`
+		Users    map[int64]*User `json:"users"`
+		NotFound []int64         `json:"notFound"`
 	}
 
 	info := &Info{}
