@@ -9,6 +9,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"mime/multipart"
 )
 
 var (
@@ -260,4 +261,10 @@ func (ct *Handler) checkSignature(cfg *Config) error {
 
 func (ct *Handler) GetContext() *gin.Context {
 	return ct.Context
+}
+
+func (ct *Handler) GetFormFile() map[string][]*multipart.FileHeader {
+	c := ct.Context
+	form, _ := c.MultipartForm()
+	return form.File
 }

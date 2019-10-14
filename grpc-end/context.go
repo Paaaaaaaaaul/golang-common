@@ -58,6 +58,11 @@ func (c *GRpcContext) GetAppName() string {
 	return c.appName
 }
 
+// GetFiles returns the files of this request
+func (c *GRpcContext) GetFiles() map[string][]byte {
+	return c.req.Files
+}
+
 // Set is used to store a new key/value pair exclusively for this context.
 // It also lazy initializes c.Keys if it was not used previously.
 func (c *GRpcContext) Set(key string, val interface{}) {
