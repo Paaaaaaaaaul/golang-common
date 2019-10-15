@@ -9,14 +9,20 @@ import (
 	"strconv"
 	"strings"
 	"time"
-	"mime/multipart"
-)
+		"io/ioutil"
+	)
 
 var (
 	KEY_APPNAME        = "keyPrefix_AppName"
 	KEY_PARAMS         = "keyPrefix_Params"
+	KEY_FILES          = "keyPrefix_Files"
+	KEY_FILES_SIZE     = "keyPrefix_Files_Size"
 	KEY_GIN_CONTROLLER = "keyPrefix_Gin_Controller"
 	KEY_RESPONSE       = "keyPrefix_Response"
+)
+
+const (
+	FILES_SEPARATOR = ";;;"
 )
 
 type Handler struct {
@@ -50,6 +56,33 @@ func NewHandler(cfg *Config) gin.HandlerFunc {
 			}
 		}
 		c.Set(KEY_PARAMS, params)
+
+		// if request's Content-Type is multipart/form-data, use MultipartForm() to get text and files.
+		if c.ContentType() == gin.MIMEMultipartPOSTForm {
+			if form, err := c.MultipartForm(); err == nil {
+				for key, val := range form.Value {
+					if val[0] != "" {
+						params[key] = val[0]
+					}
+				}
+
+				size := 0
+				files := make(map[string]string)
+				for fieldName, file := range form.File {
+					fileName := file[0].Filename
+					if f, err := file[0].Open(); err == nil {
+						if content, err := ioutil.ReadAll(f); err == nil {
+							key := fileName + FILES_SEPARATOR + fieldName
+							files[key] = string(content)
+							size += len(files[key])
+						}
+						f.Close()
+					}
+				}
+				c.Set(KEY_FILES, files)
+				c.Set(KEY_FILES_SIZE, size)
+			}
+		}
 
 		// make a new handler
 		h := &Handler{Context: c}
@@ -189,6 +222,18 @@ func (ct *Handler) StringParam(key string) string {
 	return ret
 }
 
+func (ct *Handler) StringFile(key string) string {
+	files := ct.MapFiles()
+	return files[key]
+}
+
+// GetStringMapString returns the value associated with the key as a map of strings.
+func (ct *Handler) MapFiles() (sms map[string]string) {
+	c := ct.GetContext()
+	files := c.GetStringMapString(KEY_FILES)
+	return files
+}
+
 // StringParamDefault returns string for the given key
 // If the value does not exists it returns defVal
 func (ct *Handler) StringParamDefault(key string, defVal string) string {
@@ -261,10 +306,4 @@ func (ct *Handler) checkSignature(cfg *Config) error {
 
 func (ct *Handler) GetContext() *gin.Context {
 	return ct.Context
-}
-
-func (ct *Handler) GetFormFile() map[string][]*multipart.FileHeader {
-	c := ct.Context
-	form, _ := c.MultipartForm()
-	return form.File
 }
