@@ -6,11 +6,11 @@ import (
 	"github.com/becent/golang-common/exception"
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
+	"io/ioutil"
 	"strconv"
 	"strings"
 	"time"
-		"io/ioutil"
-	)
+)
 
 var (
 	KEY_APPNAME        = "keyPrefix_AppName"
@@ -72,7 +72,7 @@ func NewHandler(cfg *Config) gin.HandlerFunc {
 					fileName := file[0].Filename
 					if f, err := file[0].Open(); err == nil {
 						if content, err := ioutil.ReadAll(f); err == nil {
-							key := fileName + FILES_SEPARATOR + fieldName
+							key := fieldName + FILES_SEPARATOR + fileName
 							files[key] = string(content)
 							size += len(files[key])
 						}
