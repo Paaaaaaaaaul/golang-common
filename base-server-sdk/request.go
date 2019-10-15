@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"fmt"
 	"github.com/becent/golang-common"
 	"github.com/becent/golang-common/gin-handler"
 	"github.com/becent/golang-common/grpc-end"
@@ -16,10 +15,6 @@ import (
 	"strconv"
 	"strings"
 	"time"
-)
-
-const (
-	ContentTypeMutilPartForm = ""
 )
 
 var (
@@ -118,7 +113,6 @@ func (c *BaseServerSdkClient) DoRequest(host string, controller, action string, 
 func (c *BaseServerSdkClient) doHttpRequest(host string, controller, action string, params map[string]string, files map[string]string) ([]byte, error) {
 	// Assembly body
 	contentType, contentReader := newHttpRequestBody(params, files)
-	fmt.Println(contentType)
 
 	// Make new request
 	request, err := http.NewRequest("POST", strings.Join([]string{host, controller, action}, "/"), contentReader)

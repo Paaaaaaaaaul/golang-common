@@ -14,10 +14,10 @@ func main() {
 		RequestTimeout:  5 * time.Second,
 		IdleConnTimeout: 10 * time.Minute,
 		Hosts: base_server_sdk.Hosts{
-			OctopusServerHost: "http://127.0.0.1:5051",
-			//OctopusServerHost: "127.0.0.1:15051",
+			//OctopusServerHost: "http://127.0.0.1:5051",
+			OctopusServerHost: "127.0.0.1:15051",
 		},
-		GRpcOnly: false,
+		GRpcOnly: true,
 	})
 	defer base_server_sdk.ReleaseBaseServerSdk()
 
@@ -52,8 +52,8 @@ func main() {
 
 	// resource
 	formFile := make(map[string]string)
-	formFile["file1"] = "test.1"
-	formFile["file2"] = "test.2"
+	formFile["file1"] = "test.log"
+	formFile["file2"] = "test.2.log"
 	res, err := base_server_octopus.Upload(1, formFile)
 
 	if err != nil {
