@@ -1,11 +1,15 @@
 package base_server_sdk
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"github.com/becent/golang-common"
+	"github.com/becent/golang-common/gin-handler"
 	"github.com/becent/golang-common/grpc-end"
+	"io"
 	"io/ioutil"
+	"mime/multipart"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -26,6 +30,10 @@ var (
 		Code:    900002,
 		Message: "params invalid or missed",
 	}
+	ErrOpenFile = &Error{
+		Code:    900003,
+		Message: "cannot open the file specified",
+	}
 )
 
 type Response struct {
@@ -43,20 +51,26 @@ func (e *Error) String() string {
 	return strconv.Itoa(e.Code) + ": " + e.Message
 }
 
-func (c *BaseServerSdkClient) DoRequest(host string, controller, action string, params map[string]string) ([]byte, *Error) {
+// args is others data that you need. files = args[0]
+func (c *BaseServerSdkClient) DoRequest(host string, controller, action string, params map[string]string, args ...map[string]string) ([]byte, *Error) {
 	if host == "" {
 		return nil, ErrHostEmpty
 	}
 
 	var (
-		data []byte
-		err  error
+		files map[string]string
+		data  []byte
+		err   error
 	)
 
+	if len(args) >= 1 && len(args[0]) > 0 {
+		files = args[0]
+	}
+
 	if c.gRpcOnly {
-		data, err = c.doGRpcRequest(host, controller, action, params)
+		data, err = c.doGRpcRequest(host, controller, action, params, files)
 	} else {
-		data, err = c.doHttpRequest(host, controller, action, params)
+		data, err = c.doHttpRequest(host, controller, action, params, files)
 	}
 	if err != nil {
 		common.ErrorLog("baseServerSdk_DoRequest", map[string]interface{}{
@@ -96,22 +110,18 @@ func (c *BaseServerSdkClient) DoRequest(host string, controller, action string, 
 	return data, nil
 }
 
-func (c *BaseServerSdkClient) doHttpRequest(host string, controller, action string, params map[string]string) ([]byte, error) {
+func (c *BaseServerSdkClient) doHttpRequest(host string, controller, action string, params map[string]string, files map[string]string) ([]byte, error) {
 	// Assembly body
-	v := make(url.Values)
-	for key, val := range params {
-		v.Set(key, val)
-	}
-	body := strings.NewReader(v.Encode())
+	contentType, contentReader := newHttpRequestBody(params, files)
 
 	// Make new request
-	request, err := http.NewRequest("POST", strings.Join([]string{host, controller, action}, "/"), body)
+	request, err := http.NewRequest("POST", strings.Join([]string{host, controller, action}, "/"), contentReader)
 	if err != nil {
 		return nil, err
 	}
 
 	// Fill header
-	request.Header.Set("Content-Type", "application/x-www-form-urlencoded;charset=utf-8")
+	request.Header.Set("Content-Type", contentType)
 	request.Header.Set("Signature", c.makeSignature())
 	request.Header.Set("RequestId", c.requestId())
 
@@ -125,12 +135,53 @@ func (c *BaseServerSdkClient) doHttpRequest(host string, controller, action stri
 	return ioutil.ReadAll(resp.Body)
 }
 
-func (c *BaseServerSdkClient) doGRpcRequest(host string, controller, action string, params map[string]string) ([]byte, error) {
+func newHttpRequestBody(params, files map[string]string) (contentType string, contentReader io.Reader) {
+	// multipart-formdata
+	if len(files) > 0 {
+		buf := &bytes.Buffer{}
+		writer := multipart.NewWriter(buf)
+
+		//writer text fields
+		for key, value := range params {
+			writer.WriteField(key, value)
+		}
+
+		//writer file fields
+		for key, data := range files {
+			nn := strings.SplitN(key, gin_handler.FILES_SEPARATOR, -1)
+			fw, _ := writer.CreateFormFile(nn[0], nn[1])
+			fw.Write([]byte(data))
+		}
+
+		contentReader = buf
+		// close before call to FormDataContentType ! otherwise its not valid multipart
+		writer.Close()
+		contentType = writer.FormDataContentType()
+		return
+	}
+
+	// x-www-form-urlencoded
+	v := make(url.Values)
+	for key, val := range params {
+		v.Set(key, val)
+	}
+	contentReader = strings.NewReader(v.Encode())
+	contentType = "application/x-www-form-urlencoded;charset=utf-8"
+
+	return
+}
+
+func (c *BaseServerSdkClient) doGRpcRequest(host string, controller, action string, params map[string]string, files map[string]string) ([]byte, error) {
 	// Make new request
+	filesMap := make(map[string][]byte, len(files))
+	for key, data := range files {
+		filesMap[key] = []byte(data)
+	}
 	request := &grpc_end.Request{
 		Controller: controller,
 		Action:     action,
 		Params:     params,
+		Files:      filesMap,
 		Header: map[string]string{
 			"requestId": c.requestId(),
 			"signature": c.makeSignature(),
