@@ -14,7 +14,8 @@ func main() {
 		RequestTimeout:  5 * time.Second,
 		IdleConnTimeout: 10 * time.Minute,
 		Hosts: base_server_sdk.Hosts{
-			OctopusServerHost: "127.0.0.1:18081",
+			//OctopusServerHost: "http://127.0.0.1:5051",
+			OctopusServerHost: "127.0.0.1:15051",
 		},
 		GRpcOnly: true,
 	})
@@ -47,7 +48,13 @@ func main() {
 	//ret, err := base_server_octopus.VerifyGa(5, base_server_octopus.BusinessLogin, "130xxxx1234", "secret", "code")
 
 	// idCard
-	res, err := base_server_octopus.AuthRealName(5, "张三", "010203201909201234")
+	//res, err := base_server_octopus.AuthRealName(5, "张三", "010203201909201234")
+
+	// resource
+	formFile := make(map[string]string)
+	formFile["file1"] = "test.log"
+	formFile["file2"] = "test.2.log"
+	res, err := base_server_octopus.Upload(1, formFile)
 
 	if err != nil {
 		println(err.String())
