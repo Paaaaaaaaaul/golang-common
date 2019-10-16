@@ -104,7 +104,7 @@ func main() {
 		},
 	}
 
-	err := base_server_account.BatchOperateAmount(8, taskDetails, callback)
+	err := base_server_account.BatchOperateAmount(8, 1, taskDetails, callback)
 	if err != nil {
 		println(err.String())
 	} else {
