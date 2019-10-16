@@ -41,9 +41,9 @@ type StatisticItem struct {
 
 ## 接口说明
 
-- 查询统计数据
+- 注册用户
 
-func ListStatisticItems(orgId int, tag string, keyFieldVal string, granularity string, beginTime int, endTime int, limit int, page int) (*[]StatisticItem, *base_server_sdk.Error)
+func ListTodayStatisticItems(orgId int, tag string, keyFieldVal string, granularity string, beginTime int, endTime int, limit int, page int) (*[]StatisticItem, *base_server_sdk.Error)
 
 ```go
 1.orgId 应用ID ,0 查询所有
@@ -52,23 +52,6 @@ func ListStatisticItems(orgId int, tag string, keyFieldVal string, granularity s
 4.granularity 时间粒度 minute,hour,day ,"" 查询所有
 5.beginTime 开始时间 ,0 查询所有
 6.endTime 结束时间,0 查询所有
-7.limit 页大小,默认20
-8.page 页码, 0 开始
-
-异常返回:
-1000 服务繁忙
-```
-
-
-- 查询今天统计数据
-
-func ListStatisticItems(orgId int, tag string, keyFieldVal string, granularity string, limit int, page int) (*[]StatisticItem, *base_server_sdk.Error)
-
-```go
-1.orgId 应用ID ,0 查询所有
-2.tag 统计标签 ,0 查询所有
-3.keyFieldVal 统计关键字值 , 0查询所有
-4.granularity 时间粒度 minute,hour,day ,"" 查询所有
 7.limit 页大小,默认20
 8.page 页码, 0 开始
 

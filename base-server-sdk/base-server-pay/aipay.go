@@ -1,4 +1,4 @@
-package base_server_statistic
+package base_server_pay
 
 import (
 	"encoding/json"
