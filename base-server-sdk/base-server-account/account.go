@@ -78,7 +78,7 @@ func CreateAccount(orgId int, userId int64, currency []string) ([]*Account, *bas
 }
 
 //	账户信息
-//	POST account/updateStatus
+//	POST account/AccountInfo
 //
 //	异常错误:
 //	1001 参数错误
@@ -189,7 +189,6 @@ func OperateAmount(orgId int, accountId int64, opType, bsType int, amount, detai
 //	异常错误:
 //	1001 参数错误
 //	2003 账户不存在
-//	2004 更新状态失败
 func AccountLogList(orgId int, userId int64, opType, bsType int, currency string, beginTime, endTime int, page, limit int) ([]*LogList, *base_server_sdk.Error) {
 	params := make(map[string]string)
 	params["orgId"] = strconv.Itoa(orgId)
@@ -252,9 +251,10 @@ func SumLog(orgId int, userId int64, opType, bsType int, currency string, beginT
 }
 
 // 批量操作金额
-func BatchOperateAmount(orgId int, details []*TaskDetail, callback *TaskCallBack) *base_server_sdk.Error {
+func BatchOperateAmount(orgId, isAsync int, details []*TaskDetail, callback *TaskCallBack) *base_server_sdk.Error {
 	params := make(map[string]string)
 	params["orgId"] = strconv.Itoa(orgId)
+	params["isAsync"] = strconv.Itoa(isAsync)
 	taskDetailByte, _ := json.Marshal(details)
 	params["detail"] = string(taskDetailByte)
 	callbackData, _ := json.Marshal(callback)

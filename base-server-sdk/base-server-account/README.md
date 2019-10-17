@@ -146,11 +146,12 @@ bsType 类型为项目特有业务类型
 
 - 批量金额操作
 
-func BatchOperateAmount(orgId int, details []*TaskDetail, callback string) *base_server_sdk.Error
+func BatchOperateAmount(orgId, isAsync int, details []*TaskDetail, callback string) *base_server_sdk.Error
 
 ```go
 注意：
-此操作为异步任务操作，如接口返回成功则会保证最终成功，目前每两秒执行一次
+
+isAsync 批量处理方式, 同步/异步 0:同步(默认) 1:异步
 
 opType 类型枚举:
 1	//可用-加
