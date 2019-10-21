@@ -9,6 +9,16 @@ import (
 	"strconv"
 )
 
+//orgId 组织id
+// formFile 需要上传的文件列表：key是field的name，value是文件路径
+// formFile := make(map[string]string)
+// formFile["file1"] = "path/to/test.log"
+// formFile["file2"] = "path/to/test.2.log"
+// 返回
+//	result = {
+//		"file1": "https://xxx.com/path/to/file1",
+//		"file2": "https://xxx.com/path/to/file2"
+//	}
 func Upload(orgId int, formFile map[string]string) (map[string]string, *base_server_sdk.Error) {
 	if orgId <= 0 || len(formFile) == 0 {
 		return nil, base_server_sdk.ErrInvalidParams

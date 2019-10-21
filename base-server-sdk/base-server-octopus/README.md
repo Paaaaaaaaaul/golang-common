@@ -23,8 +23,8 @@ defer base_server_sdk.ReleaseBaseServerSdk()
 ```
 
 ## 测试环境
-- http：http://127.0.0.1:8081
-- grpc：127.0.0.1:18081
+- http：http://127.0.0.1:5051
+- grpc：127.0.0.1:15051
 
 ### 相关类型
 ```go
@@ -294,4 +294,26 @@ ret, err := base_server_octopus.VerifyCaptcha(1, base_server_octopus.BusinessLog
 ```go
 1001 参数错误
 1013 验证码校验失败
+```
+
+**上传文件到s3
+```go
+func Upload(orgId int, formFile map[string]string) (map[string]string, *base_server_sdk.Error)
+```
+- 示例
+```go
+formFile := make(map[string]string)
+formFile["file1"] = "path/to/test.log"
+formFile["file2"] = "path/to/test.2.log"
+res, err := base_server_octopus.Upload(1, formFile)
+// 返回
+//	result = {
+//		"file1": "https://xxx.com/path/to/file1",
+//		"file2": "https://xxx.com/path/to/file2"
+//	}
+```
+- 异常返回
+```go
+900002 参数错误
+900003 文件路径错误
 ```
