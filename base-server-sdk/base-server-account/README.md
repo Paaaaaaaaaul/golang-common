@@ -47,6 +47,7 @@ type TaskDetail struct {
 	BsType    int    `json:"bsType"`        //业务类型
 	AccountId int64  `json:"accountId"`     //账户id
 	Amount 	  string `json:"amount"`        //金额
+    AllowNegative int    `json:"allowNegative"` //是否允许为负数
 	UserId    int64  `json:"userId"`        //用户id
 	Currency  string `json:"currency"`      //货币类型
 	Detail    string `json:"detail"`        //操作详情
