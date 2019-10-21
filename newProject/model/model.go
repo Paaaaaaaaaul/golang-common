@@ -55,14 +55,14 @@ func G_model(projectName string) error {
 
 		buf.WriteString(fmt.Sprintf("type %s struct {\n", strings.Title(camelTableName)))
 
-		structRows, err := db.DB().Query("select column_name,COLUMN_TYPE,COLUMN_KEY from information_schema.columns where table_schema=? and table_name=?", curDatabase, tableName)
+		structRows, err := db.DB().Query("select column_name,COLUMN_TYPE,COLUMN_KEY,COLUMN_COMMENT from information_schema.columns where table_schema=? and table_name=?", curDatabase, tableName)
 		if err != nil {
 			return err
 		}
 
 		for structRows.Next() {
-			var columnName, columnType, columnKey string
-			if err = structRows.Scan(&columnName, &columnType, &columnKey); err != nil {
+			var columnName, columnType, columnKey, columnComment string
+			if err = structRows.Scan(&columnName, &columnType, &columnKey, &columnComment); err != nil {
 				return err
 			}
 
@@ -91,7 +91,7 @@ func G_model(projectName string) error {
 				temp = ";primary_key;AUTO_INCREMENT"
 			}
 
-			buf.WriteString(fmt.Sprintf("`gorm:\"column:%s%s\" json:\"%s\"`\n", columnName, temp, columnName))
+			buf.WriteString(fmt.Sprintf("`gorm:\"column:%s%s\" json:\"%s\"` // %s\n", columnName, temp, columnName, columnComment))
 		}
 		structRows.Close()
 
@@ -115,6 +115,11 @@ func CamelCase(v []byte) string {
 	for _, c := range v {
 		if c == '_' {
 			t = true
+			continue
+		}
+
+		if c >= '0' && c <= '9' {
+			buf.WriteByte(c)
 			continue
 		}
 
