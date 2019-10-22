@@ -30,14 +30,15 @@ type LogList struct {
 }
 
 type TaskDetail struct {
-	OpType    int    `json:"opType"`
-	BsType    int    `json:"bsType"`
-	AccountId int64  `json:"accountId"`
-	UserId    int64  `json:"userId"`
-	Currency  string `json:"currency"`
-	Amount    string `json:"amount"`
-	Detail    string `json:"detail"`
-	Ext       string `json:"ext"`
+	OpType        int    `json:"opType"`
+	BsType        int    `json:"bsType"`
+	AccountId     int64  `json:"accountId"`
+	UserId        int64  `json:"userId"`
+	Currency      string `json:"currency"`
+	AllowNegative int    `json:"allowNegative"`
+	Amount        string `json:"amount"`
+	Detail        string `json:"detail"`
+	Ext           string `json:"ext"`
 }
 
 type TaskCallBack struct {
@@ -78,7 +79,7 @@ func CreateAccount(orgId int, userId int64, currency []string) ([]*Account, *bas
 }
 
 //	账户信息
-//	POST account/updateStatus
+//	POST account/AccountInfo
 //
 //	异常错误:
 //	1001 参数错误
@@ -153,12 +154,13 @@ func UpdateStatus(orgId int, accountId int64, status int) *base_server_sdk.Error
 //	2009 账户可用减少失败
 //	2010 账户冻结减少失败
 //	2011 账户日志创建失败
-func OperateAmount(orgId int, accountId int64, opType, bsType int, amount, detail, ext, callback string) *base_server_sdk.Error {
+func OperateAmount(orgId int, accountId int64, opType, bsType, allowNegative int, amount, detail, ext, callback string) *base_server_sdk.Error {
 	params := make(map[string]string)
 	params["orgId"] = strconv.Itoa(orgId)
 	params["accountId"] = strconv.FormatInt(accountId, 10)
 	params["opType"] = strconv.Itoa(opType)
 	params["bsType"] = strconv.Itoa(bsType)
+	params["allowNegative"] = strconv.Itoa(allowNegative)
 	params["amount"] = amount
 	params["detail"] = detail
 	params["ext"] = ext
@@ -189,7 +191,6 @@ func OperateAmount(orgId int, accountId int64, opType, bsType int, amount, detai
 //	异常错误:
 //	1001 参数错误
 //	2003 账户不存在
-//	2004 更新状态失败
 func AccountLogList(orgId int, userId int64, opType, bsType int, currency string, beginTime, endTime int, page, limit int) ([]*LogList, *base_server_sdk.Error) {
 	params := make(map[string]string)
 	params["orgId"] = strconv.Itoa(orgId)
@@ -252,9 +253,10 @@ func SumLog(orgId int, userId int64, opType, bsType int, currency string, beginT
 }
 
 // 批量操作金额
-func BatchOperateAmount(orgId int, details []*TaskDetail, callback *TaskCallBack) *base_server_sdk.Error {
+func BatchOperateAmount(orgId, isAsync int, details []*TaskDetail, callback *TaskCallBack) *base_server_sdk.Error {
 	params := make(map[string]string)
 	params["orgId"] = strconv.Itoa(orgId)
+	params["isAsync"] = strconv.Itoa(isAsync)
 	taskDetailByte, _ := json.Marshal(details)
 	params["detail"] = string(taskDetailByte)
 	callbackData, _ := json.Marshal(callback)

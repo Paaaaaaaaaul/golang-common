@@ -56,6 +56,13 @@ func ListStatisticItems(orgId int, tag string, keyFieldVal string, granularity s
 	return *statisticDatas, nil
 }
 
+//ListStatisticItems 查询统计数据
+//orgId 应用ID ,0 查询所有
+//tag 统计标签 ,0 查询所有
+//keyFieldVal 统计关键字值 , 0查询所有
+//granularity 时间粒度 minute,hour,day ,"" 查询所有
+//limit 页大小,默认20
+//page 页码, 0 开始
 func ListTodayStatisticItems(orgId int, tag string, keyFieldVal string, granularity string, limit int, page int) ([]*StatisticItem, *base_server_sdk.Error) {
 	params := make(map[string]string)
 	params["orgId"] = strconv.Itoa(orgId)
