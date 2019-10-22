@@ -118,11 +118,12 @@ ret, err := base_server_octopus.CheckLastEmailVerifyResult(5,base_server_octopus
 
 **发送短信验证码**
 ```go
-func SendSimCode(orgId int, businessId BusinessId, phone, lang string) *base_server_sdk.Error
+//countryCode 国家码, 国内默认86
+func SendSimCode(orgId int, businessId BusinessId, countryCode, phone, lang string) *base_server_sdk.Error
 ```
 - 示例
 ```go
-err := base_server_octopus.SendEmailCode(5, base_server_octopus.BusinessLogin, "xxx@qq.com", "zh")
+err := base_server_octopus.SendSimCode(5, base_server_octopus.BusinessLogin, "86", "130xxxxxxx", "zh")
 ```
 - 异常返回
 ```go
@@ -134,20 +135,20 @@ err := base_server_octopus.SendEmailCode(5, base_server_octopus.BusinessLogin, "
 
 **校验短信验证码**
 ```go
-func VerifySimCode(orgId int, businessId BusinessId, phone, code string) (bool, *base_server_sdk.Error)
+func VerifySimCode(orgId int, businessId BusinessId, countryCode phone, code string) (bool, *base_server_sdk.Error)
 ```
 - 示例
 ```go
-ret, err := base_server_octopus.VerifySimCode(5, base_server_octopus.BusinessLogin, "130xxxx1234", "54321")
+ret, err := base_server_octopus.VerifySimCode(5, base_server_octopus.BusinessLogin, "86", "130xxxx1234", "54321")
 ```
 
 **校验上次短信验证码是否通过**
 ```go
-func CheckLastSimVerifyResult(orgId int, businessId int, email, code string) (bool, *base_server_sdk.Error)
+func CheckLastSimVerifyResult(orgId int, businessId int, countryCode, phone, code string) (bool, *base_server_sdk.Error)
 ```
 - 示例
 ```go
-ret, err := base_server_octopus.CheckLastSimVerifyResult(5,base_server_octopus.BusinessLogin, "xxx@qq.com", "1235")
+ret, err := base_server_octopus.CheckLastSimVerifyResult(5,base_server_octopus.BusinessLogin, "86", "130xxxxxxxx", "1235")
 ```
 
 ## 实名验证
