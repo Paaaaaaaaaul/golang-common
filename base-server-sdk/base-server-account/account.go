@@ -18,8 +18,8 @@ const (
 	OP_TYPE_FREEZE_SUB OpType = 4 //冻结-减
 	OP_TYPE_UN_FREEZE  OpType = 5 //解冻-冻结进可用
 
-	ACCOUNT_STATUS_NORMAL AccountStatus = 1	//正常
-	ACCOUNT_STATUS_FREEZE AccountStatus = 2	//冻结
+	ACCOUNT_STATUS_NORMAL AccountStatus = 1 //正常
+	ACCOUNT_STATUS_FREEZE AccountStatus = 2 //冻结
 )
 
 type Account struct {
@@ -44,7 +44,7 @@ type LogList struct {
 }
 
 type TaskDetail struct {
-	OpType        int    `json:"opType"`
+	OpType        OpType `json:"opType"`
 	BsType        int    `json:"bsType"`
 	AccountId     int64  `json:"accountId"`
 	UserId        int64  `json:"userId"`
@@ -97,13 +97,14 @@ func CreateAccount(orgId int, userId int64, currency []string) ([]*Account, *bas
 //	异常错误:
 //	1001 参数错误
 //	2003 账户不存在
-func AccountInfo(orgId int, userId int64, currency string) ([]*Account, *base_server_sdk.Error) {
-	if orgId <= 0 || userId <= 0 {
+func AccountInfo(orgId int, userIds []int64, currency string) ([]*Account, *base_server_sdk.Error) {
+	if orgId <= 0 || len(userIds) <= 0 {
 		return nil, base_server_sdk.ErrInvalidParams
 	}
 	params := make(map[string]string)
 	params["orgId"] = strconv.Itoa(orgId)
-	params["userId"] = strconv.FormatInt(userId, 10)
+	userIdsMarshal, _ := json.Marshal(userIds)
+	params["userIds"] = string(userIdsMarshal)
 	params["currency"] = currency
 
 	client := base_server_sdk.Instance
