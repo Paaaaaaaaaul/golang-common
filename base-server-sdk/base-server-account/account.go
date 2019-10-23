@@ -97,7 +97,37 @@ func CreateAccount(orgId int, userId int64, currency []string) ([]*Account, *bas
 //	异常错误:
 //	1001 参数错误
 //	2003 账户不存在
-func AccountInfo(orgId int, userIds []int64, currency string) ([]*Account, *base_server_sdk.Error) {
+func AccountInfo(orgId int, userId int64, currency string) ([]*Account, *base_server_sdk.Error) {
+	if orgId <= 0 || userId <= 0 {
+		return nil, base_server_sdk.ErrInvalidParams
+	}
+	params := make(map[string]string)
+	params["orgId"] = strconv.Itoa(orgId)
+	userIdsMarshal, _ := json.Marshal([]int64{userId})
+	params["userIds"] = string(userIdsMarshal)
+	params["currency"] = currency
+
+	client := base_server_sdk.Instance
+	data, err := client.DoRequest(client.Hosts.AccountServerHost, "account", "accountInfo", params)
+	if err != nil {
+		return nil, err
+	}
+
+	var account []*Account
+	if err := json.Unmarshal(data, &account); err != nil {
+		common.ErrorLog("baseServerSdk_AccountInfo", params, "unmarshal account fail"+string(data))
+		return nil, base_server_sdk.ErrServiceBusy
+	}
+	return account, nil
+}
+
+//	账户信息列表
+//	POST account/AccountsInfo
+//
+//	异常错误:
+//	1001 参数错误
+//	2003 账户不存在
+func AccountsInfo(orgId int, userIds []int64, currency string) ([]*Account, *base_server_sdk.Error) {
 	if orgId <= 0 || len(userIds) <= 0 {
 		return nil, base_server_sdk.ErrInvalidParams
 	}

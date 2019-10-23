@@ -35,7 +35,16 @@ func main() {
 	//}
 
 	// 账户信息
-	accounts, err := base_server_account.AccountInfo(8, []int64{100000}, "CC")
+	accounts, err := base_server_account.AccountInfo(8, 100000, "CC")
+
+	if err != nil {
+		println(err.String())
+	} else {
+		fmt.Printf("账户信息: {%v}\n", accounts)
+	}
+
+	// 账户信息
+	accounts, err = base_server_account.AccountsInfo(8, []int64{100000}, "CC")
 
 	if err != nil {
 		println(err.String())
