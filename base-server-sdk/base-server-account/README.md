@@ -103,6 +103,16 @@ func AccountInfo(orgId int, userId int64, currency string) (*Account, *base_serv
 2003 账户不存在
 ```
 
+- 账户信息列表
+
+func AccountsInfo(orgId int, userIds []int64, currency string) (*Account, *base_server_sdk.Error)
+
+```go
+异常错误:
+1001 参数错误
+2003 账户不存在
+```
+
 - 状态变更
 
 func UpdateStatus(orgId int, accountId int64, status int) *base_server_sdk.Error
