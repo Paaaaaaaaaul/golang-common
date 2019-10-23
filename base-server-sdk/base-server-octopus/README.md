@@ -23,8 +23,8 @@ defer base_server_sdk.ReleaseBaseServerSdk()
 ```
 
 ## 测试环境
-- http：http://127.0.0.1:8081
-- grpc：127.0.0.1:18081
+- http：http://127.0.0.1:5051
+- grpc：127.0.0.1:15051
 
 ### 相关类型
 ```go
@@ -118,11 +118,12 @@ ret, err := base_server_octopus.CheckLastEmailVerifyResult(5,base_server_octopus
 
 **发送短信验证码**
 ```go
-func SendSimCode(orgId int, businessId BusinessId, phone, lang string) *base_server_sdk.Error
+//countryCode 国家码, 国内默认86
+func SendSimCode(orgId int, businessId BusinessId, countryCode, phone, lang string) *base_server_sdk.Error
 ```
 - 示例
 ```go
-err := base_server_octopus.SendEmailCode(5, base_server_octopus.BusinessLogin, "xxx@qq.com", "zh")
+err := base_server_octopus.SendSimCode(5, base_server_octopus.BusinessLogin, "86", "130xxxxxxx", "zh")
 ```
 - 异常返回
 ```go
@@ -134,20 +135,20 @@ err := base_server_octopus.SendEmailCode(5, base_server_octopus.BusinessLogin, "
 
 **校验短信验证码**
 ```go
-func VerifySimCode(orgId int, businessId BusinessId, phone, code string) (bool, *base_server_sdk.Error)
+func VerifySimCode(orgId int, businessId BusinessId, countryCode phone, code string) (bool, *base_server_sdk.Error)
 ```
 - 示例
 ```go
-ret, err := base_server_octopus.VerifySimCode(5, base_server_octopus.BusinessLogin, "130xxxx1234", "54321")
+ret, err := base_server_octopus.VerifySimCode(5, base_server_octopus.BusinessLogin, "86", "130xxxx1234", "54321")
 ```
 
 **校验上次短信验证码是否通过**
 ```go
-func CheckLastSimVerifyResult(orgId int, businessId int, email, code string) (bool, *base_server_sdk.Error)
+func CheckLastSimVerifyResult(orgId int, businessId int, countryCode, phone, code string) (bool, *base_server_sdk.Error)
 ```
 - 示例
 ```go
-ret, err := base_server_octopus.CheckLastSimVerifyResult(5,base_server_octopus.BusinessLogin, "xxx@qq.com", "1235")
+ret, err := base_server_octopus.CheckLastSimVerifyResult(5,base_server_octopus.BusinessLogin, "86", "130xxxxxxxx", "1235")
 ```
 
 ## 实名验证
@@ -294,4 +295,26 @@ ret, err := base_server_octopus.VerifyCaptcha(1, base_server_octopus.BusinessLog
 ```go
 1001 参数错误
 1013 验证码校验失败
+```
+
+**上传文件到s3
+```go
+func Upload(orgId int, formFile map[string]string) (map[string]string, *base_server_sdk.Error)
+```
+- 示例
+```go
+formFile := make(map[string]string)
+formFile["file1"] = "path/to/test.log"
+formFile["file2"] = "path/to/test.2.log"
+res, err := base_server_octopus.Upload(1, formFile)
+// 返回
+//	result = {
+//		"file1": "https://xxx.com/path/to/file1",
+//		"file2": "https://xxx.com/path/to/file2"
+//	}
+```
+- 异常返回
+```go
+900002 参数错误
+900003 文件路径错误
 ```
