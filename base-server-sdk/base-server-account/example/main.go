@@ -44,7 +44,7 @@ func main() {
 	}
 
 	// 账户状态更新
-	err = base_server_account.UpdateStatus(8, 9, 2)
+	err = base_server_account.UpdateStatus(8, 9, base_server_account.ACCOUNT_STATUS_FREEZE)
 	if err != nil {
 		println(err.String())
 	} else {
@@ -52,7 +52,7 @@ func main() {
 	}
 
 	// 金额操作
-	err = base_server_account.OperateAmount(8, 9, 1, 1, 0, "100", "custom json string", "custom json string", "callbackUrl")
+	err = base_server_account.OperateAmount(8, 9, base_server_account.OP_TYPE_AVAIL_ADD, 1, 0, "100", "custom json string", "custom json string", "callbackUrl")
 	if err != nil {
 		println(err.String())
 	} else {
@@ -60,7 +60,7 @@ func main() {
 	}
 
 	// 账户日志列表
-	logList, err := base_server_account.AccountLogList(8, 1, 2, 1, "", 1568776001, 1569228191, 1, 10)
+	logList, err := base_server_account.AccountLogList(8, 1, base_server_account.OP_TYPE_AVAIL_SUB, 1, "", 1568776001, 1569228191, 1, 10)
 	if err != nil {
 		println(err.String())
 	} else {
@@ -68,7 +68,7 @@ func main() {
 	}
 
 	//账户日志总计
-	sumAmount, err := base_server_account.SumLog(8, 100000, 1, 1, "CC", 0, 0)
+	sumAmount, err := base_server_account.SumLog(8, 100000, base_server_account.OP_TYPE_AVAIL_ADD, 1, "CC", 0, 0)
 	if err != nil {
 		println(err.String())
 	} else {
