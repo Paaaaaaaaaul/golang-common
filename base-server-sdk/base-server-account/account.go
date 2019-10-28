@@ -311,3 +311,23 @@ func BatchOperateAmount(orgId, isAsync int, details []*TaskDetail, callback *Tas
 	}
 	return nil
 }
+
+// 账户划转
+func Transfer(orgId int, fromAccountId, toAccountId int64, amount string) *base_server_sdk.Error {
+	if orgId <= 0 || fromAccountId <= 0 || toAccountId <= 0 {
+		return base_server_sdk.ErrInvalidParams
+	}
+
+	params := make(map[string]string)
+	params["orgId"] = strconv.Itoa(orgId)
+	params["fromAccountId"] = strconv.FormatInt(fromAccountId, 10)
+	params["fromAccountId"] = strconv.FormatInt(toAccountId, 10)
+	params["amount"] = amount
+
+	client := base_server_sdk.Instance
+	_, err := client.DoRequest(client.Hosts.AccountServerHost, "account", "transfer", params)
+	if err != nil {
+		return err
+	}
+	return nil
+}
