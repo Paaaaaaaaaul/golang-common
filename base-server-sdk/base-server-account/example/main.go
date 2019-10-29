@@ -121,4 +121,12 @@ func main() {
 	//} else {
 	//	fmt.Printf("操作成功")
 	//}
+
+	//账户账转
+	err = base_server_account.Transfer(8, 1, 2, "1000")
+	if err != nil {
+		println(err.String())
+	} else {
+		println("操作成功")
+	}
 }

@@ -224,3 +224,12 @@ bsType 类型为项目特有业务类型
 1001 参数错误
 ```
 
+- 账户划转
+func Transfer(orgId int, fromAccountId, toAccountId int64, amount string) *base_server_sdk.Error 
+
+```go
+异常错误:
+1001 参数错误
+2003 账户不存在
+2012 账户币种不同
+```
