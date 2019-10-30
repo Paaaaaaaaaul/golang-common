@@ -103,7 +103,7 @@ func AccountInfo(orgId int, userId int64, currency string) (*Account, *base_serv
 2003 账户不存在
 ```
 
-- 账户信息列表
+- 个人账户信息列表
 
 func AccountsInfo(orgId int, userIds []int64, currency string) (*Account, *base_server_sdk.Error)
 
@@ -111,6 +111,15 @@ func AccountsInfo(orgId int, userIds []int64, currency string) (*Account, *base_
 异常错误:
 1001 参数错误
 2003 账户不存在
+```
+
+- 所有账户分页列表
+
+func AccountList(orgId int, accountId int64, currency string, beginTime, endTime int64, status, page, limit int) ([]*Account, *base_server_sdk.Error) 
+
+```go
+异常错误:
+1001 参数错误
 ```
 
 - 状态变更
