@@ -121,6 +121,37 @@ func AccountInfo(orgId int, userId int64, currency string) ([]*Account, *base_se
 	return account, nil
 }
 
+// 账户列表
+func AccountList(orgId int, accountId int64, currency string, beginTime, endTime int64, status, page, limit int) ([]*Account, *base_server_sdk.Error) {
+	if orgId <= 0 || limit > 1000 {
+		return nil, base_server_sdk.ErrInvalidParams
+	}
+
+	params := make(map[string]string)
+	params["orgId"] = strconv.Itoa(orgId)
+	params["accountId"] = strconv.FormatInt(accountId, 10)
+	params["beginTime"] = strconv.FormatInt(beginTime, 10)
+	params["endTime"] = strconv.FormatInt(endTime, 10)
+	params["currency"] = currency
+	params["status"] = strconv.Itoa(status)
+	params["page"] = strconv.Itoa(page)
+	params["limit"] = strconv.Itoa(limit)
+
+	client := base_server_sdk.Instance
+	data, err := client.DoRequest(client.Hosts.AccountServerHost, "account", "accountList", params)
+	if err != nil {
+		return nil, err
+	}
+
+	var account []*Account
+	if err := json.Unmarshal(data, &account); err != nil {
+		common.ErrorLog("baseServerSdk_AccountInfo", params, "unmarshal account fail"+string(data))
+		return nil, base_server_sdk.ErrServiceBusy
+	}
+	return account, nil
+
+}
+
 //	账户信息列表
 //	POST account/AccountsInfo
 //

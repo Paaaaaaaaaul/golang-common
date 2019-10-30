@@ -34,22 +34,27 @@ func main() {
 	//	fmt.Printf("创建成功: {%v}\n", account)
 	//}
 
-	// 账户信息
-	accounts, err := base_server_account.AccountInfo(8, 100000, "CC")
+	//// 账户信息
+	//accounts, err := base_server_account.AccountInfo(8, 100000, "CC")
+	//if err != nil {
+	//	println(err.String())
+	//} else {
+	//	fmt.Printf("账户信息: {%v}\n", accounts)
+	//}
+	//
+	//// 账户信息
+	//accounts, err = base_server_account.AccountsInfo(8, []int64{100000}, "CC")
+	//if err != nil {
+	//	println(err.String())
+	//} else {
+	//	fmt.Printf("账户信息: {%v}\n", accounts)
+	//}
 
+	accountList, err := base_server_account.AccountList(8, 0, "", 0, 0, 0, 0, 10)
 	if err != nil {
 		println(err.String())
 	} else {
-		fmt.Printf("账户信息: {%v}\n", accounts)
-	}
-
-	// 账户信息
-	accounts, err = base_server_account.AccountsInfo(8, []int64{100000}, "CC")
-
-	if err != nil {
-		println(err.String())
-	} else {
-		fmt.Printf("账户信息: {%v}\n", accounts)
+		fmt.Printf("账户列表: {%v}\n", accountList)
 	}
 
 	//// 账户状态更新
@@ -123,10 +128,10 @@ func main() {
 	//}
 
 	//账户账转
-	err = base_server_account.Transfer(8, 1, 2, "1000")
-	if err != nil {
-		println(err.String())
-	} else {
-		println("操作成功")
-	}
+	//err = base_server_account.Transfer(8, 1, 2, "1000")
+	//if err != nil {
+	//	println(err.String())
+	//} else {
+	//	println("操作成功")
+	//}
 }
