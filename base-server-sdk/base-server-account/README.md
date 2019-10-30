@@ -103,7 +103,11 @@ func AccountInfo(orgId int, userId int64, currency string) (*Account, *base_serv
 2003 账户不存在
 ```
 
+<<<<<<< HEAD
 - 个人账户信息列表
+=======
+- 账户信息列表
+>>>>>>> 89d5d1c78f76e4500295d02895823a2b597f4f48
 
 func AccountsInfo(orgId int, userIds []int64, currency string) (*Account, *base_server_sdk.Error)
 
@@ -113,6 +117,7 @@ func AccountsInfo(orgId int, userIds []int64, currency string) (*Account, *base_
 2003 账户不存在
 ```
 
+<<<<<<< HEAD
 - 所有账户分页列表
 
 func AccountList(orgId int, accountId int64, currency string, beginTime, endTime int64, status, page, limit int) ([]*Account, *base_server_sdk.Error) 
@@ -122,6 +127,8 @@ func AccountList(orgId int, accountId int64, currency string, beginTime, endTime
 1001 参数错误
 ```
 
+=======
+>>>>>>> 89d5d1c78f76e4500295d02895823a2b597f4f48
 - 状态变更
 
 func UpdateStatus(orgId int, accountId int64, status int) *base_server_sdk.Error

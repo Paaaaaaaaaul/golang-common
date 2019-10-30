@@ -238,7 +238,7 @@ func GetUsersInfo(orgId int, userIds []int64) (map[int64]*User, []int64, *base_s
 	}
 
 	info := &Info{}
-	if err := json.Unmarshal(data, &info); err != nil {
+	if err := json.Unmarshal(data, info); err != nil {
 		common.ErrorLog("baseServerSdk_GetUsersInfo", params, "unmarshal users info fail: "+string(data))
 		return nil, nil, base_server_sdk.ErrServiceBusy
 	}
