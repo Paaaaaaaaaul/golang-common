@@ -90,4 +90,8 @@ func main() {
 		println(ttype)
 		fmt.Printf("%v\n", c)
 	}
+
+	// 得分
+	score, err := base_server_interact.InteractScore(3, 10, "news")
+	fmt.Printf("%0.2f\n", score)
 }
