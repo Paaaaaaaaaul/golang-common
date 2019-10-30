@@ -689,7 +689,7 @@ func UpdateUserStatus(orgId int, userId int64, status Status) *base_server_sdk.E
 // 1011 手机未绑定
 // 1013 解绑手机后将失去所有登录方式
 func UnBindPhone(orgId int, userId int64, code string) *base_server_sdk.Error {
-	if orgId <= 0 || userId <= 0 || code == "" {
+	if orgId <= 0 || userId <= 0 {
 		return base_server_sdk.ErrInvalidParams
 	}
 
@@ -718,7 +718,7 @@ func UnBindPhone(orgId int, userId int64, code string) *base_server_sdk.Error {
 // 1012 邮箱未绑定
 // 1014 解绑邮箱后将失去所有登录方式
 func UnBindEmail(orgId int, userId int64, code string) *base_server_sdk.Error {
-	if orgId <= 0 || userId <= 0 || code == "" {
+	if orgId <= 0 || userId <= 0 {
 		return base_server_sdk.ErrInvalidParams
 	}
 
