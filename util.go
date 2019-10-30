@@ -42,3 +42,19 @@ func StringSliceToFloat64Slice(arr []string) ([]float64, error) {
 
 	return toArr, nil
 }
+
+func Int64SliceToStringSlice(arr []int64) []string {
+	toArr := make([]string, 0)
+	for _, v := range arr {
+		toArr = append(toArr, strconv.FormatInt(v, 10))
+	}
+	return toArr
+}
+
+func IntSliceToStringSlice(arr []int) []string {
+	toArr := make([]string, 0)
+	for _, v := range arr {
+		toArr = append(toArr, strconv.Itoa(v))
+	}
+	return toArr
+}
