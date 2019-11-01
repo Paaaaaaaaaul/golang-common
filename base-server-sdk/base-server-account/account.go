@@ -347,8 +347,10 @@ func BatchOperateAmount(orgId, isAsync int, details []*TaskDetail, callback *Tas
 	params["isAsync"] = strconv.Itoa(isAsync)
 	taskDetailByte, _ := json.Marshal(details)
 	params["detail"] = string(taskDetailByte)
-	callbackData, _ := json.Marshal(callback)
-	params["callback"] = string(callbackData)
+	if callback != nil {
+		callbackData, _ := json.Marshal(callback)
+		params["callback"] = string(callbackData)
+	}
 
 	client := base_server_sdk.Instance
 	_, err := client.DoRequest(client.Hosts.AccountServerHost, "account", "batchOperateAmount", params)
