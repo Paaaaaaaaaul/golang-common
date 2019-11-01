@@ -175,6 +175,8 @@ func main() {
 
 	base_server_user.StoreValAtomic(1, 1, "1", "2")
 
+	base_server_user.DelStoreVal(1, 1, 5)
+
 	vals, _ := base_server_user.GetStoreVal(1, 1, "1")
 	fmt.Printf("%v\n", vals)
 }

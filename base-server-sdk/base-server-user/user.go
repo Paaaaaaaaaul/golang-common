@@ -785,3 +785,22 @@ func GetStoreVal(orgId int, userId int64, key string) (map[int64]string, *base_s
 
 	return vals, nil
 }
+
+func DelStoreVal(orgId int, userId int64, id int64) *base_server_sdk.Error {
+	if orgId <= 0 || userId <= 0 || id <= 0 {
+		return base_server_sdk.ErrInvalidParams
+	}
+
+	params := make(map[string]string)
+	params["orgId"] = strconv.Itoa(orgId)
+	params["userId"] = strconv.FormatInt(userId, 10)
+	params["id"] = strconv.FormatInt(id, 10)
+
+	client := base_server_sdk.Instance
+	_, err := client.DoRequest(client.Hosts.UserServerHost, "user", "delStoreVal", params)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

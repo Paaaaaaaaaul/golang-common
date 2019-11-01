@@ -404,3 +404,7 @@ func StoreValAtomic(orgId int, userId int64, key, val string) *base_server_sdk.E
 - 获取用户的业务信息
 
 func GetStoreVal(orgId int, userId int64, key string) (map[int64]string, *base_server_sdk.Error)
+
+- 删除用户的业务信息
+
+func DelStoreVal(orgId int, userId int64, id int64) *base_server_sdk.Error
