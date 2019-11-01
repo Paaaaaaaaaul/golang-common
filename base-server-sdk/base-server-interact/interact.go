@@ -78,7 +78,7 @@ func InteractList(orgId int, userId int64, mediaId int64, mediaOwner int64, ttyp
 	params["limit"] = strconv.Itoa(limit)
 
 	client := base_server_sdk.Instance
-	data, err := client.DoRequest(client.Hosts.InteractHost, "interact", "list", params)
+	data, err := client.DoRequest(client.Hosts.InteractServerHost, "interact", "list", params)
 	if err != nil {
 		return nil, err
 	}
@@ -131,7 +131,7 @@ func AddInteract(record *InteractRecord, atomicity int) (*InteractRecord, *base_
 	params["atomicity"] = strconv.Itoa(atomicity)
 
 	client := base_server_sdk.Instance
-	data, err := client.DoRequest(client.Hosts.InteractHost, "interact", "add", params)
+	data, err := client.DoRequest(client.Hosts.InteractServerHost, "interact", "add", params)
 	if err != nil {
 		return nil, err
 	}
@@ -160,7 +160,7 @@ func DelInteract(orgId int, userId int64, interactId int64) *base_server_sdk.Err
 	params["interactId"] = strconv.FormatInt(interactId, 10)
 
 	client := base_server_sdk.Instance
-	_, err := client.DoRequest(client.Hosts.InteractHost, "interact", "del", params)
+	_, err := client.DoRequest(client.Hosts.InteractServerHost, "interact", "del", params)
 	if err != nil {
 		return err
 	}
@@ -179,7 +179,7 @@ func InteractDetail(orgId int, interactId int64) (*InteractRecord, *base_server_
 	params["interactId"] = strconv.FormatInt(interactId, 10)
 
 	client := base_server_sdk.Instance
-	data, err := client.DoRequest(client.Hosts.InteractHost, "interact", "detail", params)
+	data, err := client.DoRequest(client.Hosts.InteractServerHost, "interact", "detail", params)
 	if err != nil {
 		return nil, err
 	}
@@ -205,7 +205,7 @@ func InteractScore(orgId int, mediaId int64, mediaType string) (float64, *base_s
 	params["mediaType"] = mediaType
 
 	client := base_server_sdk.Instance
-	data, err := client.DoRequest(client.Hosts.InteractHost, "interact", "score", params)
+	data, err := client.DoRequest(client.Hosts.InteractServerHost, "interact", "score", params)
 	if err != nil {
 		return 0, err
 	}
@@ -243,7 +243,7 @@ func InteractCounting(orgId int, userId int64, mediaType string, mediaIds []int6
 	params["types"] = strings.Join(common.IntSliceToStringSlice(types), ",")
 
 	client := base_server_sdk.Instance
-	data, err := client.DoRequest(client.Hosts.InteractHost, "interact", "counting", params)
+	data, err := client.DoRequest(client.Hosts.InteractServerHost, "interact", "counting", params)
 	if err != nil {
 		return nil, err
 	}

@@ -14,7 +14,7 @@ func main() {
 		RequestTimeout:  5 * time.Second,
 		IdleConnTimeout: 10 * time.Minute,
 		Hosts: base_server_sdk.Hosts{
-			InteractHost: "http://127.0.0.1:8082",
+			InteractServerHost: "http://127.0.0.1:8082",
 		},
 		GRpcOnly: false,
 	})
