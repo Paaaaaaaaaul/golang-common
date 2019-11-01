@@ -45,7 +45,8 @@ github.com/becent/golang-common
 1. 先注册路由，修改router/router.go文件
 
 ```go
-engine.POST("/hello", handler.HelloWorldAction)
+修改 engine.GET("/hello", handler.Hello) 处代码为：
+engine.Any("/hello", handler.HelloWorldAction)
 ```
 
 该行代码注册了一个 /hello 的路由，当用户访问该路由时，将由handler.HelloWorldAction(*gin.Context)函数响应
@@ -67,7 +68,7 @@ func HelloWorldAction(c *gin.Context) {
 
 3. 编译文件，在main.go目录下执行 go build -o main.exe main.go获取main.exe
 
-4. 修改配置文件
+4. 修改配置文件data/ini/dev.ini 中 http_listen_port 为 8080
 
 ```go
 [system]
@@ -76,24 +77,12 @@ app_name = helloWorld
 
 # 服务器监听的web端口
 http_listen_port = 8080
-
-
-[logs]
-# 日志目录
-dir = /data/logs/hello-world/
-
-# 日志名称
-file_name = hello-world.log
-
-# 日志保留时间，单位天
-keep_days = 30
-
-# 日志切割间隔，单位小时
-rate_hours = 24
 ```
 
-5. 启动main.exe
+5. 设置环境变量RUNMODE=dev
 
-6. 在浏览器上发起请求 http://127.0.0.1:8080/hello?name=bob，看到响应 hello bob，至此hello world服务开发完成
+6. 启动main.exe
+
+7. 在浏览器上发起请求 http://127.0.0.1:8080/hello?name=bob，看到响应 hello bob，至此hello world服务开发完成
 
 
