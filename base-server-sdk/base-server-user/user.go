@@ -762,7 +762,7 @@ func StoreValAtomic(orgId int, userId int64, key, val string) *base_server_sdk.E
 }
 
 // GetStoreVal 获取用户存储的信息
-func GetStoreVal(orgId int, userId int64, key string) ([]string, *base_server_sdk.Error) {
+func GetStoreVal(orgId int, userId int64, key string) (map[int64]string, *base_server_sdk.Error) {
 	if orgId <= 0 || userId <= 0 || key == "" {
 		return nil, base_server_sdk.ErrInvalidParams
 	}
@@ -778,7 +778,7 @@ func GetStoreVal(orgId int, userId int64, key string) ([]string, *base_server_sd
 		return nil, err
 	}
 
-	vals := make([]string, 0)
+	vals := make(map[int64]string, 0)
 	if err := json.Unmarshal(data, &vals); err != nil {
 		return nil, base_server_sdk.ErrServiceBusy
 	}
