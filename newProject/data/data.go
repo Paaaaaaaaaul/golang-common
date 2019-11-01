@@ -97,6 +97,22 @@ rate_hours = 24
 
 
 
+[baseServiceSdk]
+# 基础账户服务的地址，例如 127.0.0.1:18080
+base_service_account_host = 127.0.0.1:15050
+base_service_octopus_host = 127.0.0.1:15051
+base_service_statistic_host = 127.0.0.1:15052
+base_service_user_host = 127.0.0.1:15053
+base_service_interact_host = 127.0.0.1:15054
+
+
+
+
+
+
+
+
+
 
 
 
