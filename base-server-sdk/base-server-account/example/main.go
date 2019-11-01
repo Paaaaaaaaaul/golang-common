@@ -14,7 +14,7 @@ func main() {
 		RequestTimeout:  5 * time.Second,
 		IdleConnTimeout: 10 * time.Minute,
 		Hosts: base_server_sdk.Hosts{
-			AccountServerHost: "http://127.0.0.1:8081",
+			AccountServerHost: "http://127.0.0.1:5050",
 		},
 		GRpcOnly: false,
 	})
@@ -42,20 +42,20 @@ func main() {
 	//	fmt.Printf("账户信息: {%v}\n", accounts)
 	//}
 	//
-	//// 账户信息
-	//accounts, err = base_server_account.AccountsInfo(8, []int64{100000}, "CC")
-	//if err != nil {
-	//	println(err.String())
-	//} else {
-	//	fmt.Printf("账户信息: {%v}\n", accounts)
-	//}
-
-	accountList, err := base_server_account.AccountList(8, 0, "", 0, 0, 0, 0, 10)
+	// 账户信息
+	accounts, err := base_server_account.AccountsInfo(8, "100000", "")
 	if err != nil {
 		println(err.String())
 	} else {
-		fmt.Printf("账户列表: {%v}\n", accountList)
+		fmt.Printf("账户信息: {%v}\n", accounts)
 	}
+
+	//accountList, err := base_server_account.AccountList(8, 0, "", 0, 0, 0, 0, 10)
+	//if err != nil {
+	//	println(err.String())
+	//} else {
+	//	fmt.Printf("账户列表: {%v}\n", accountList)
+	//}
 
 	//// 账户状态更新
 	//err = base_server_account.UpdateStatus(8, 9, base_server_account.ACCOUNT_STATUS_FREEZE)
