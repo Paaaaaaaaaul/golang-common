@@ -158,13 +158,28 @@ func AccountList(orgId int, accountId int64, currency string, beginTime, endTime
 //	异常错误:
 //	1001 参数错误
 //	2003 账户不存在
-func AccountsInfo(orgId int, userIds []int64, currency string) ([]*Account, *base_server_sdk.Error) {
+func AccountsInfo(orgId int, userIds string, currency string) ([]*Account, *base_server_sdk.Error) {
 	if orgId <= 0 || len(userIds) <= 0 {
 		return nil, base_server_sdk.ErrInvalidParams
 	}
+
+	userIdList := strings.Split(userIds, ",")
+	if len(userIdList) == 0 {
+		return nil, base_server_sdk.ErrInvalidParams
+	}
+
+	var userIdIntList []int64
+	for _, userItem := range userIdList {
+		v, e := strconv.ParseInt(userItem, 10, 64)
+		if e != nil {
+			return nil, base_server_sdk.ErrInvalidParams
+		}
+		userIdIntList = append(userIdIntList, v)
+	}
+
 	params := make(map[string]string)
 	params["orgId"] = strconv.Itoa(orgId)
-	userIdsMarshal, _ := json.Marshal(userIds)
+	userIdsMarshal, _ := json.Marshal(userIdIntList)
 	params["userIds"] = string(userIdsMarshal)
 	params["currency"] = currency
 
@@ -264,7 +279,7 @@ func OperateAmount(orgId int, accountId int64, opType OpType, bsType, allowNegat
 //	1001 参数错误
 //	2003 账户不存在
 func AccountLogList(orgId int, userId int64, opType OpType, bsType int, currency string, beginTime, endTime int, page, limit int) ([]*LogList, *base_server_sdk.Error) {
-	if orgId <= 0 || userId <= 0 || opType < 0 || page <= 0 || limit <= 0 || limit > 1000 {
+	if orgId <= 0 || userId <= 0 || opType < 0 || page <= 0 || limit > 1000 {
 		return nil, base_server_sdk.ErrInvalidParams
 	}
 
