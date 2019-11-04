@@ -16,6 +16,7 @@ type InteractRecord struct {
 	Avatar     string   `json:"avatar"`            // 当时互动时候的头像
 	OrgId      int      `json:"orgId"`             // orgId
 	Type       int      `json:"type"`              // 代表互动的类型 例如 1评论 2点赞 3收藏...有业务方自己决定
+	SubType    int      `json:"subType"`           // 子类型，例如评价中的好评、差评
 	MediaId    int64    `json:"mediaId"`           // 资源的id，特殊情况下，InteractId也可以成为MediaId，比如对评论进行回复，相同MediaType的MediaId需要保证唯一
 	MediaType  string   `json:"mediaType"`         // 资源的类型，可自定义，例如news代表新闻，外部资源必须填，为空代表是评论或者点赞类型的资源
 	MediaOwner int64    `json:"mediaOwner"`        // 资源所有者
@@ -54,7 +55,7 @@ type Counting struct {
 // - 查询某人收到的所有评论：mediaOwner=xxx(某人id)、type=1
 //
 // - 查询某人收到的所有新闻类的评论：mediaOwner=xxx(某人id)、mediaType=news、type=1
-func InteractList(orgId int, userId int64, mediaId int64, mediaOwner int64, ttype int, orderType int, page int, limit int) ([]*InteractRecord, *base_server_sdk.Error) {
+func InteractList(orgId int, userId int64, mediaId int64, mediaOwner int64, ttype, subType int, orderType int, page int, limit int) ([]*InteractRecord, *base_server_sdk.Error) {
 	if orgId <= 0 {
 		return nil, base_server_sdk.ErrInvalidParams
 	}
@@ -73,6 +74,7 @@ func InteractList(orgId int, userId int64, mediaId int64, mediaOwner int64, ttyp
 	params["mediaId"] = strconv.FormatInt(mediaId, 10)
 	params["mediaOwner"] = strconv.FormatInt(mediaOwner, 10)
 	params["type"] = strconv.Itoa(ttype)
+	params["subType"] = strconv.Itoa(subType)
 	params["orderType"] = strconv.Itoa(orderType)
 	params["page"] = strconv.Itoa(page)
 	params["limit"] = strconv.Itoa(limit)
@@ -112,6 +114,7 @@ func AddInteract(record *InteractRecord, atomicity int) (*InteractRecord, *base_
 	params["mediaType"] = record.MediaType
 	params["mediaOwner"] = strconv.FormatInt(record.MediaOwner, 10)
 	params["type"] = strconv.Itoa(record.Type)
+	params["subType"] = strconv.Itoa(record.SubType)
 	params["nickName"] = record.NickName
 	params["avatar"] = record.Avatar
 	params["title"] = record.Title

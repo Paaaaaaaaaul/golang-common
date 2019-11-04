@@ -63,7 +63,7 @@ func main() {
 	}
 
 	// 列表
-	list, err := base_server_interact.InteractList(3, 0, 0, 0, 0, 0, 0, 0)
+	list, err := base_server_interact.InteractList(3, 0, 0, 0, 0, 0, 0, 0, 0)
 	if err != nil {
 		println(err.String())
 		return
