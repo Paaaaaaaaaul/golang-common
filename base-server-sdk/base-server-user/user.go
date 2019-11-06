@@ -29,6 +29,28 @@ type User struct {
 	Ext         string `json:"ext"`
 }
 
+func ReserveUserId() (int64, *base_server_sdk.Error) {
+	params := make(map[string]string)
+	client := base_server_sdk.Instance
+	data, err := client.DoRequest(client.Hosts.UserServerHost, "user", "reserveUserId", params)
+	if err != nil {
+		return 0, err
+	}
+
+	ret := make(map[string]string)
+	if err := json.Unmarshal(data, &ret); err != nil {
+		common.ErrorLog("baseServerSdk_ReserveUserId", params, "unmarshal data fail: "+string(data))
+		return 0, base_server_sdk.ErrServiceBusy
+	}
+
+	userId, e := strconv.ParseInt(ret["userId"], 10, 64)
+	if e != nil {
+		return 0, base_server_sdk.ErrServiceBusy
+	}
+
+	return userId, nil
+}
+
 // Register 注册用户
 //
 // 1、orgId必须大于0
@@ -44,6 +66,7 @@ type User struct {
 func Register(user *User, code string, currencyTypes []string) (*User, *base_server_sdk.Error) {
 	params := make(map[string]string)
 	params["orgId"] = strconv.Itoa(user.OrgId)
+	params["userId"] = strconv.FormatInt(user.UserId, 10)
 	params["countryCode"] = user.CountryCode
 	params["phone"] = user.Phone
 	params["email"] = user.Email

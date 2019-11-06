@@ -38,10 +38,18 @@ func main() {
 		}
 	}
 
+	userId, err := base_server_user.ReserveUserId()
+	if err != nil {
+		println(err.String())
+		return
+	}
+	fmt.Printf("预留userId %v\n", userId)
+
 	// 注册用户
 	user, err := base_server_user.Register(&base_server_user.User{
-		OrgId:       5,
-		CountryCode: "+86",
+		OrgId:       20,
+		UserId:      userId,
+		CountryCode: "+88",
 		Phone:       "13560487593",
 		LoginPwd:    "123456",
 		NickName:    "song",
@@ -53,6 +61,8 @@ func main() {
 	} else {
 		fmt.Printf("注册成功：[%v]\n", *user)
 	}
+
+	return
 
 	// 通过手机找回登录密码
 	err = base_server_user.GetBackLoginPwdByPhone(5, "+86", "13560487593", "", "654321")
