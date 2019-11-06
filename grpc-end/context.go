@@ -122,13 +122,17 @@ func (c *GRpcContext) IsParamExist(key string) bool {
 // StringParam returns string val from request's Params for the given key
 // and returns empty string if val not exists
 func (c *GRpcContext) StringParam(key string) string {
-	return c.req.Params[key]
+	val := c.req.Params[key]
+	if val == "" {
+		val = c.req.Header[key]
+	}
+	return val
 }
 
 // StringParamDefault returns string val from request's Params for the given key
 // and returns defVal if val not exists.
 func (c *GRpcContext) StringParamDefault(key string, defVal string) string {
-	if val, ok := c.req.Params[key]; ok && val != "" {
+	if val := c.StringParam(key); val != "" {
 		return val
 	}
 	return defVal
