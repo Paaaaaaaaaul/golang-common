@@ -54,6 +54,11 @@ type TaskDetail struct {
 	Ext       string `json:"ext"`           //扩展字段
 }
 
+type TaskCallBack struct {
+	CallBackUrl string            `json:"callBackUrl"`  //回调url
+	Data        map[string]string `json:"data"`         //回调时传回数据
+}
+
 type base_server_sdk.Error struct {
 	Code    int    `json:"code"`
 	Message string `json:"message"`
@@ -104,7 +109,6 @@ func AccountInfo(orgId int, userId int64, currency string) (*Account, *base_serv
 ```
 
 - 个人账户信息列表
->>>>>>> 89d5d1c78f76e4500295d02895823a2b597f4f48
 
 func AccountsInfo(orgId int, userIds []int64, currency string) (*Account, *base_server_sdk.Error)
 
