@@ -3,9 +3,6 @@ package base_server_octopus
 import (
 	"encoding/json"
 	"github.com/becent/golang-common/base-server-sdk"
-	"github.com/becent/golang-common/gin-handler"
-	"io/ioutil"
-	"path/filepath"
 	"strconv"
 )
 
@@ -27,19 +24,8 @@ func Upload(orgId int, formFile map[string]string) (map[string]string, *base_ser
 	params := make(map[string]string)
 	params["orgId"] = strconv.Itoa(orgId)
 
-	files := make(map[string]string, len(formFile))
-	for fieldName, file := range formFile {
-		fileName := filepath.Base(file)
-		key := fieldName + gin_handler.FILES_SEPARATOR + fileName
-		data, err := ioutil.ReadFile(file)
-		if err != nil {
-			return nil, base_server_sdk.ErrOpenFile
-		}
-		files[key] = string(data)
-	}
-
 	client := base_server_sdk.Instance
-	data, err := client.DoRequest(client.Hosts.OctopusServerHost, "resource", "upload", params, files)
+	data, err := client.DoRequest(client.Hosts.OctopusServerHost, "resource", "upload", params, formFile)
 	if err != nil {
 		return nil, err
 	}
