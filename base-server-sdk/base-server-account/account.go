@@ -242,7 +242,7 @@ func UpdateStatus(orgId int, accountId int64, status AccountStatus) *base_server
 //	2009 账户可用减少失败
 //	2010 账户冻结减少失败
 //	2011 账户日志创建失败
-func OperateAmount(orgId int, accountId int64, opType OpType, bsType, allowNegative int, amount, detail, ext, callback string) *base_server_sdk.Error {
+func OperateAmount(orgId int, accountId int64, opType OpType, bsType, allowNegative int, amount, detail, ext string, callback *TaskCallBack) *base_server_sdk.Error {
 	if orgId <= 0 || accountId <= 0 || opType <= 0 || bsType <= 0 || amount == "" {
 		return base_server_sdk.ErrInvalidParams
 	}
@@ -255,7 +255,10 @@ func OperateAmount(orgId int, accountId int64, opType OpType, bsType, allowNegat
 	params["amount"] = amount
 	params["detail"] = detail
 	params["ext"] = ext
-	params["callback"] = callback
+	if callback != nil {
+		callbackData, _ := json.Marshal(callback)
+		params["callback"] = string(callbackData)
+	}
 
 	client := base_server_sdk.Instance
 	_, err := client.DoRequest(client.Hosts.AccountServerHost, "account", "operateAmount", params)

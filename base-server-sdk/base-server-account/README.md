@@ -144,7 +144,7 @@ status状态枚举:
 
 - 金额操作
 
-func OperateAmount(orgId int, accountId int64, opType, bsType int, amount, detail, ext, callback string) *base_server_sdk.Error
+func OperateAmount(orgId int, accountId int64, opType, bsType int, amount, detail, ext, callback *TaskCallBack) *base_server_sdk.Error
 
 ```go
 opType 类型枚举:
@@ -171,7 +171,7 @@ bsType 类型为项目特有业务类型
 
 - 批量金额操作
 
-func BatchOperateAmount(orgId, isAsync int, details []*TaskDetail, callback string) *base_server_sdk.Error
+func BatchOperateAmount(orgId, isAsync int, details []*TaskDetail, callback *TaskCallBack) *base_server_sdk.Error
 
 ```go
 注意：
