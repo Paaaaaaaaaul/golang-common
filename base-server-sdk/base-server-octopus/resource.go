@@ -16,13 +16,14 @@ import (
 //		"file1": "https://xxx.com/path/to/file1",
 //		"file2": "https://xxx.com/path/to/file2"
 //	}
-func Upload(orgId int, formFile map[string]string) (map[string]string, *base_server_sdk.Error) {
+func Upload(orgId int, userId int64, formFile map[string]string) (map[string]string, *base_server_sdk.Error) {
 	if orgId <= 0 || len(formFile) == 0 {
 		return nil, base_server_sdk.ErrInvalidParams
 	}
 
 	params := make(map[string]string)
 	params["orgId"] = strconv.Itoa(orgId)
+	params["userId"] = strconv.FormatInt(userId, 10)
 
 	client := base_server_sdk.Instance
 	data, err := client.DoRequest(client.Hosts.OctopusServerHost, "resource", "upload", params, formFile)
