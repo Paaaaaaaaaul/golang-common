@@ -41,6 +41,8 @@ type LogList struct {
 	LogType    int    `json:"logType"`
 	Amount     string `json:"amount"`
 	CreateTime int64  `json:"createTime"`
+	Detail     string `json:"detail"`
+	Ext        string `json:"ext"`
 }
 
 type TaskDetail struct {
