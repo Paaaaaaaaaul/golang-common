@@ -540,9 +540,9 @@ func (u UserFields) SetExt(ext string) {
 // 1000 服务繁忙
 // 1001 参数异常
 // 1003 用户不存在
-func UpdateUserInfo(orgId int, userId int64, info UserFields) *base_server_sdk.Error {
+func UpdateUserInfo(orgId int, userId int64, info UserFields) (*User, *base_server_sdk.Error) {
 	if orgId <= 0 || userId <= 0 {
-		return base_server_sdk.ErrInvalidParams
+		return nil, base_server_sdk.ErrInvalidParams
 	}
 
 	params := make(map[string]string)
@@ -553,12 +553,18 @@ func UpdateUserInfo(orgId int, userId int64, info UserFields) *base_server_sdk.E
 	}
 
 	client := base_server_sdk.Instance
-	_, err := client.DoRequest(client.Hosts.UserServerHost, "user", "updateUserInfo", params)
+	data, err := client.DoRequest(client.Hosts.UserServerHost, "user", "updateUserInfo", params)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	user := &User{}
+	if err := json.Unmarshal(data, user); err != nil {
+		common.ErrorLog("baseServerSdk_LoginByAccount", params, "unmarshal user fail: "+string(data))
+		return nil, base_server_sdk.ErrServiceBusy
+	}
+
+	return user, nil
 }
 
 // BindAccount 绑定登录账号
