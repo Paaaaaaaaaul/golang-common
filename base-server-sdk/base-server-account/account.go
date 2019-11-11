@@ -39,8 +39,12 @@ type LogList struct {
 	UserId     int64  `json:"userId"`
 	Currency   string `json:"currency"`
 	LogType    int    `json:"logType"`
+	BsType     int    `json:"bsType"`
 	Amount     string `json:"amount"`
 	CreateTime int64  `json:"createTime"`
+	Detail     string `json:"detail"`
+	Ext        string `json:"ext"`
+	AttachId   int64  `json:"attachId"`
 }
 
 type TaskDetail struct {
