@@ -9,23 +9,46 @@ import (
 )
 
 type User struct {
-	UserId     int64  `json:"userId"`
-	OrgId      int    `json:"orgId"`
-	Phone      string `json:"phone"`
-	Email      string `json:"email"`
-	Account    string `json:"account"`
-	LoginPwd   string `json:"loginPwd"`
-	TransPwd   string `json:"transPwd"`
-	NickName   string `json:"nickName"`
-	Avatar     string `json:"avatar"`
-	FirstName  string `json:"firstName"`
-	LastName   string `json:"lastName"`
-	IdCard     string `json:"idCard"`
-	Sex        int    `json:"sex"`
-	BirthDay   string `json:"birthDay"`
-	Status     int    `json:"status"`
-	CreateTime int64  `json:"createTime"`
-	Ext        string `json:"ext"`
+	UserId      int64  `json:"userId"`
+	OrgId       int    `json:"orgId"`
+	CountryCode string `json:"countryCode"`
+	Phone       string `json:"phone"`
+	Email       string `json:"email"`
+	Account     string `json:"account"`
+	LoginPwd    string `json:"loginPwd"`
+	TransPwd    string `json:"transPwd"`
+	NickName    string `json:"nickName"`
+	Avatar      string `json:"avatar"`
+	FirstName   string `json:"firstName"`
+	LastName    string `json:"lastName"`
+	IdCard      string `json:"idCard"`
+	Sex         int    `json:"sex"`
+	BirthDay    string `json:"birthDay"`
+	Status      int    `json:"status"`
+	CreateTime  int64  `json:"createTime"`
+	Ext         string `json:"ext"`
+}
+
+func ReserveUserId() (int64, *base_server_sdk.Error) {
+	params := make(map[string]string)
+	client := base_server_sdk.Instance
+	data, err := client.DoRequest(client.Hosts.UserServerHost, "user", "reserveUserId", params)
+	if err != nil {
+		return 0, err
+	}
+
+	ret := make(map[string]string)
+	if err := json.Unmarshal(data, &ret); err != nil {
+		common.ErrorLog("baseServerSdk_ReserveUserId", params, "unmarshal data fail: "+string(data))
+		return 0, base_server_sdk.ErrServiceBusy
+	}
+
+	userId, e := strconv.ParseInt(ret["userId"], 10, 64)
+	if e != nil {
+		return 0, base_server_sdk.ErrServiceBusy
+	}
+
+	return userId, nil
 }
 
 // Register 注册用户
@@ -43,6 +66,8 @@ type User struct {
 func Register(user *User, code string, currencyTypes []string) (*User, *base_server_sdk.Error) {
 	params := make(map[string]string)
 	params["orgId"] = strconv.Itoa(user.OrgId)
+	params["userId"] = strconv.FormatInt(user.UserId, 10)
+	params["countryCode"] = user.CountryCode
 	params["phone"] = user.Phone
 	params["email"] = user.Email
 	params["account"] = user.Account
@@ -118,13 +143,14 @@ func LoginByAccount(orgId int, account string, password string) (*User, *base_se
 // 1004 用户已被冻结
 // 1005 密码错误
 // 1008 短信验证码错误
-func LoginByPhone(orgId int, phone string, code string, password string) (*User, *base_server_sdk.Error) {
+func LoginByPhone(orgId int, countryCode, phone string, code string, password string) (*User, *base_server_sdk.Error) {
 	if orgId <= 0 || phone == "" {
 		return nil, base_server_sdk.ErrInvalidParams
 	}
 
 	params := make(map[string]string)
 	params["orgId"] = strconv.Itoa(orgId)
+	params["countryCode"] = countryCode
 	params["phone"] = phone
 	params["code"] = code
 	params["password"] = password
@@ -257,13 +283,14 @@ func GetUsersInfo(orgId int, userIds []int64) (map[int64]*User, []int64, *base_s
 // 1003 用户不存在
 // 1005 密码错误
 // 1008 短信验证码错误
-func GetBackLoginPwdByPhone(orgId int, phone, code, password string) *base_server_sdk.Error {
+func GetBackLoginPwdByPhone(orgId int, countryCode, phone, code, password string) *base_server_sdk.Error {
 	if orgId <= 0 || phone == "" || password == "" {
 		return base_server_sdk.ErrInvalidParams
 	}
 
 	params := make(map[string]string)
 	params["orgId"] = strconv.Itoa(orgId)
+	params["countryCode"] = countryCode
 	params["phone"] = phone
 	params["code"] = code
 	params["password"] = password
@@ -319,13 +346,14 @@ func GetBackLoginPwdByEmail(orgId int, email, code, password string) *base_serve
 // 1003 用户不存在
 // 1005 密码错误
 // 1008 短信验证码错误
-func GetBackTransPwdByPhone(orgId int, phone, code, password string) *base_server_sdk.Error {
+func GetBackTransPwdByPhone(orgId int, countryCode, phone, code, password string) *base_server_sdk.Error {
 	if orgId <= 0 || phone == "" || password == "" {
 		return base_server_sdk.ErrInvalidParams
 	}
 
 	params := make(map[string]string)
 	params["orgId"] = strconv.Itoa(orgId)
+	params["countryCode"] = countryCode
 	params["phone"] = phone
 	params["code"] = code
 	params["password"] = password
@@ -512,9 +540,9 @@ func (u UserFields) SetExt(ext string) {
 // 1000 服务繁忙
 // 1001 参数异常
 // 1003 用户不存在
-func UpdateUserInfo(orgId int, userId int64, info UserFields) *base_server_sdk.Error {
+func UpdateUserInfo(orgId int, userId int64, info UserFields) (*User, *base_server_sdk.Error) {
 	if orgId <= 0 || userId <= 0 {
-		return base_server_sdk.ErrInvalidParams
+		return nil, base_server_sdk.ErrInvalidParams
 	}
 
 	params := make(map[string]string)
@@ -525,12 +553,18 @@ func UpdateUserInfo(orgId int, userId int64, info UserFields) *base_server_sdk.E
 	}
 
 	client := base_server_sdk.Instance
-	_, err := client.DoRequest(client.Hosts.UserServerHost, "user", "updateUserInfo", params)
+	data, err := client.DoRequest(client.Hosts.UserServerHost, "user", "updateUserInfo", params)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	user := &User{}
+	if err := json.Unmarshal(data, user); err != nil {
+		common.ErrorLog("baseServerSdk_LoginByAccount", params, "unmarshal user fail: "+string(data))
+		return nil, base_server_sdk.ErrServiceBusy
+	}
+
+	return user, nil
 }
 
 // BindAccount 绑定登录账号
@@ -567,7 +601,7 @@ func BindAccount(orgId int, userId int64, account, password string) *base_server
 // 1001 参数异常
 // 1003 用户不存在
 // 1006 重复绑定
-func BindPhone(orgId int, userId int64, phone, code string) *base_server_sdk.Error {
+func BindPhone(orgId int, userId int64, countryCode, phone, code string) *base_server_sdk.Error {
 	if orgId <= 0 || userId <= 0 || phone == "" {
 		return base_server_sdk.ErrInvalidParams
 	}
@@ -575,6 +609,7 @@ func BindPhone(orgId int, userId int64, phone, code string) *base_server_sdk.Err
 	params := make(map[string]string)
 	params["orgId"] = strconv.Itoa(orgId)
 	params["userId"] = strconv.FormatInt(userId, 10)
+	params["countryCode"] = countryCode
 	params["phone"] = phone
 	params["code"] = code
 
@@ -665,6 +700,133 @@ func UpdateUserStatus(orgId int, userId int64, status Status) *base_server_sdk.E
 
 	client := base_server_sdk.Instance
 	_, err := client.DoRequest(client.Hosts.UserServerHost, "user", "updateStatus", params)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// UnBindPhone 解绑手机
+//
+// 1、code有值的话，会校验短信验证码
+//
+// 异常返回：
+// 1000 服务繁忙
+// 1001 参数异常
+// 1003 用户不存在
+// 1011 手机未绑定
+// 1013 解绑手机后将失去所有登录方式
+func UnBindPhone(orgId int, userId int64, code string) *base_server_sdk.Error {
+	if orgId <= 0 || userId <= 0 {
+		return base_server_sdk.ErrInvalidParams
+	}
+
+	params := make(map[string]string)
+	params["orgId"] = strconv.Itoa(orgId)
+	params["userId"] = strconv.FormatInt(userId, 10)
+	params["code"] = code
+
+	client := base_server_sdk.Instance
+	_, err := client.DoRequest(client.Hosts.UserServerHost, "user", "unBindPhone", params)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// UnBindEmail 解绑邮箱
+//
+// 1、code有值的话，会校验邮箱验证码
+//
+// 异常返回：
+// 1000 服务繁忙
+// 1001 参数异常
+// 1003 用户不存在
+// 1012 邮箱未绑定
+// 1014 解绑邮箱后将失去所有登录方式
+func UnBindEmail(orgId int, userId int64, code string) *base_server_sdk.Error {
+	if orgId <= 0 || userId <= 0 {
+		return base_server_sdk.ErrInvalidParams
+	}
+
+	params := make(map[string]string)
+	params["orgId"] = strconv.Itoa(orgId)
+	params["userId"] = strconv.FormatInt(userId, 10)
+	params["code"] = code
+
+	client := base_server_sdk.Instance
+	_, err := client.DoRequest(client.Hosts.UserServerHost, "user", "unBindEmail", params)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// StoreValAtomic 原子操作，存储用户一些信息
+//
+// 异常返回：
+// 1000 服务繁忙
+// 1001 参数异常
+func StoreValAtomic(orgId int, userId int64, key, val string) *base_server_sdk.Error {
+	if orgId <= 0 || userId <= 0 || key == "" || val == "" {
+		return base_server_sdk.ErrInvalidParams
+	}
+
+	params := make(map[string]string)
+	params["orgId"] = strconv.Itoa(orgId)
+	params["userId"] = strconv.FormatInt(userId, 10)
+	params["key"] = key
+	params["val"] = val
+
+	client := base_server_sdk.Instance
+	_, err := client.DoRequest(client.Hosts.UserServerHost, "user", "storeValAtomic", params)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// GetStoreVal 获取用户存储的信息
+func GetStoreVal(orgId int, userId int64, key string) (map[int64]string, *base_server_sdk.Error) {
+	if orgId <= 0 || userId <= 0 || key == "" {
+		return nil, base_server_sdk.ErrInvalidParams
+	}
+
+	params := make(map[string]string)
+	params["orgId"] = strconv.Itoa(orgId)
+	params["userId"] = strconv.FormatInt(userId, 10)
+	params["key"] = key
+
+	client := base_server_sdk.Instance
+	data, err := client.DoRequest(client.Hosts.UserServerHost, "user", "getStoreVal", params)
+	if err != nil {
+		return nil, err
+	}
+
+	vals := make(map[int64]string, 0)
+	if err := json.Unmarshal(data, &vals); err != nil {
+		return nil, base_server_sdk.ErrServiceBusy
+	}
+
+	return vals, nil
+}
+
+func DelStoreVal(orgId int, userId int64, id int64) *base_server_sdk.Error {
+	if orgId <= 0 || userId <= 0 || id <= 0 {
+		return base_server_sdk.ErrInvalidParams
+	}
+
+	params := make(map[string]string)
+	params["orgId"] = strconv.Itoa(orgId)
+	params["userId"] = strconv.FormatInt(userId, 10)
+	params["id"] = strconv.FormatInt(id, 10)
+
+	client := base_server_sdk.Instance
+	_, err := client.DoRequest(client.Hosts.UserServerHost, "user", "delStoreVal", params)
 	if err != nil {
 		return err
 	}

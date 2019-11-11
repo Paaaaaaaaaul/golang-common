@@ -38,14 +38,23 @@ func main() {
 		}
 	}
 
+	userId, err := base_server_user.ReserveUserId()
+	if err != nil {
+		println(err.String())
+		return
+	}
+	fmt.Printf("预留userId %v\n", userId)
+
 	// 注册用户
 	user, err := base_server_user.Register(&base_server_user.User{
-		OrgId:    5,
-		Phone:    "13560487593",
-		LoginPwd: "123456",
-		NickName: "song",
-		Avatar:   "shuai.png",
-		Ext:      "123",
+		OrgId:       20,
+		UserId:      userId,
+		CountryCode: "+88",
+		Phone:       "13560487593",
+		LoginPwd:    "123456",
+		NickName:    "song",
+		Avatar:      "shuai.png",
+		Ext:         "123",
 	}, "", nil)
 	if err != nil {
 		println(err.String())
@@ -53,8 +62,10 @@ func main() {
 		fmt.Printf("注册成功：[%v]\n", *user)
 	}
 
+	return
+
 	// 通过手机找回登录密码
-	err = base_server_user.GetBackLoginPwdByPhone(5, "13560487593", "", "654321")
+	err = base_server_user.GetBackLoginPwdByPhone(5, "+86", "13560487593", "", "654321")
 	if err != nil {
 		println(err.String())
 	} else {
@@ -62,7 +73,7 @@ func main() {
 	}
 
 	// 登录
-	user, err = base_server_user.LoginByPhone(5, "13560487593", "", "654321")
+	user, err = base_server_user.LoginByPhone(5, "+86", "13560487593", "", "654321")
 	if err != nil {
 		println(err.String())
 	} else {
@@ -86,7 +97,7 @@ func main() {
 	}
 
 	// 再次登录
-	user, err = base_server_user.LoginByPhone(5, "13560487593", "", "654321")
+	user, err = base_server_user.LoginByPhone(5, "+86", "13560487593", "", "654321")
 	if err != nil {
 		println(err.String())
 	} else {
@@ -94,7 +105,7 @@ func main() {
 	}
 
 	// 改变密码再次登录
-	user, err = base_server_user.LoginByPhone(5, "13560487593", "", "123456")
+	user, err = base_server_user.LoginByPhone(5, "+86", "13560487593", "", "123456")
 	if err != nil {
 		println(err.String())
 	} else {
@@ -117,7 +128,7 @@ func main() {
 	}
 
 	// 通过手机找回交易密码
-	err = base_server_user.GetBackTransPwdByPhone(5, "13560487593", "", "asdqwe")
+	err = base_server_user.GetBackTransPwdByPhone(5, "+86", "13560487593", "", "asdqwe")
 	if err != nil {
 		println(err.String())
 	} else {
@@ -171,4 +182,11 @@ func main() {
 	} else {
 		fmt.Printf("绑定邮箱成功\n")
 	}
+
+	base_server_user.StoreValAtomic(1, 1, "1", "2")
+
+	base_server_user.DelStoreVal(1, 1, 5)
+
+	vals, _ := base_server_user.GetStoreVal(1, 1, "1")
+	fmt.Printf("%v\n", vals)
 }

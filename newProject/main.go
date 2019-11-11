@@ -39,12 +39,37 @@ func main() {
 		return
 	}
 
+	// 创建restart.sh文件
+	restart, err := os.OpenFile(*projectName+"/restart.sh", os.O_CREATE|os.O_RDWR, 755)
+	if err != nil {
+		println(err.Error())
+		return
+	}
+	defer restart.Close()
+	if _, err := restart.WriteString(strings.Replace(restart_temple, "{{projectName}}", *projectName, -1)); err != nil {
+		println(err.Error())
+		return
+	}
+
+	// 创建build.bat文件
+	build, err := os.OpenFile(*projectName+"/build.bat", os.O_CREATE|os.O_RDWR, 755)
+	if err != nil {
+		println(err.Error())
+		return
+	}
+	defer build.Close()
+	if _, err := build.WriteString(strings.Replace(build_temple, "{{projectName}}", *projectName, -1)); err != nil {
+		println(err.Error())
+		return
+	}
+
 	// 创建main文件
 	file, err := os.OpenFile(*projectName+"/main.go", os.O_CREATE|os.O_RDWR, 755)
 	if err != nil {
 		println(err.Error())
 		return
 	}
+	defer file.Close()
 	if _, err := file.WriteString(strings.Replace(main_temple, "{{projectName}}", *projectName, -1)); err != nil {
 		println(err.Error())
 		return
@@ -71,11 +96,61 @@ func main() {
 
 }
 
+var build_temple = `cd ..
+cd ..
+set GOPATH=%cd%
+cd src
+cd {{projectName}}
+go build -tags="jsoniter" -o main.exe main.go
+`
+
+var restart_temple = `#!/bin/bash
+
+PRONAME={{projectName}}
+
+BIN=/data/apps/$PRONAME/$PRONAME
+STDLOG=/data/apps/$PRONAME/output.log
+
+if [ $RUNMODE = "pre" ] ; then
+        BIN=/data/apps/pre-$PRONAME/$PRONAME
+        STDLOG=/data/apps/$PRONAME/output.log
+fi
+
+chmod u+x $BIN
+
+ID=$(/usr/sbin/pidof "$BIN")
+if [ "$ID" ] ; then
+        echo "kill -SIGINT $ID"
+        kill -2 $ID
+fi
+
+while :
+do
+        ID=$(/usr/sbin/pidof "$BIN")
+        if [ "$ID" ] ; then
+                echo "$PRONAME still running...wait"
+                sleep 0.1
+        else
+                echo "$PRONAME service was not started"
+                echo "Starting service..."
+                
+                if [ $RUNMODE = "online" ] ; then
+                        nohup $BIN > /dev/null 2>&1 &
+                else
+                        nohup $BIN > $STDLOG 2>&1 &
+                fi
+                break
+        fi
+done
+
+`
+
 var main_temple = `package main
 
 import (
 	"context"
 	"github.com/becent/golang-common"
+	"github.com/becent/golang-common/base-server-sdk"
 	"{{projectName}}/config"
 	"{{projectName}}/router"
 	"github.com/judwhite/go-svc/svc"
@@ -133,7 +208,21 @@ func (s *Service) Init(env svc.Environment) error {
 	}
 	println("redis init success")
 
-	//
+	// init base-server-sdk
+	base_server_sdk.InitBaseServerSdk(&base_server_sdk.Config{
+		AppId:           config.GetConfig("system", "app_id"),
+		AppSecretKey:    config.GetConfig("system", "app_secret_key"),
+		RequestTimeout:  5 * time.Second,
+		IdleConnTimeout: 10 * time.Minute,
+		Hosts: base_server_sdk.Hosts{
+			AccountServerHost:   config.GetConfig("baseServiceSdk", "base_service_account_host"),
+			OctopusServerHost:   config.GetConfig("baseServiceSdk", "base_service_octopus_host"),
+			UserServerHost:      config.GetConfig("baseServiceSdk", "base_service_user_host"),
+			StatisticServerHost: config.GetConfig("baseServiceSdk", "base_service_statistic_host"),
+			InteractServerHost:  config.GetConfig("baseServiceSdk", "base_service_interact_host"),
+		},
+		GRpcOnly: false,
+	})
 
 	return nil
 }
@@ -172,7 +261,7 @@ func (s *Service) Start() error {
 func (s *Service) Stop() error {
 	// stop gRpc server
 	s.gRpcSvr.GracefulStop()
-	println("http server graceful stop")
+	println("grpc server graceful stop")
 
 	// stop http server
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
@@ -184,6 +273,7 @@ func (s *Service) Stop() error {
 	println("http server graceful stop")
 
 	// release source here
+	base_server_sdk.ReleaseBaseServerSdk()
 	common.ReleaseMysqlDBPool()
 	common.ReleaseRedisPool()
 

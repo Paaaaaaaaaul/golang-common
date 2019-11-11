@@ -54,6 +54,11 @@ type TaskDetail struct {
 	Ext       string `json:"ext"`           //扩展字段
 }
 
+type TaskCallBack struct {
+	CallBackUrl string            `json:"callBackUrl"`  //回调url
+	Data        map[string]string `json:"data"`         //回调时传回数据
+}
+
 type base_server_sdk.Error struct {
 	Code    int    `json:"code"`
 	Message string `json:"message"`
@@ -103,7 +108,7 @@ func AccountInfo(orgId int, userId int64, currency string) (*Account, *base_serv
 2003 账户不存在
 ```
 
-- 账户信息列表
+- 个人账户信息列表
 
 func AccountsInfo(orgId int, userIds []int64, currency string) (*Account, *base_server_sdk.Error)
 
@@ -111,6 +116,15 @@ func AccountsInfo(orgId int, userIds []int64, currency string) (*Account, *base_
 异常错误:
 1001 参数错误
 2003 账户不存在
+```
+
+- 所有账户分页列表
+
+func AccountList(orgId int, accountId int64, currency string, beginTime, endTime int64, status, page, limit int) ([]*Account, *base_server_sdk.Error) 
+
+```go
+异常错误:
+1001 参数错误
 ```
 
 - 状态变更
@@ -130,7 +144,7 @@ status状态枚举:
 
 - 金额操作
 
-func OperateAmount(orgId int, accountId int64, opType, bsType int, amount, detail, ext, callback string) *base_server_sdk.Error
+func OperateAmount(orgId int, accountId int64, opType, bsType int, amount, detail, ext, callback *TaskCallBack) *base_server_sdk.Error
 
 ```go
 opType 类型枚举:
@@ -157,7 +171,7 @@ bsType 类型为项目特有业务类型
 
 - 批量金额操作
 
-func BatchOperateAmount(orgId, isAsync int, details []*TaskDetail, callback string) *base_server_sdk.Error
+func BatchOperateAmount(orgId, isAsync int, details []*TaskDetail, callback *TaskCallBack) *base_server_sdk.Error
 
 ```go
 注意：

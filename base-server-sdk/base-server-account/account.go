@@ -39,8 +39,12 @@ type LogList struct {
 	UserId     int64  `json:"userId"`
 	Currency   string `json:"currency"`
 	LogType    int    `json:"logType"`
+	BsType     int    `json:"bsType"`
 	Amount     string `json:"amount"`
 	CreateTime int64  `json:"createTime"`
+	Detail     string `json:"detail"`
+	Ext        string `json:"ext"`
+	AttachId   int64  `json:"attachId"`
 }
 
 type TaskDetail struct {
@@ -121,19 +125,65 @@ func AccountInfo(orgId int, userId int64, currency string) ([]*Account, *base_se
 	return account, nil
 }
 
+// 账户列表
+func AccountList(orgId int, accountId int64, currency string, beginTime, endTime int64, status, page, limit int) ([]*Account, *base_server_sdk.Error) {
+	if orgId <= 0 || limit > 1000 {
+		return nil, base_server_sdk.ErrInvalidParams
+	}
+
+	params := make(map[string]string)
+	params["orgId"] = strconv.Itoa(orgId)
+	params["accountId"] = strconv.FormatInt(accountId, 10)
+	params["beginTime"] = strconv.FormatInt(beginTime, 10)
+	params["endTime"] = strconv.FormatInt(endTime, 10)
+	params["currency"] = currency
+	params["status"] = strconv.Itoa(status)
+	params["page"] = strconv.Itoa(page)
+	params["limit"] = strconv.Itoa(limit)
+
+	client := base_server_sdk.Instance
+	data, err := client.DoRequest(client.Hosts.AccountServerHost, "account", "accountList", params)
+	if err != nil {
+		return nil, err
+	}
+
+	var account []*Account
+	if err := json.Unmarshal(data, &account); err != nil {
+		common.ErrorLog("baseServerSdk_AccountInfo", params, "unmarshal account fail"+string(data))
+		return nil, base_server_sdk.ErrServiceBusy
+	}
+	return account, nil
+
+}
+
 //	账户信息列表
 //	POST account/AccountsInfo
 //
 //	异常错误:
 //	1001 参数错误
 //	2003 账户不存在
-func AccountsInfo(orgId int, userIds []int64, currency string) ([]*Account, *base_server_sdk.Error) {
+func AccountsInfo(orgId int, userIds string, currency string) ([]*Account, *base_server_sdk.Error) {
 	if orgId <= 0 || len(userIds) <= 0 {
 		return nil, base_server_sdk.ErrInvalidParams
 	}
+
+	userIdList := strings.Split(userIds, ",")
+	if len(userIdList) == 0 {
+		return nil, base_server_sdk.ErrInvalidParams
+	}
+
+	var userIdIntList []int64
+	for _, userItem := range userIdList {
+		v, e := strconv.ParseInt(userItem, 10, 64)
+		if e != nil {
+			return nil, base_server_sdk.ErrInvalidParams
+		}
+		userIdIntList = append(userIdIntList, v)
+	}
+
 	params := make(map[string]string)
 	params["orgId"] = strconv.Itoa(orgId)
-	userIdsMarshal, _ := json.Marshal(userIds)
+	userIdsMarshal, _ := json.Marshal(userIdIntList)
 	params["userIds"] = string(userIdsMarshal)
 	params["currency"] = currency
 
@@ -196,7 +246,7 @@ func UpdateStatus(orgId int, accountId int64, status AccountStatus) *base_server
 //	2009 账户可用减少失败
 //	2010 账户冻结减少失败
 //	2011 账户日志创建失败
-func OperateAmount(orgId int, accountId int64, opType OpType, bsType, allowNegative int, amount, detail, ext, callback string) *base_server_sdk.Error {
+func OperateAmount(orgId int, accountId int64, opType OpType, bsType, allowNegative int, amount, detail, ext string, callback *TaskCallBack) *base_server_sdk.Error {
 	if orgId <= 0 || accountId <= 0 || opType <= 0 || bsType <= 0 || amount == "" {
 		return base_server_sdk.ErrInvalidParams
 	}
@@ -209,7 +259,10 @@ func OperateAmount(orgId int, accountId int64, opType OpType, bsType, allowNegat
 	params["amount"] = amount
 	params["detail"] = detail
 	params["ext"] = ext
-	params["callback"] = callback
+	if callback != nil {
+		callbackData, _ := json.Marshal(callback)
+		params["callback"] = string(callbackData)
+	}
 
 	client := base_server_sdk.Instance
 	_, err := client.DoRequest(client.Hosts.AccountServerHost, "account", "operateAmount", params)
@@ -233,7 +286,7 @@ func OperateAmount(orgId int, accountId int64, opType OpType, bsType, allowNegat
 //	1001 参数错误
 //	2003 账户不存在
 func AccountLogList(orgId int, userId int64, opType OpType, bsType int, currency string, beginTime, endTime int, page, limit int) ([]*LogList, *base_server_sdk.Error) {
-	if orgId <= 0 || userId <= 0 || opType < 0 || page <= 0 || limit <= 0 || limit > 1000 {
+	if orgId <= 0 || userId <= 0 || opType < 0 || page <= 0 || limit > 1000 {
 		return nil, base_server_sdk.ErrInvalidParams
 	}
 
@@ -301,8 +354,10 @@ func BatchOperateAmount(orgId, isAsync int, details []*TaskDetail, callback *Tas
 	params["isAsync"] = strconv.Itoa(isAsync)
 	taskDetailByte, _ := json.Marshal(details)
 	params["detail"] = string(taskDetailByte)
-	callbackData, _ := json.Marshal(callback)
-	params["callback"] = string(callbackData)
+	if callback != nil {
+		callbackData, _ := json.Marshal(callback)
+		params["callback"] = string(callbackData)
+	}
 
 	client := base_server_sdk.Instance
 	_, err := client.DoRequest(client.Hosts.AccountServerHost, "account", "batchOperateAmount", params)

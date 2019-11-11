@@ -358,3 +358,53 @@ func UpdateUserStatus(orgId int, userId int64, status Status) *base_server_sdk.E
 1001 参数异常
 1003 用户不存在
 ```
+
+- 解绑手机
+
+func UnBindPhone(orgId int, userId int64, code string) *base_server_sdk.Error
+
+```go
+1. code有值的话,会校验短信验证码
+
+异常返回:
+1000 服务繁忙
+1001 参数异常
+1003 用户不存在
+1011 手机未绑定
+1013 解绑手机后将失去所有登录方式
+```
+
+- 解绑邮箱
+
+func UnBindEmail(orgId int, userId int64, code string) *base_server_sdk.Error
+
+```go
+1. code有值的话,会校验邮箱验证码
+
+异常返回:
+1000 服务繁忙
+1001 参数异常
+1003 用户不存在
+1012 邮箱未绑定
+1014 解绑邮箱后将失去所有登录方式
+```
+
+- 存储用户业务信息
+
+func StoreValAtomic(orgId int, userId int64, key, val string) *base_server_sdk.Error
+
+```go
+原子操作,存储用户一些信息
+
+异常返回:
+1000 服务繁忙
+1001 参数异常
+```
+
+- 获取用户的业务信息
+
+func GetStoreVal(orgId int, userId int64, key string) (map[int64]string, *base_server_sdk.Error)
+
+- 删除用户的业务信息
+
+func DelStoreVal(orgId int, userId int64, id int64) *base_server_sdk.Error

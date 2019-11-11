@@ -1,7 +1,8 @@
 package main
 
 import (
-	"fmt"
+	"base-server-account/model"
+	"encoding/json"
 	"github.com/becent/golang-common/base-server-sdk"
 	base_server_account "github.com/becent/golang-common/base-server-sdk/base-server-account"
 	"time"
@@ -14,7 +15,7 @@ func main() {
 		RequestTimeout:  5 * time.Second,
 		IdleConnTimeout: 10 * time.Minute,
 		Hosts: base_server_sdk.Hosts{
-			AccountServerHost: "http://127.0.0.1:8081",
+			AccountServerHost: "http://127.0.0.1:5050",
 		},
 		GRpcOnly: false,
 	})
@@ -34,23 +35,28 @@ func main() {
 	//	fmt.Printf("创建成功: {%v}\n", account)
 	//}
 
+	//// 账户信息
+	//accounts, err := base_server_account.AccountInfo(8, 100000, "CC")
+	//if err != nil {
+	//	println(err.String())
+	//} else {
+	//	fmt.Printf("账户信息: {%v}\n", accounts)
+	//}
+	//
 	// 账户信息
-	accounts, err := base_server_account.AccountInfo(8, 100000, "CC")
+	//accounts, err := base_server_account.AccountsInfo(8, "100000", "")
+	//if err != nil {
+	//	println(err.String())
+	//} else {
+	//	fmt.Printf("账户信息: {%v}\n", accounts)
+	//}
 
-	if err != nil {
-		println(err.String())
-	} else {
-		fmt.Printf("账户信息: {%v}\n", accounts)
-	}
-
-	// 账户信息
-	accounts, err = base_server_account.AccountsInfo(8, []int64{100000}, "CC")
-
-	if err != nil {
-		println(err.String())
-	} else {
-		fmt.Printf("账户信息: {%v}\n", accounts)
-	}
+	//accountList, err := base_server_account.AccountList(8, 0, "", 0, 0, 0, 0, 10)
+	//if err != nil {
+	//	println(err.String())
+	//} else {
+	//	fmt.Printf("账户列表: {%v}\n", accountList)
+	//}
 
 	//// 账户状态更新
 	//err = base_server_account.UpdateStatus(8, 9, base_server_account.ACCOUNT_STATUS_FREEZE)
@@ -60,13 +66,18 @@ func main() {
 	//	println("状态更新成功")
 	//}
 	//
-	//// 金额操作
-	//err = base_server_account.OperateAmount(8, 9, base_server_account.OP_TYPE_AVAIL_ADD, 1, 0, "100", "custom json string", "custom json string", "callbackUrl")
-	//if err != nil {
-	//	println(err.String())
-	//} else {
-	//	println("操作成功")
-	//}
+	// 金额操作
+	callback := &model.TaskCallBack{
+		CallBackUrl: "baidu.com",
+		Data:        nil,
+	}
+	callbackStr, _ := json.Marshal(callback)
+	err := base_server_account.OperateAmount(8, 1, base_server_account.OP_TYPE_AVAIL_ADD, 1, 0, "100", "custom json string", "custom json string", string(callbackStr))
+	if err != nil {
+		println(err.String())
+	} else {
+		println("操作成功")
+	}
 	//
 	//// 账户日志列表
 	//logList, err := base_server_account.AccountLogList(8, 1, base_server_account.OP_TYPE_AVAIL_SUB, 1, "", 1568776001, 1569228191, 1, 10)
@@ -123,10 +134,10 @@ func main() {
 	//}
 
 	//账户账转
-	err = base_server_account.Transfer(8, 1, 2, "1000")
-	if err != nil {
-		println(err.String())
-	} else {
-		println("操作成功")
-	}
+	//err = base_server_account.Transfer(8, 1, 2, "1000")
+	//if err != nil {
+	//	println(err.String())
+	//} else {
+	//	println("操作成功")
+	//}
 }
