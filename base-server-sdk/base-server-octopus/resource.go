@@ -7,10 +7,10 @@ import (
 )
 
 //orgId 组织id
-// formFile 需要上传的文件列表：key是field的name，value是文件路径
+// formFile 需要上传的文件列表：key是fieldName;;;fileName的拼接，value是具体文件内容
 // formFile := make(map[string]string)
-// formFile["file1"] = "path/to/test.log"
-// formFile["file2"] = "path/to/test.2.log"
+// formFile["field1;;;file1"] = "file1 data"
+// formFile["field2;;;file2"] = "file2 data"
 // 返回
 //	result = {
 //		"file1": "https://xxx.com/path/to/file1",
