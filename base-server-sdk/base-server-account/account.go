@@ -246,8 +246,8 @@ func UpdateStatus(orgId int, accountId int64, status AccountStatus) *base_server
 //	2009 账户可用减少失败
 //	2010 账户冻结减少失败
 //	2011 账户日志创建失败
-func OperateAmount(orgId int, accountId int64, opType OpType, bsType, allowNegative int, amount, detail, ext string, callback *TaskCallBack) *base_server_sdk.Error {
-	if orgId <= 0 || accountId <= 0 || opType <= 0 || bsType <= 0 || amount == "" {
+func OperateAmount(orgId int, accountId, userId int64, currency string, opType OpType, bsType, allowNegative int, amount, detail, ext string, callback *TaskCallBack) *base_server_sdk.Error {
+	if orgId <= 0 || opType <= 0 || bsType <= 0 || amount == "" || (accountId <= 0 && (userId <= 0 || currency == "" ))  {
 		return base_server_sdk.ErrInvalidParams
 	}
 	params := make(map[string]string)
