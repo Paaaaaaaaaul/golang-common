@@ -253,6 +253,8 @@ func OperateAmount(orgId int, accountId, userId int64, currency string, opType O
 	params := make(map[string]string)
 	params["orgId"] = strconv.Itoa(orgId)
 	params["accountId"] = strconv.FormatInt(accountId, 10)
+	params["userId"] = strconv.FormatInt(userId, 10)
+	params["currency"] = currency
 	params["opType"] = strconv.Itoa(int(opType))
 	params["bsType"] = strconv.Itoa(bsType)
 	params["allowNegative"] = strconv.Itoa(allowNegative)
