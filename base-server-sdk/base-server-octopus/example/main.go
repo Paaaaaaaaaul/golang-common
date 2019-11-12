@@ -54,7 +54,7 @@ func main() {
 	formFile := make(map[string]string)
 	formFile["file1"] = "test.log"
 	formFile["file2"] = "test.2.log"
-	res, err := base_server_octopus.Upload(1, formFile)
+	res, err := base_server_octopus.Upload(1, 1, formFile)
 
 	if err != nil {
 		println(err.String())
