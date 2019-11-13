@@ -2,6 +2,7 @@ package common
 
 import (
 	"bytes"
+	"context"
 	"crypto/tls"
 	"errors"
 	"golang.org/x/net/publicsuffix"
@@ -208,15 +209,18 @@ func (s *HttpAgent) AddHeader(key, val string) *HttpAgent {
 
 // Timeout config the timeout to request
 func (s *HttpAgent) Timeout(d time.Duration) *HttpAgent {
-	s.Transport.Dial = func(network, addr string) (net.Conn, error) {
+	s.Transport.DialContext = func(ctx context.Context, network, addr string) (net.Conn, error) {
 		conn, err := net.DialTimeout(network, addr, d)
 		if err != nil {
 			s.Errors = append(s.Errors, err)
 			return nil, err
 		}
-		conn.SetDeadline(time.Now().Add(d))
+		if err = conn.SetDeadline(time.Now().Add(d)); err != nil {
+			return nil, err
+		}
 		return conn, nil
 	}
+	s.Client.Transport = s.Transport
 	return s
 }
 

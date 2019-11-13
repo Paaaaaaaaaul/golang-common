@@ -4,6 +4,7 @@ import (
 	"io/ioutil"
 	"os"
 	"testing"
+	"time"
 )
 
 func BenchmarkHttpAgent(t *testing.B) {
@@ -25,6 +26,25 @@ func BenchmarkHttpAgent(t *testing.B) {
 		}
 		println(string(body))
 	}
+}
+
+func TestHttpAgent_Timeout(t *testing.T) {
+	request := New()
+	request = request.SetHeader("AHost", "commonServer").Timeout(time.Millisecond * 500)
+	request = request.Post("https://s-api.xyhj.io/v1/w/zh/user/loginByAccount")
+
+	data := map[string]string{
+		"orgId":    "99",
+		"account":  "songliang1573629825",
+		"password": "123456",
+	}
+
+	_, body, err := request.ContentType(TypeFormUrlencoded).SendForm(data).End()
+	if err != nil {
+		println(err.Error())
+		return
+	}
+	println(string(body))
 }
 
 func TestHttpAgent(t *testing.T) {
