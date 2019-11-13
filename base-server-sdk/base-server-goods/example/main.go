@@ -66,14 +66,14 @@ func main() {
 		"重量": "1kg",
 		"新鲜度": "100%",
 	}
-	if sku, err := base_server_goods.AddSku(8, 100000, 3, skuSpecs, 1, "100", 10); err != nil {
+	if sku, err := base_server_goods.AddSku(8, 100000, 3, skuSpecs, 1, "100", "10"); err != nil {
 		println(err.String())
 	} else {
 		fmt.Printf("添加成功: {%v}", sku)
 	}
 
 	//操作sku库存
-	if err := base_server_goods.OperateStock(8, 100000, 3, 4, 100, 1); err != nil {
+	if err := base_server_goods.OperateStock(8, 100000, 3, 4, "100", 1); err != nil {
 		println(err.String())
 	} else {
 		fmt.Print("操作成功")
