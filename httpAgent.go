@@ -73,13 +73,13 @@ type File struct {
 // For Example
 //
 // to send a POST request with application/x-www-form-urlencoded contentType:
-// 		resp, body, err := New().Post(url).Content(TypeFormUrlencoded).SendForm(map...).End()
+// 		resp, body, err := New().Post(url).ContentType(TypeFormUrlencoded).SendForm(map...).End()
 //
 // send a POST request with application/json:
-// 		resp, body, err := New().Post(url).Content(TypeJson).SendData([]byte...).End()
+// 		resp, body, err := New().Post(url).ContentType(TypeJson).SendData([]byte...).End()
 //
 // send a POST request with multipart/form-data:
-// 		request := New().Post(url).Content(TypeMultipartFormData)
+// 		request := New().Post(url).ContentType(TypeMultipartFormData)
 // 		request = request.SendFile(f1)
 // 		request = request.SendFile(f2)
 // 		resp, body, err := request.End()
