@@ -5,6 +5,7 @@ import (
 	"context"
 	"crypto/tls"
 	"errors"
+	"github.com/moul/http2curl"
 	"golang.org/x/net/publicsuffix"
 	"io"
 	"io/ioutil"
@@ -366,4 +367,16 @@ func (s *HttpAgent) End() (*http.Response, []byte, error) {
 	}
 
 	return resp, body, nil
+}
+
+func (s *HttpAgent) CurlCommand() (string, error) {
+	req, err := s.MakeRequest()
+	if err != nil {
+		return "", err
+	}
+	cmd, err := http2curl.GetCurlCommand(req)
+	if err != nil {
+		return "", err
+	}
+	return cmd.String(), nil
 }
