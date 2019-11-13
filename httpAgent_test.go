@@ -6,6 +6,27 @@ import (
 	"testing"
 )
 
+func BenchmarkHttpAgent(t *testing.B) {
+	for i := 0; i < 20; i++ {
+		request := New()
+		request = request.SetHeader("AHost", "commonServer")
+		request = request.Post("https://s-api.xyhj.io/v1/w/zh/user/loginByAccount")
+
+		data := map[string]string{
+			"orgId":    "99",
+			"account":  "songliang1573629825",
+			"password": "123456",
+		}
+
+		_, body, err := request.ContentType(TypeFormUrlencoded).SendForm(data).End()
+		if err != nil {
+			println(err.Error())
+			return
+		}
+		println(string(body))
+	}
+}
+
 func TestHttpAgent(t *testing.T) {
 	// 通过向基础公共服务进行登录注册上传文件，验证httpAgent是否有效
 
