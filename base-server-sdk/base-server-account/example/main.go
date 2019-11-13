@@ -72,7 +72,7 @@ func main() {
 		Data:        nil,
 	}
 	callbackStr, _ := json.Marshal(callback)
-	err := base_server_account.OperateAmount(8, 1, 0, "", base_server_account.OP_TYPE_AVAIL_ADD, 1, 0, "100", "custom json string", "custom json string", string(callbackStr))
+	err := base_server_account.OperateAmount(8, 1, base_server_account.OP_TYPE_AVAIL_ADD, 1, 0, "100", "custom json string", "custom json string", string(callbackStr))
 	if err != nil {
 		println(err.String())
 	} else {
