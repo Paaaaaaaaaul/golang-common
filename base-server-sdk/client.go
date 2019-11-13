@@ -18,6 +18,7 @@ type Hosts struct {
 	OctopusServerHost   string
 	AiPayServerHost     string
 	InteractServerHost  string
+	GoodsServerHost     string
 	// TODO add server host here
 }
 

@@ -247,12 +247,41 @@ func UpdateStatus(orgId int, accountId int64, status AccountStatus) *base_server
 //	2010 账户冻结减少失败
 //	2011 账户日志创建失败
 func OperateAmount(orgId int, accountId int64, opType OpType, bsType, allowNegative int, amount, detail, ext string, callback *TaskCallBack) *base_server_sdk.Error {
-	if orgId <= 0 || accountId <= 0 || opType <= 0 || bsType <= 0 || amount == "" {
+	if orgId <= 0 || opType <= 0 || bsType <= 0 || amount == "" || accountId <= 0 {
 		return base_server_sdk.ErrInvalidParams
 	}
 	params := make(map[string]string)
 	params["orgId"] = strconv.Itoa(orgId)
 	params["accountId"] = strconv.FormatInt(accountId, 10)
+	params["opType"] = strconv.Itoa(int(opType))
+	params["bsType"] = strconv.Itoa(bsType)
+	params["allowNegative"] = strconv.Itoa(allowNegative)
+	params["amount"] = amount
+	params["detail"] = detail
+	params["ext"] = ext
+	if callback != nil {
+		callbackData, _ := json.Marshal(callback)
+		params["callback"] = string(callbackData)
+	}
+
+	client := base_server_sdk.Instance
+	_, err := client.DoRequest(client.Hosts.AccountServerHost, "account", "operateAmount", params)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// 金额操作
+// OperateAmountByUserId 根据userId和currency进行操作
+func OperateAmountByUserId(orgId int, userId int64, currency string, opType OpType, bsType, allowNegative int, amount, detail, ext string, callback *TaskCallBack) *base_server_sdk.Error {
+	if orgId <= 0 || opType <= 0 || bsType <= 0 || amount == "" || userId <= 0 || currency == "" {
+		return base_server_sdk.ErrInvalidParams
+	}
+	params := make(map[string]string)
+	params["orgId"] = strconv.Itoa(orgId)
+	params["userId"] = strconv.FormatInt(userId, 10)
+	params["currency"] = currency
 	params["opType"] = strconv.Itoa(int(opType))
 	params["bsType"] = strconv.Itoa(bsType)
 	params["allowNegative"] = strconv.Itoa(allowNegative)

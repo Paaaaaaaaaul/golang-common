@@ -144,9 +144,12 @@ status状态枚举:
 
 - 金额操作
 
-func OperateAmount(orgId int, accountId int64, opType, bsType int, amount, detail, ext, callback *TaskCallBack) *base_server_sdk.Error
+func OperateAmount(orgId int, accountId, userId int64, currency string, opType, bsType int, amount, detail, ext, callback *TaskCallBack) *base_server_sdk.Error
 
 ```go
+注意:
+参数accountId与userId,currency两组必须满足一个不为空.同时存在以accountId为主
+
 opType 类型枚举:
 1	//可用-加
 2	//可用-减
