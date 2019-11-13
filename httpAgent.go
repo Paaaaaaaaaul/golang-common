@@ -227,6 +227,7 @@ func (s *HttpAgent) Timeout(d time.Duration) *HttpAgent {
 // TLSClientConfig setting the tls config
 func (s *HttpAgent) TLSClientConfig(config *tls.Config) *HttpAgent {
 	s.Transport.TLSClientConfig = config
+	s.Client.Transport = s.Transport
 	return s
 }
 
