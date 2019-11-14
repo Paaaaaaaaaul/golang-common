@@ -78,8 +78,8 @@ type Sku struct {
 	Specs       string `json:"specs"`       // 规格列表
 	SortOrder   int    `json:"sortOrder"`   // 规格序列
 	Price       string `json:"price"`       // 价格
-	Stock       int    `json:"stock"`       // 库存
-	FreezeStock int    `json:"freezeStock"` // 冻结库存
+	Stock       string    `json:"stock"`       // 库存
+	FreezeStock string   `json:"freezeStock"` // 冻结库存
 	CreateTime  int64  `json:"createTime"`  // 创建时间
 	UpdateTime  int64  `json:"updateTime"`  // 更新时间
 }
@@ -564,7 +564,7 @@ PRODUCT_STATUS_OFF_SHELVES ProductStatus = 2 //下架
 | specs | string | 是 | 具体属性列表 json |
 | sortOrder | int | 是 | 排序 |
 | price | string | 是 | 价格 |
-| stock | int | 是 | 库存 |
+| stock | string | 是 | 库存 |
 
 ```go
 返回值:
@@ -579,7 +579,7 @@ PRODUCT_STATUS_OFF_SHELVES ProductStatus = 2 //下架
         "specs": "{\"颜色\":\"金色\", \"版本\":\"256G\"}",
         "sortOrder": 1,
         "price": "15000",
-        "stock": 100,
+        "stock": "100",
         "createTime": 1572942482,
         "updateTime": 0
     }
@@ -601,7 +601,7 @@ PRODUCT_STATUS_OFF_SHELVES ProductStatus = 2 //下架
 | mchId | int64 | 是 | 商家id |
 | productId | int64 | 是 | 产品id |
 | skuId | int64 | 是 | skuId |
-| qty | int | 是 | 数量 |
+| qty | string | 是 | 数量 |
 | opType | StockOpType | 是 | 操作类型 |
 
 ```go
