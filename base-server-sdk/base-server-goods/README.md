@@ -632,3 +632,45 @@ UnFreeze       StockOpType = 5 //解冻库存
 3007 减冻结库存失败
 3008 解冻库存失败
 ```
+
+
+### 批量操作sku库存
+
+`post` `/goods/batchOperateStock`
+
+| 参数名 | 值 | 必填 | 说明 |
+| :------ | :------ | :------ | :------ |
+| orgId | int | 是 | 项目id |
+| mchId | int64 | 是 | 商家id |
+| batchData | []*BatchOperateStock | 是 | 批量数据 |
+| isAsync | int | 是 | 是否异步 1:是 0:同步.默认 |
+
+```go
+type TaskBatchOperateStock struct {
+	SkuId     int64
+	ProductId int64
+	Qty       string
+	OpType    StockOpType
+}
+
+
+type StockOpType int
+
+AddStock       StockOpType = 1 //加库存
+SubStock       StockOpType = 2 //减库存
+Freeze         StockOpType = 3 //冻结库存
+SubFreezeStock StockOpType = 4 //减冻结库存
+UnFreeze       StockOpType = 5 //解冻库存
+
+返回值:
+{
+    "gateway-success": true,
+    "gateway-orgId": "0",
+    "gateway-userId": "0",
+    "success": true,
+    "payload": true
+}
+
+异常错误:
+1001 参数错误
+```
