@@ -647,6 +647,7 @@ UnFreeze       StockOpType = 5 //解冻库存
 
 ```go
 type TaskBatchOperateStock struct {
+    MchId     int64
 	SkuId     int64
 	ProductId int64
 	Qty       string
