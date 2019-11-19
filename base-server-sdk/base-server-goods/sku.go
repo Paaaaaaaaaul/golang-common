@@ -111,3 +111,26 @@ func OperateStock(orgId int, mchId, productId, skuId int64, qty string, opType m
 	}
 	return nil
 }
+
+// 批量操作库存
+func BatchOperateStock(orgId int, batchData []*TaskBatchOperateStock, isAsync int) *base_server_sdk.Error {
+	if orgId <= 0 || len(batchData) == 0 {
+		return base_server_sdk.ErrInvalidParams
+	}
+
+	params := make(map[string]string)
+	params["orgId"] = strconv.Itoa(orgId)
+	data, err := json.Marshal(batchData)
+	if err != nil {
+		return base_server_sdk.ErrInvalidParams
+	}
+	params["batchData"] = string(data)
+	params["isAsync"] = strconv.Itoa(isAsync)
+
+	client := base_server_sdk.Instance
+	if _, err := client.DoRequest(client.Hosts.GoodsServerHost, "goods", "batchOperateStock", params); err != nil {
+		return err
+	}
+	return nil
+}
+

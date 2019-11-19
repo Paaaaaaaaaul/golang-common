@@ -63,7 +63,7 @@ func main() {
 
 	//添加sku
 	skuSpecs := map[string]string{
-		"重量": "1kg",
+		"重量":  "1kg",
 		"新鲜度": "100%",
 	}
 	if sku, err := base_server_goods.AddSku(8, 100000, 3, skuSpecs, 1, "100", "10"); err != nil {
@@ -74,6 +74,28 @@ func main() {
 
 	//操作sku库存
 	if err := base_server_goods.OperateStock(8, 100000, 3, 4, "100", 1); err != nil {
+		println(err.String())
+	} else {
+		fmt.Print("操作成功")
+	}
+
+	//批量操作sku库存
+	var batchData []*base_server_goods.TaskBatchOperateStock
+	batchData = append(batchData, &base_server_goods.TaskBatchOperateStock{
+		MchId:     100000,
+		SkuId:     1,
+		ProductId: 1,
+		Qty:       "100",
+		OpType:    base_server_goods.ADD_STOCK,
+	})
+	batchData = append(batchData, &base_server_goods.TaskBatchOperateStock{
+		MchId:     100000,
+		SkuId:     2,
+		ProductId: 1,
+		Qty:       "10",
+		OpType:    base_server_goods.SUB_STOCK,
+	})
+	if err := base_server_goods.BatchOperateStock(8, batchData, 0); err != nil {
 		println(err.String())
 	} else {
 		fmt.Print("操作成功")

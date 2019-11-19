@@ -114,3 +114,12 @@ type TaskCallBack struct {
 	CallBackUrl string            `json:"callBackUrl"`
 	Data        map[string]string `json:"data"`
 }
+
+//批量操作库存
+type TaskBatchOperateStock struct {
+	MchId     int64
+	SkuId     int64
+	ProductId int64
+	Qty       string
+	OpType    StockOpType
+}
