@@ -324,7 +324,6 @@ res, err := base_server_octopus.Upload(1, formFile)
 
 | 参数名 | 值 | 必填 | 说明 |
 | :------ | :------ | :------ | :------ |
-| orgId | number | 是 | 项目id 网关通用字段 可不传 |
 | symbol | string | 否 | 汇率标识符，不传查所有。 格式：USDT_CNY 表示从usdt转到人民币 |
 
 ```go
