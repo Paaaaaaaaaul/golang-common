@@ -3,16 +3,11 @@ package base_server_octopus
 import (
 	"encoding/json"
 	"github.com/becent/golang-common/base-server-sdk"
-	"strconv"
 )
 
-func ExchangeRate(orgId int, symbol string) (map[string]string, *base_server_sdk.Error) {
-	if orgId <= 0 {
-		return nil, base_server_sdk.ErrInvalidParams
-	}
+func ExchangeRate(symbol string) (map[string]string, *base_server_sdk.Error) {
 
 	params := make(map[string]string)
-	params["orgId"] = strconv.Itoa(orgId)
 	params["symbol"] = symbol
 
 	client := base_server_sdk.Instance
