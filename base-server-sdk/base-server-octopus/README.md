@@ -330,7 +330,8 @@ res, err := base_server_octopus.Upload(1, formFile)
 注意:
 1. 人民币用CNY表示
 2. btc转usdt: BTC_USDT
-3. 目前支持币种: BTC, ETH, USDT, HT, EOS, XRP, LTC, HUSD, CNY 
+3. 目前支持币种: BTC, ETH, USDT, HT, EOS, XRP, LTC, HUSD, CNY, TEST
+4. TEST是系统测试币, 兑所有币种的汇率都返回1
 
 异常错误:
 1001 参数错误
