@@ -328,10 +328,9 @@ res, err := base_server_octopus.Upload(1, formFile)
 
 ```go
 注意:
-1. orgId必须大于0
-2. 人民币用CNY表示
-3. btc转usdt: BTC_USDT
-4. 目前支持币种: BTC, ETH, USDT, HT, EOS, XRP, LTC, HUSD, CNY 
+1. 人民币用CNY表示
+2. btc转usdt: BTC_USDT
+3. 目前支持币种: BTC, ETH, USDT, HT, EOS, XRP, LTC, HUSD, CNY 
 
 异常错误:
 1001 参数错误
