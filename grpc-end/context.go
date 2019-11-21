@@ -290,6 +290,9 @@ type Error struct {
 }
 
 func (c *GRpcContext) SuccessResponse(v interface{}) {
+	if v == nil {
+		v = make(map[string]interface{})
+	}
 	jsonStr, _ := json.Marshal(&SResponse{
 		Success: true,
 		PayLoad: v,
