@@ -324,15 +324,14 @@ res, err := base_server_octopus.Upload(1, formFile)
 
 | 参数名 | 值 | 必填 | 说明 |
 | :------ | :------ | :------ | :------ |
-| orgId | number | 是 | 项目id 网关通用字段 可不传 |
 | symbol | string | 否 | 汇率标识符，不传查所有。 格式：USDT_CNY 表示从usdt转到人民币 |
 
 ```go
 注意:
-1. orgId必须大于0
-2. 人民币用CNY表示
-3. btc转usdt: BTC_USDT
-4. 目前支持币种: BTC, ETH, USDT, HT, EOS, XRP, LTC, HUSD, CNY 
+1. 人民币用CNY表示
+2. btc转usdt: BTC_USDT
+3. 目前支持币种: BTC, ETH, USDT, HT, EOS, XRP, LTC, HUSD, CNY, TEST
+4. TEST是系统测试币, 兑所有币种的汇率都返回1
 
 异常错误:
 1001 参数错误
