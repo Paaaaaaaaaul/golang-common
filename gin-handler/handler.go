@@ -1,6 +1,7 @@
 package gin_handler
 
 import (
+	"encoding/json"
 	"errors"
 	"github.com/becent/golang-common"
 	"github.com/becent/golang-common/exception"
@@ -47,24 +48,43 @@ func NewHandler(cfg *Config) gin.HandlerFunc {
 
 		c.Set(KEY_APPNAME, cfg.AppName)
 
+		// make a new handler
+		h := &Handler{Context: c}
+		c.Set(KEY_GIN_CONTROLLER, h)
+
 		// get params
 		params := make(map[string]string)
-		_ = c.Request.ParseForm()
-		for key, val := range c.Request.Form {
-			if val[0] != "" {
-				params[key] = val[0]
-			}
-		}
-		c.Set(KEY_PARAMS, params)
 
-		// if request's Content-Type is multipart/form-data, use MultipartForm() to get text and files.
-		if c.ContentType() == gin.MIMEMultipartPOSTForm {
+		switch c.ContentType() {
+		case gin.MIMEJSON:
+			buf, err := ioutil.ReadAll(c.Request.Body)
+			if err != nil {
+				h.ErrResponse(&exception.Exception{-1, "body is empty"})
+				return
+			}
+			if err = json.Unmarshal(buf, &params); err != nil {
+				h.ErrResponse(&exception.Exception{-1, err.Error()})
+				return
+			}
+			c.Set(KEY_PARAMS, params)
+
+		case gin.MIMEPOSTForm:
+			_ = c.Request.ParseForm()
+			for key, val := range c.Request.Form {
+				if val[0] != "" {
+					params[key] = val[0]
+				}
+			}
+			c.Set(KEY_PARAMS, params)
+
+		case gin.MIMEMultipartPOSTForm:
 			if form, err := c.MultipartForm(); err == nil {
 				for key, val := range form.Value {
 					if val[0] != "" {
 						params[key] = val[0]
 					}
 				}
+				c.Set(KEY_PARAMS, params)
 
 				size := 0
 				files := make(map[string]string)
@@ -82,16 +102,15 @@ func NewHandler(cfg *Config) gin.HandlerFunc {
 				c.Set(KEY_FILES, files)
 				c.Set(KEY_FILES_SIZE, size)
 			}
-		}
 
-		// make a new handler
-		h := &Handler{Context: c}
-		c.Set(KEY_GIN_CONTROLLER, h)
+		default:
+			h.ErrResponse(&exception.Exception{-1, "unSuported http method"})
+		}
 
 		// check signature
 		if cfg.CheckSignature {
 			if err := h.checkSignature(cfg); err != nil {
-				h.ErrResponse(&exception.Exception{-1, "签名失败"})
+				h.ErrResponse(&exception.Exception{-1, "signature invalid"})
 			}
 		}
 
