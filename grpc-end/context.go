@@ -112,6 +112,27 @@ func (c *GRpcContext) GetStringMap(key string) map[string]string {
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
+type Session struct {
+	OrgId  int   `json:"orgId"`
+	UserId int64 `json:"userId"`
+}
+
+// GetSession returns session from gateway
+// returns nil if user not login
+func (c *GRpcContext) GetSession() *Session {
+	orgId := c.IntHeader(HeaderKeyOrgId)
+	userId := c.Int64Header(HeaderKeyUserId)
+	if orgId <= 0 || userId <= 0 {
+		return nil
+	}
+
+	return &Session{
+		OrgId:  orgId,
+		UserId: userId,
+	}
+}
+
+// ---------------------------------------------------------------------------------------------------------------------
 
 // IsParamExist returns true is param exist
 func (c *GRpcContext) IsParamExist(key string) bool {

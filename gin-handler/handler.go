@@ -192,6 +192,29 @@ func (ct *Handler) ErrResponse(exp *exception.Exception, logMessage ...string) {
 
 // ---------------------------------------------------------------------------------------------------------------------
 // ---------------------------------------------------------------------------------------------------------------------
+type Session struct {
+	OrgId  int   `json:"orgId"`
+	UserId int64 `json:"userId"`
+}
+
+// GetSession returns session from gateway
+// returns nil if user not login
+func (ct *Handler) GetSession() *Session {
+	c := ct.Context
+	orgId, err := strconv.Atoi(c.GetHeader("X-Gw-orgId"))
+	if err != nil {
+		return nil
+	}
+	userId, err := strconv.ParseInt(c.GetHeader("X-Gw-userId"), 10, 64)
+	if err != nil {
+		return nil
+	}
+
+	return &Session{
+		OrgId:  orgId,
+		UserId: userId,
+	}
+}
 
 // IntParam returns int for the given key
 // If the value does not exists it returns 0
