@@ -117,6 +117,7 @@ type TaskCallBack struct {
 
 //批量操作库存
 type TaskBatchOperateStock struct {
+	MchId     int64
 	SkuId     int64
 	ProductId int64
 	Qty       string
