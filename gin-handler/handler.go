@@ -216,6 +216,26 @@ func (ct *Handler) GetSession() *Session {
 	}
 }
 
+// GetOrgIdFromSession returns orgId in session
+// returns 0 if session is nil
+func (ct *Handler) GetOrgIdFromSession() int {
+	s := ct.GetSession()
+	if s != nil {
+		return s.OrgId
+	}
+	return 0
+}
+
+// GetUserIdFromSession returns userId in session
+// returns 0 if session is nil
+func (ct *Handler) GetUserIdFromSession() int64 {
+	s := ct.GetSession()
+	if s != nil {
+		return s.UserId
+	}
+	return 0
+}
+
 // IntParam returns int for the given key
 // If the value does not exists it returns 0
 func (ct *Handler) IntParam(key string) int {

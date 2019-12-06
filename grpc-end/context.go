@@ -132,6 +132,26 @@ func (c *GRpcContext) GetSession() *Session {
 	}
 }
 
+// GetOrgIdFromSession returns orgId in session
+// returns 0 if session is nil
+func (c *GRpcContext) GetOrgIdFromSession() int {
+	s := c.GetSession()
+	if s != nil {
+		return s.OrgId
+	}
+	return 0
+}
+
+// GetUserIdFromSession returns userId in session
+// returns 0 if session is nil
+func (c *GRpcContext) GetUserIdFromSession() int64 {
+	s := c.GetSession()
+	if s != nil {
+		return s.UserId
+	}
+	return 0
+}
+
 // ---------------------------------------------------------------------------------------------------------------------
 
 // IsParamExist returns true is param exist
