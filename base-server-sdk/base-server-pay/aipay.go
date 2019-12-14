@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"github.com/becent/golang-common"
 	"github.com/becent/golang-common/base-server-sdk"
-	"github.com/gin-gonic/gin"
 	"math/rand"
 	"sort"
 	"strconv"
@@ -310,7 +309,7 @@ func QueryPayOrder(mchId string, outTradeNo string, transactionId string, signKe
 
 //生成聚合支付链接
 func GenerateUnionPayUrl(mchId string, currency string, userId string, reqTime string,
-	amount string, notifyUrl string, redirectUrl string, signKey string) (string, *base_server_sdk.Error) {
+	amount string, notifyUrl string, redirectUrl string, attach string, signKey string) (string, *base_server_sdk.Error) {
 	request := map[string]string{}
 	request["mch_id"] = mchId
 	request["nonce_str"] = strconv.FormatInt(time.Now().Unix(), 10)
@@ -321,6 +320,7 @@ func GenerateUnionPayUrl(mchId string, currency string, userId string, reqTime s
 	request["notify_url"] = notifyUrl
 	request["redirect_url"] = redirectUrl
 	request["sessionId"] = RandString(18)
+	request["attach"] = attach
 	request["version"] = VERSION
 
 	response, err := SendAipayRequest("union", "generateUrl", signKey, request)
@@ -484,7 +484,7 @@ type PayNotify struct {
 }
 
 //是否支付成功
-func (notify *PayNotify) isSuccess() bool {
+func (notify *PayNotify) IsSuccess() bool {
 	if notify.TradeStatus == PAY_STATUS_SUCCESS {
 		return true
 	}
@@ -492,7 +492,7 @@ func (notify *PayNotify) isSuccess() bool {
 }
 
 //是否支付失败
-func (notify *PayNotify) isFail() bool {
+func (notify *PayNotify) IsFail() bool {
 	if notify.TradeStatus == PAY_STATUS_FAIL {
 		return true
 	}
@@ -500,64 +500,43 @@ func (notify *PayNotify) isFail() bool {
 }
 
 //是否支付中
-func (notify *PayNotify) isPaying() bool {
+func (notify *PayNotify) IsPaying() bool {
 	if notify.TradeStatus == PAY_STATUS_PAYING {
 		return true
 	}
 	return false
 }
 
-//解析回调
-func ParseNotify(c *gin.Context, mchId string, signKey string) (*PayNotify, *base_server_sdk.Error) {
+//验证签名
+func (notify *PayNotify) VerifySignature(mchId string, signKey string) bool {
 	params := map[string]string{
-		"pay_method":       c.GetString("pay_method"),
-		"mch_id":           c.GetString("mch_id"),
-		"transaction_id":   c.GetString("transaction_id"),
-		"out_trade_no":     c.GetString("out_trade_no"),
-		"pay_channel":      c.GetString("pay_channel"),
-		"nonce_str":        c.GetString("nonce_str"),
-		"trade_status":     c.GetString("trade_status"),
-		"sign_type":        c.GetString("sign_type"),
-		"user_out_fee":     c.GetString("user_out_fee"),
-		"user_out_type":    c.GetString("user_out_type"),
-		"time_start":       c.GetString("time_start"),
-		"time_expire":      c.GetString("time_expire"),
-		"time_end":         c.GetString("time_end"),
-		"detail":           c.GetString("detail"),
-		"spbill_create_ip": c.GetString("spbill_create_ip"),
-		"attach":           c.GetString("attach"),
-		"notify_url":       c.GetString("notify_url"),
-		"version":          c.GetString("version"),
-		"user_id":          c.GetString("user_id"),
+		"pay_method":       notify.PayMethod,
+		"mch_id":           notify.MchId,
+		"transaction_id":   notify.TransactionId,
+		"out_trade_no":     notify.OutTradeNo,
+		"pay_channel":      notify.PayChannel,
+		"nonce_str":        notify.NonceStr,
+		"trade_status":     notify.TradeStatus,
+		"sign_type":        notify.SignType,
+		"user_out_fee":     notify.UserOutFee,
+		"user_out_type":    notify.UserOutType,
+		"time_start":       notify.TimeStart,
+		"time_expire":      notify.TimeExpire,
+		"time_end":         notify.TimeEnd,
+		"detail":           notify.Detail,
+		"spbill_create_ip": notify.SpbillCreateIp,
+		"attach":           notify.Attach,
+		"notify_url":       notify.NotifyUrl,
+		"version":          notify.Version,
+		"user_id":          notify.UserId,
 	}
-	sign := c.GetString("sign")
 
 	mySign := GenerateAipaySignature(params, signKey)
-	if sign != mySign {
-		return nil, base_server_sdk.ErrServiceBusy
+	if notify.Sign != mySign {
+		return false
 	}
 
-	return &PayNotify{
-		PayMethod:      params["pay_method"],
-		MchId:          params["mch_id"],
-		TransactionId:  params["transaction_id"],
-		OutTradeNo:     params["out_trade_no"],
-		PayChannel:     params["pay_channel"],
-		NonceStr:       params["nonce_str"],
-		TradeStatus:    params["trade_status"],
-		SignType:       params["sign_type"],
-		UserOutFee:     params["user_out_fee"],
-		UserOutType:    params["user_out_type"],
-		TimeStart:      params["time_start"],
-		TimeExpire:     params["time_expire"],
-		TimeEnd:        params["time_end"],
-		Detail:         params["detail"],
-		SpbillCreateIp: params["spbill_create_ip"],
-		Attach:         params["attach"],
-		NotifyUrl:      params["notify_url"],
-		Version:        params["version"],
-		UserId:         params["user_id"],
-	}, nil
+	return true
 }
 
 // RandString 生成随机字符串
