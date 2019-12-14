@@ -124,6 +124,7 @@ func (c *BaseServerSdkClient) doHttpRequest(host string, controller, action stri
 	request.Header.Set("Content-Type", contentType)
 	request.Header.Set("Signature", c.makeSignature())
 	request.Header.Set("RequestId", c.requestId())
+	request.Close = true // close after resp, both server and client
 
 	// Do http request
 	resp, err := c.httpClient.Do(request)

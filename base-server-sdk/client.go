@@ -78,8 +78,7 @@ func InitBaseServerSdk(c *Config) {
 			Transport: &http.Transport{
 				DialContext: (&net.Dialer{
 					Timeout:   c.RequestTimeout,
-					KeepAlive: 0,
-					DualStack: true,
+					KeepAlive: -1,
 				}).DialContext,
 				IdleConnTimeout:       c.IdleConnTimeout,
 				ResponseHeaderTimeout: c.RequestTimeout,
