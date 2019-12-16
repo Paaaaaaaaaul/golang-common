@@ -507,6 +507,11 @@ func (notify *PayNotify) IsPaying() bool {
 	return false
 }
 
+const (
+	NOTIFY_RESPONSE_SUCCESS = "SUCCESS"
+	NOTIFY_RESPONSE_FAIL    = "FAIL"
+)
+
 //验证签名
 func (notify *PayNotify) VerifySignature(mchId string, signKey string) bool {
 	params := map[string]string{
