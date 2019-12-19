@@ -1,4 +1,4 @@
-# base_server_user 接口说明文档
+# base_server_statistic 接口说明文档
 
 ## 初始化base_server_sdk
 ```go

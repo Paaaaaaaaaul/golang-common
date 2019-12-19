@@ -20,6 +20,7 @@ type Hosts struct {
 	InteractServerHost  string
 	GoodsServerHost     string
 	TbUserServerHost    string
+	OrderServerHost     string
 	// TODO add server host here
 }
 
