@@ -28,7 +28,7 @@ func G_model(projectName string) error {
 
 	curDatabase := db.Dialect().CurrentDatabase()
 
-	rows, err := db.DB().Query("select table_name from information_schema.tables where table_schema=? and table_type=?", curDatabase, "base table")
+	rows, err := db.DB().Query("select table_name from information_schema.tables where table_schema=? and table_type=?", curDatabase, "BASE TABLE")
 	if err != nil {
 		return err
 	}
