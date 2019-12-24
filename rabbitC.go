@@ -201,6 +201,13 @@ func (r *RabbitC) watchRabbit() {
 				break
 			}
 
+			if r.afterConnected != nil {
+				if err = r.afterConnected(r, r.ch); err != nil {
+					ErrorLog("watchRabbit", nil, "[RabbitC] reconnect fail, afterConnected error: "+err.Error())
+					break
+				}
+			}
+
 			if err = r.tryConsume(); err != nil {
 				ErrorLog("watchRabbit", nil, "[RabbitC] reconnect fail, tryConsume error: "+err.Error())
 				_ = r.conn.Close()
