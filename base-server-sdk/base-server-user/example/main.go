@@ -162,7 +162,7 @@ func main() {
 	info.SetAvatar("new.png")
 	info.SetExt("456")
 	info.SetSex(base_server_user.Boy)
-	if err = base_server_user.UpdateUserInfo(5, user.UserId, info); err != nil {
+	if _,err = base_server_user.UpdateUserInfo(5, user.UserId, info); err != nil {
 		println(err.String())
 	} else {
 		println("更新用户信息成功")

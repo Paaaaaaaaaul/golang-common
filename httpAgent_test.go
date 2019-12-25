@@ -100,22 +100,3 @@ func TestHttpAgent(t *testing.T) {
 	}
 	println(string(body))
 }
-
-func TestHttpAgent_CurlCommand(t *testing.T) {
-	request := NewHttpAgent()
-	request = request.SetHeader("AHost", "commonServer").Timeout(time.Millisecond * 500)
-	request = request.Post("https://s-api.xyhj.io/v1/w/zh/user/loginByAccount")
-
-	data := map[string]string{
-		"orgId":    "99",
-		"account":  "songliang1573629825",
-		"password": "123456",
-	}
-
-	cmd, err := request.ContentType(TypeFormUrlencoded).SendForm(data).CurlCommand()
-	if err != nil {
-		println(err.Error())
-		return
-	}
-	println(cmd)
-}
