@@ -223,6 +223,28 @@ func (c *GRpcContext) Int64ParamDefault(key string, defVal int64) int64 {
 	return defVal
 }
 
+// Float64Param returns float64 val from request's Params for the given key
+// and returns zero if val not exists.
+func (c *GRpcContext) Float64Param(key string) float64 {
+	if val := c.StringParam(key); val != "" {
+		if n, err := strconv.ParseFloat(val, 64); err == nil {
+			return n
+		}
+	}
+	return 0
+}
+
+// Float64ParamDefault returns float64 val from request's Params for the given key
+// and returns defVal if val not exists.
+func (c *GRpcContext) Float64ParamDefault(key string, defVal float64) float64 {
+	if val := c.StringParam(key); val != "" {
+		if n, err := strconv.ParseFloat(val, 64); err == nil {
+			return n
+		}
+	}
+	return defVal
+}
+
 // ---------------------------------------------------------------------------------------------------------------------
 
 // HeaderString returns string val from request's Header for the given key

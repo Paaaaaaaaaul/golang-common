@@ -237,37 +237,54 @@ func (ct *Handler) GetUserIdFromSession() int64 {
 }
 
 // IntParam returns int for the given key
-// If the value does not exists it returns 0
+// If the value not a valid num, returns 0
 func (ct *Handler) IntParam(key string) int {
 	val, _ := strconv.Atoi(ct.StringParam(key))
 	return val
 }
 
 // IntParamDefault returns int for the given key
-// If the value does not exists it returns defVal
+// If the key does not exists in params, it returns defVal
 func (ct *Handler) IntParamDefault(key string, defVal int) int {
-	ret := ct.IntParam(key)
-	if ret == 0 {
+	if !ct.IsParamExist(key) {
 		return defVal
 	}
-	return ret
+
+	return ct.IntParam(key)
 }
 
 // Int64Param returns int64 for the given key
-// If the value does not exists it returns 0
+// If the value not a valid int64 num, returns 0
 func (ct *Handler) Int64Param(key string) int64 {
 	val, _ := strconv.ParseInt(ct.StringParam(key), 10, 64)
 	return val
 }
 
 // Int64ParamDefault returns int64 for the given key
-// If the value does not exists it returns defVal
+// If the key does not exists in params, it returns defVal
 func (ct *Handler) Int64ParamDefault(key string, defVal int64) int64 {
-	ret := ct.Int64Param(key)
-	if ret == 0 {
+	if !ct.IsParamExist(key) {
 		return defVal
 	}
-	return ret
+
+	return ct.Int64Param(key)
+}
+
+// Float64Param returns float64 for the given key
+// if the val not a valid float num, returns 0
+func (ct *Handler) Float64Param(key string) float64 {
+	val, _ := strconv.ParseFloat(ct.StringParam(key), 64)
+	return val
+}
+
+// Float64ParamDefault returns float64 for the given key
+// If the key does not exists in params, returns defVal
+func (ct *Handler) Float64ParamDefault(key string, defVal float64) float64 {
+	if !ct.IsParamExist(key) {
+		return defVal
+	}
+
+	return ct.Float64Param(key)
 }
 
 // StringParam returns string for the given key
