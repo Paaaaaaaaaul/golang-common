@@ -17,6 +17,7 @@ const (
 	OP_TYPE_FREEZE_ADD OpType = 3 //冻结-加
 	OP_TYPE_FREEZE_SUB OpType = 4 //冻结-减
 	OP_TYPE_UN_FREEZE  OpType = 5 //解冻-冻结进可用
+	OP_TYPE_FREEZE     OpType = 6 //冻结-可用进冻结
 
 	ACCOUNT_STATUS_NORMAL AccountStatus = 1 //正常
 	ACCOUNT_STATUS_FREEZE AccountStatus = 2 //冻结
@@ -415,7 +416,6 @@ func Transfer(orgId int, fromAccountId, toAccountId int64, amount string) *base_
 	}
 	return nil
 }
-
 
 // 账户划转
 func CheckAccountByWdw(orgId int, userId int64, currency string) *base_server_sdk.Error {
