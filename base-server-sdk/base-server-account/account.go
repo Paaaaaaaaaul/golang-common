@@ -127,13 +127,14 @@ func AccountInfo(orgId int, userId int64, currency string) ([]*Account, *base_se
 }
 
 // 账户列表
-func AccountList(orgId int, accountId int64, currency string, beginTime, endTime int64, status, page, limit int) ([]*Account, *base_server_sdk.Error) {
+func AccountList(orgId int, userId, accountId int64, currency string, beginTime, endTime int64, status, page, limit int) ([]*Account, *base_server_sdk.Error) {
 	if orgId <= 0 || limit > 1000 {
 		return nil, base_server_sdk.ErrInvalidParams
 	}
 
 	params := make(map[string]string)
 	params["orgId"] = strconv.Itoa(orgId)
+	params["userId"] = strconv.FormatInt(userId, 10)
 	params["accountId"] = strconv.FormatInt(accountId, 10)
 	params["beginTime"] = strconv.FormatInt(beginTime, 10)
 	params["endTime"] = strconv.FormatInt(endTime, 10)
