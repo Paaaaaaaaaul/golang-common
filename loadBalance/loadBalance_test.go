@@ -1,6 +1,7 @@
-package remainder
+package loadBalance
 
 import (
+	"github.com/becent/golang-common/loadBalance/roundRobin"
 	"github.com/becent/golang-common/registry"
 	"github.com/becent/golang-common/registry/etcd"
 	"strconv"
@@ -24,7 +25,8 @@ func TestRemainder(t *testing.T) {
 		}
 	}()
 
-	lb := &RemainderLoadBalance{}
+	// lb := &remainder.RemainderLoadBalance{}
+	lb := &roundRobin.RoundRobinLoadBalance{}
 	lb.SetServiceName("test")
 	lb.SetRegistry(reg)
 	lb.SetReloadFunc(func() error {
