@@ -38,10 +38,6 @@ func (b *RemainderLoadBalance) Ready() bool {
 }
 
 func (b *RemainderLoadBalance) GetService(key string) *registry.Node {
-	if !b.Ready() {
-		return nil
-	}
-
 	id, err := hashstructure.Hash(key, nil)
 	if err != nil {
 		println(err.Error())
@@ -81,6 +77,7 @@ func (b *RemainderLoadBalance) reload() error {
 		return err
 	}
 
+	b.Lock()
 	b.Nodes = make([]*registry.Node, 0)
 	for _, s := range ss {
 		b.Nodes = append(b.Nodes, s.Nodes...)
@@ -88,6 +85,7 @@ func (b *RemainderLoadBalance) reload() error {
 	sort.Slice(b.Nodes, func(i, j int) bool {
 		return b.Nodes[i].Id < b.Nodes[j].Id
 	})
+	b.Unlock()
 
 	if b.reloadFunc != nil {
 		if err = b.reloadFunc(); err != nil {
@@ -123,11 +121,9 @@ func (b *RemainderLoadBalance) watch() {
 			continue
 		}
 
-		b.Lock()
 		if err = b.reload(); err != nil {
 			common.ErrorLog("load balance relaod err", nil, err.Error())
 		}
-		b.Unlock()
 	}
 }
 
