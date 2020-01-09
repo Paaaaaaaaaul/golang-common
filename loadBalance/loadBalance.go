@@ -12,4 +12,5 @@ type LoadBalance interface {
 	SetReloadFunc(func() error)
 	GetService(key string) *registry.Node
 	Start(TTL time.Duration) error
+	Close()
 }

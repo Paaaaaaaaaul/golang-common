@@ -13,7 +13,8 @@ import (
 type RoundRobinLoadBalance struct {
 	ServiceName string
 	Reg         registry.Registry
-	ReadyState  int32
+	ReadyFlag   int32
+	CloseFlag   int32
 	ReloadFunc  func() error
 	Nodes       []*registry.Node
 
@@ -35,10 +36,14 @@ func (b *RoundRobinLoadBalance) SetReloadFunc(f func() error) {
 }
 
 func (b *RoundRobinLoadBalance) Ready() bool {
-	return atomic.LoadInt32(&b.ReadyState) == 1
+	return atomic.LoadInt32(&b.ReadyFlag) == 1
 }
 
 func (b *RoundRobinLoadBalance) GetService(key string) *registry.Node {
+	if atomic.LoadInt32(&b.CloseFlag) == 1 {
+		return nil
+	}
+
 	i := atomic.AddInt32(&b.index, 1)
 
 	b.RLock()
@@ -68,10 +73,24 @@ func (b *RoundRobinLoadBalance) Start(TTL time.Duration) error {
 	return nil
 }
 
+func (b *RoundRobinLoadBalance) Close() {
+	atomic.StoreInt32(&b.CloseFlag, 1)
+}
+
 func (b *RoundRobinLoadBalance) reload() error {
-	atomic.StoreInt32(&b.ReadyState, 0)
+	if atomic.LoadInt32(&b.CloseFlag) == 1 {
+		return nil
+	}
+
+	atomic.StoreInt32(&b.ReadyFlag, 0)
 	ss, err := b.Reg.GetService(b.ServiceName)
 	if err != nil {
+		if err == registry.ErrNotFound {
+			b.Lock()
+			b.Nodes = make([]*registry.Node, 0)
+			b.Unlock()
+			return nil
+		}
 		return err
 	}
 
@@ -91,7 +110,7 @@ func (b *RoundRobinLoadBalance) reload() error {
 		}
 	}
 
-	atomic.StoreInt32(&b.ReadyState, 1)
+	atomic.StoreInt32(&b.ReadyFlag, 1)
 	return nil
 }
 
@@ -103,6 +122,10 @@ func (b *RoundRobinLoadBalance) watch() {
 	)
 
 	for {
+		if atomic.LoadInt32(&b.CloseFlag) == 1 {
+			break
+		}
+
 		if noWatcher {
 			watch, err = b.Reg.Watch(registry.WatchService(b.ServiceName))
 			if err == nil {
@@ -133,6 +156,10 @@ func (b *RoundRobinLoadBalance) keepAlive(TTL time.Duration) {
 	for {
 		select {
 		case <-ticker.C:
+			if atomic.LoadInt32(&b.CloseFlag) == 1 {
+				return
+			}
+
 			b.Reg.KeepAliveOnce()
 		}
 	}

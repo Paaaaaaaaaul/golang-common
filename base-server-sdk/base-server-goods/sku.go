@@ -1,9 +1,8 @@
 package base_server_goods
 
 import (
-	"base-server-goods/model"
 	"encoding/json"
-	common "github.com/becent/golang-common"
+	"github.com/becent/golang-common"
 	"github.com/becent/golang-common/base-server-sdk"
 	"strconv"
 )
@@ -91,26 +90,26 @@ func AddSku(orgId int, mchId, productId int64, specs map[string]string, sortOrde
 }
 
 // 操作库存
-func OperateStock(orgId int, mchId, productId, skuId int64, qty string, opType model.StockOpType) *base_server_sdk.Error {
-	if orgId <= 0 || productId <= 0 || skuId <= 0 || qty == "" || qty == "0" || opType <= 0 {
-		return base_server_sdk.ErrInvalidParams
-	}
-
-	params := make(map[string]string)
-	params["orgId"] = strconv.Itoa(orgId)
-	params["mchId"] = strconv.FormatInt(mchId, 10)
-	params["productId"] = strconv.FormatInt(productId, 10)
-	params["skuId"] = strconv.FormatInt(skuId, 10)
-	params["qty"] = qty
-	params["opType"] = strconv.Itoa(int(opType))
-
-	client := base_server_sdk.Instance
-	_, err := client.DoRequest(client.Hosts.GoodsServerHost, "goods", "operateStock", params)
-	if err != nil {
-		return err
-	}
-	return nil
-}
+// func OperateStock(orgId int, mchId, productId, skuId int64, qty string, opType model.StockOpType) *base_server_sdk.Error {
+// 	if orgId <= 0 || productId <= 0 || skuId <= 0 || qty == "" || qty == "0" || opType <= 0 {
+// 		return base_server_sdk.ErrInvalidParams
+// 	}
+//
+// 	params := make(map[string]string)
+// 	params["orgId"] = strconv.Itoa(orgId)
+// 	params["mchId"] = strconv.FormatInt(mchId, 10)
+// 	params["productId"] = strconv.FormatInt(productId, 10)
+// 	params["skuId"] = strconv.FormatInt(skuId, 10)
+// 	params["qty"] = qty
+// 	params["opType"] = strconv.Itoa(int(opType))
+//
+// 	client := base_server_sdk.Instance
+// 	_, err := client.DoRequest(client.Hosts.GoodsServerHost, "goods", "operateStock", params)
+// 	if err != nil {
+// 		return err
+// 	}
+// 	return nil
+// }
 
 // 批量操作库存
 func BatchOperateStock(orgId int, batchData []*TaskBatchOperateStock, isAsync int) *base_server_sdk.Error {
@@ -133,4 +132,3 @@ func BatchOperateStock(orgId int, batchData []*TaskBatchOperateStock, isAsync in
 	}
 	return nil
 }
-
