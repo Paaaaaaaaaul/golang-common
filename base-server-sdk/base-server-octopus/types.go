@@ -15,6 +15,12 @@ const (
 	BusinessUnBindEmail     BusinessId = 1005 // 解绑邮箱
 	BusinessGetBackLoginPwd BusinessId = 1006 // 找回密码
 	BusinessGetBackTransPwd BusinessId = 1007 // 找回支付密码
+
+	BusinessPublishAd BusinessId = 2001 			//otc发布广告
+	BusinessBandBankCard BusinessId = 2002 			//otc绑定银行卡
+	BusinessBandQRCode BusinessId = 2003 			//otc绑定支付二维码
+	BusinessPayConfirmBySeller BusinessId = 2004 	//otc商家确认收款
+	BusinessSell BusinessId = 2005 					//otc 卖出
 )
 
 var businessIdMap = map[int]BusinessId{
@@ -26,6 +32,11 @@ var businessIdMap = map[int]BusinessId{
 	1005: BusinessUnBindEmail,
 	1006: BusinessGetBackLoginPwd,
 	1007: BusinessGetBackTransPwd,
+	2001: BusinessPublishAd,
+	2002: BusinessBandBankCard,
+	2003: BusinessBandQRCode,
+	2004: BusinessPayConfirmBySeller,
+	2005: BusinessSell,
 }
 
 func GetBusinessId(id int) (BusinessId, error) {
