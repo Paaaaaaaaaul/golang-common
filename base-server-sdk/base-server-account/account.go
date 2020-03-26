@@ -28,6 +28,7 @@ type Account struct {
 	OrgId        int    `json:"orgId"`
 	UserId       int64  `json:"userId"`
 	Currency     string `json:"currency"`
+	AccountType  int    `json:"accountType"`
 	AvailAmount  string `json:"availAmount"`
 	FreezeAmount string `json:"freezeAmount"`
 	Status       int    `json:"status"`
@@ -37,6 +38,8 @@ type Account struct {
 
 type LogList struct {
 	LogId      int64  `json:"logId"`
+	AccountId  int64  `json:"accountLog"`
+	AccountType int  `json:"accountType"`
 	UserId     int64  `json:"userId"`
 	Currency   string `json:"currency"`
 	LogType    int    `json:"logType"`
@@ -52,6 +55,7 @@ type TaskDetail struct {
 	OpType        OpType `json:"opType"`
 	BsType        int    `json:"bsType"`
 	AccountId     int64  `json:"accountId"`
+	AccountType   int    `json:"accountType"`
 	UserId        int64  `json:"userId"`
 	Currency      string `json:"currency"`
 	AllowNegative int    `json:"allowNegative"`
@@ -127,7 +131,7 @@ func AccountInfo(orgId int, userId int64, currency string) ([]*Account, *base_se
 }
 
 // 账户列表
-func AccountList(orgId int, userId, accountId int64, currency string, beginTime, endTime int64, status, page, limit int) ([]*Account, *base_server_sdk.Error) {
+func AccountList(orgId int, userId, accountId int64, currency string, accountType int, beginTime, endTime int64, status, page, limit int) ([]*Account, *base_server_sdk.Error) {
 	if orgId <= 0 || limit > 1000 {
 		return nil, base_server_sdk.ErrInvalidParams
 	}
@@ -139,6 +143,7 @@ func AccountList(orgId int, userId, accountId int64, currency string, beginTime,
 	params["beginTime"] = strconv.FormatInt(beginTime, 10)
 	params["endTime"] = strconv.FormatInt(endTime, 10)
 	params["currency"] = currency
+	params["accountType"] = strconv.Itoa(accountType)
 	params["status"] = strconv.Itoa(status)
 	params["page"] = strconv.Itoa(page)
 	params["limit"] = strconv.Itoa(limit)
@@ -276,7 +281,7 @@ func OperateAmount(orgId int, accountId int64, opType OpType, bsType, allowNegat
 
 // 金额操作
 // OperateAmountByUserId 根据userId和currency进行操作
-func OperateAmountByUserId(orgId int, userId int64, currency string, opType OpType, bsType, allowNegative int, amount, detail, ext string, callback *TaskCallBack) *base_server_sdk.Error {
+func OperateAmountByUserId(orgId int, userId int64, currency string, accountType int, opType OpType, bsType, allowNegative int, amount, detail, ext string, callback *TaskCallBack) *base_server_sdk.Error {
 	if orgId <= 0 || opType <= 0 || bsType <= 0 || amount == "" || userId <= 0 || currency == "" {
 		return base_server_sdk.ErrInvalidParams
 	}
@@ -286,6 +291,7 @@ func OperateAmountByUserId(orgId int, userId int64, currency string, opType OpTy
 	params["currency"] = currency
 	params["opType"] = strconv.Itoa(int(opType))
 	params["bsType"] = strconv.Itoa(bsType)
+	params["accountType"] = strconv.Itoa(accountType)
 	params["allowNegative"] = strconv.Itoa(allowNegative)
 	params["amount"] = amount
 	params["detail"] = detail
@@ -316,7 +322,7 @@ func OperateAmountByUserId(orgId int, userId int64, currency string, opType OpTy
 //	异常错误:
 //	1001 参数错误
 //	2003 账户不存在
-func AccountLogList(orgId int, userId int64, opType OpType, bsType int, currency string, beginTime, endTime int, page, limit int) ([]*LogList, *base_server_sdk.Error) {
+func AccountLogList(orgId int, userId int64, opType OpType, bsType, accountType int, currency string, beginTime, endTime int, page, limit int) ([]*LogList, *base_server_sdk.Error) {
 	if orgId <= 0 || userId <= 0 || opType < 0 || page <= 0 || limit > 1000 {
 		return nil, base_server_sdk.ErrInvalidParams
 	}
@@ -326,6 +332,7 @@ func AccountLogList(orgId int, userId int64, opType OpType, bsType int, currency
 	params["userId"] = strconv.FormatInt(userId, 10)
 	params["opType"] = strconv.Itoa(int(opType))
 	params["bsType"] = strconv.Itoa(bsType)
+	params["accountType"] = strconv.Itoa(accountType)
 	params["currency"] = currency
 	params["beginTime"] = strconv.Itoa(beginTime)
 	params["endTime"] = strconv.Itoa(endTime)
@@ -347,7 +354,7 @@ func AccountLogList(orgId int, userId int64, opType OpType, bsType int, currency
 }
 
 // 日志总和
-func SumLog(orgId int, userId int64, opType OpType, bsType int, currency string, beginTime, endTime int) (string, *base_server_sdk.Error) {
+func SumLog(orgId int, userId int64, opType OpType, bsType, accountType int, currency string, beginTime, endTime int) (string, *base_server_sdk.Error) {
 	if orgId <= 0 || userId <= 0 || opType < 0 {
 		return "0", base_server_sdk.ErrInvalidParams
 	}
@@ -356,6 +363,7 @@ func SumLog(orgId int, userId int64, opType OpType, bsType int, currency string,
 	params["userId"] = strconv.FormatInt(userId, 10)
 	params["opType"] = strconv.Itoa(int(opType))
 	params["bsType"] = strconv.Itoa(bsType)
+	params["accountType"] = strconv.Itoa(accountType)
 	params["currency"] = currency
 	params["beginTime"] = strconv.Itoa(beginTime)
 	params["endTime"] = strconv.Itoa(endTime)
@@ -419,13 +427,14 @@ func Transfer(orgId int, fromAccountId, toAccountId int64, amount string) *base_
 }
 
 // 账户划转
-func CheckAccountByWdw(orgId int, userId int64, currency string) *base_server_sdk.Error {
+func CheckAccountByWdw(orgId int, userId int64, currency string, accountType int) *base_server_sdk.Error {
 	if orgId <= 0 || userId <= 0 || currency == "" {
 		return base_server_sdk.ErrInvalidParams
 	}
 
 	params := make(map[string]string)
 	params["orgId"] = strconv.Itoa(orgId)
+	params["accountType"] = strconv.Itoa(accountType)
 	params["userId"] = strconv.FormatInt(userId, 10)
 	params["currency"] = currency
 
