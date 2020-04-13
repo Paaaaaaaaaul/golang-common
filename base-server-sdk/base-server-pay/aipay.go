@@ -65,6 +65,11 @@ const (
 	WITHDRAW_STATUS_FAIL    = "FAIL"
 )
 
+//钱包类型
+const (
+	WALLET_TYPE = "erc20"
+)
+
 //支付订单
 type PayOrder struct {
 	PayMethod      string `json:"pay_method"`
@@ -90,7 +95,7 @@ type PayOrder struct {
 	CodePage       string `json:"code_page"`
 	Sign           string `json:"sign"`
 	Version        string `json:"version"`
-	ExchangeRate	string `json:"exchange_rate"`
+	ExchangeRate   string `json:"exchange_rate"`
 }
 
 //提现银行账户信息
@@ -119,11 +124,11 @@ type WithdrawOrder struct {
 	Attach         string `json:"attach"`
 	SpbillCreateIp string `json:"spbill_create_ip"`
 	NotifyUrl      string `json:"notify_url"`
-	MchOutFee     string `json:"mch_out_fee"`
+	MchOutFee      string `json:"mch_out_fee"`
 	MchOutType     string `json:"mch_out_type"`
 	UserInType     string `json:"user_in_type"`
 	UserInFee      string `json:"user_in_fee"`
-	ExchangeRate	string `json:"exchange_rate"`
+	ExchangeRate   string `json:"exchange_rate"`
 	TimeStart      string `json:"time_start"`
 	TimeExpire     string `json:"time_expire"`
 	TimeEnd        string `json:"time_end"`
@@ -176,7 +181,7 @@ func GenerateAipaySignature(params map[string]string, signKey string) string {
 }
 
 //查询余额
-func QueryBalance(mchId string, currency string, signKey string,version string) (*Account, *base_server_sdk.Error) {
+func QueryBalance(mchId string, currency string, signKey string, version string) (*Account, *base_server_sdk.Error) {
 	request := map[string]string{}
 	request["mch_id"] = mchId
 	request["nonce_str"] = strconv.FormatInt(time.Now().Unix(), 10)
@@ -198,7 +203,7 @@ func QueryBalance(mchId string, currency string, signKey string,version string) 
 }
 
 //查询可用支付方式
-func SelectPayMethods(mchId string, userOutType string, userOutFee string, signKey string,version string) ([]PayMethod, *base_server_sdk.Error) {
+func SelectPayMethods(mchId string, userOutType string, userOutFee string, signKey string, version string) ([]PayMethod, *base_server_sdk.Error) {
 	request := map[string]string{}
 	request["mch_id"] = mchId
 	request["nonce_str"] = strconv.FormatInt(time.Now().Unix(), 10)
@@ -221,7 +226,7 @@ func SelectPayMethods(mchId string, userOutType string, userOutFee string, signK
 }
 
 //查询可用通道
-func SelectPayChannels(mchId string, payMethod string, userOutFee string, userOutType string, mchInType string, signKey string,version string) ([]PayChannel, *base_server_sdk.Error) {
+func SelectPayChannels(mchId string, payMethod string, userOutFee string, userOutType string, mchInType string, signKey string, version string) ([]PayChannel, *base_server_sdk.Error) {
 	request := map[string]string{}
 	request["mch_id"] = mchId
 	request["nonce_str"] = strconv.FormatInt(time.Now().Unix(), 10)
@@ -289,7 +294,7 @@ func SubmitPayOrder(mchId string,
 }
 
 //查询支付订单
-func QueryPayOrder(mchId string, outTradeNo string, transactionId string, signKey string,version string) (*PayOrder, *base_server_sdk.Error) {
+func QueryPayOrder(mchId string, outTradeNo string, transactionId string, signKey string, version string) (*PayOrder, *base_server_sdk.Error) {
 	request := map[string]string{}
 	request["mch_id"] = mchId
 	request["nonce_str"] = strconv.FormatInt(time.Now().Unix(), 10)
@@ -313,7 +318,7 @@ func QueryPayOrder(mchId string, outTradeNo string, transactionId string, signKe
 
 //生成聚合支付链接
 func GenerateUnionPayUrl(mchId string, currency string, userId string, reqTime string,
-	amount string, notifyUrl string, redirectUrl string, attach string, signKey string,version string) (string, *base_server_sdk.Error) {
+	amount string, notifyUrl string, redirectUrl string, attach string, signKey string, version string) (string, *base_server_sdk.Error) {
 	request := map[string]string{}
 	request["mch_id"] = mchId
 	request["nonce_str"] = strconv.FormatInt(time.Now().Unix(), 10)
@@ -342,7 +347,7 @@ func GenerateUnionPayUrl(mchId string, currency string, userId string, reqTime s
 }
 
 //查询可用提现方式
-func SelectWithdrawMethods(mchId string, userInType string, signKey string,version string) ([]PayMethod, *base_server_sdk.Error) {
+func SelectWithdrawMethods(mchId string, userInType string, signKey string, version string) ([]PayMethod, *base_server_sdk.Error) {
 	request := map[string]string{}
 	request["mch_id"] = mchId
 	request["nonce_str"] = strconv.FormatInt(time.Now().Unix(), 10)
@@ -364,7 +369,7 @@ func SelectWithdrawMethods(mchId string, userInType string, signKey string,versi
 }
 
 //查询可用提现通道
-func SelectWithdrawChannels(mchId string, payMethod string, userInFee string, userInType string, mchOutType string,mchOutFee string, signKey string,version string) ([]PayChannel, *base_server_sdk.Error) {
+func SelectWithdrawChannels(mchId string, payMethod string, userInFee string, userInType string, mchOutType string, mchOutFee string, signKey string, walletType string, version string) ([]PayChannel, *base_server_sdk.Error) {
 	request := map[string]string{}
 	request["mch_id"] = mchId
 	request["nonce_str"] = strconv.FormatInt(time.Now().Unix(), 10)
@@ -374,6 +379,7 @@ func SelectWithdrawChannels(mchId string, payMethod string, userInFee string, us
 	request["mch_out_type"] = mchOutType
 	request["mch_out_fee"] = mchOutFee
 	request["version"] = version
+	request["walletType"] = walletType
 
 	response, err := SendAipayRequest("withdraw", "selectChannel", signKey, request)
 	if err != nil {
@@ -401,7 +407,7 @@ func SubmitWithdrawOrder(mchId string,
 	detail string,
 	attach string,
 	notifyUrl string,
-	signKey string, bankAccount *BankAccount,version string) (*WithdrawOrder, *base_server_sdk.Error) {
+	signKey string, bankAccount *BankAccount, version string) (*WithdrawOrder, *base_server_sdk.Error) {
 
 	request := map[string]string{}
 	request["mch_id"] = mchId
@@ -444,7 +450,7 @@ func SubmitWithdrawOrder(mchId string,
 }
 
 //查询支付订单
-func QueryWithdrawOrder(mchId string, outTradeNo string, transactionId string, signKey string,version string) (*WithdrawOrder, *base_server_sdk.Error) {
+func QueryWithdrawOrder(mchId string, outTradeNo string, transactionId string, signKey string, version string) (*WithdrawOrder, *base_server_sdk.Error) {
 	request := map[string]string{}
 	request["mch_id"] = mchId
 	request["nonce_str"] = strconv.FormatInt(time.Now().Unix(), 10)
@@ -487,9 +493,9 @@ type PayNotify struct {
 	NotifyUrl      string `json:"notify_url"`
 	Version        string `json:"version"`
 	UserId         string `json:"user_id"`
-	ExchangeRate	string `json:"exchange_rate"`
-	MchInFee	string `json:"mch_in_fee"`
-	MchInType	string `json:"mch_in_type"`
+	ExchangeRate   string `json:"exchange_rate"`
+	MchInFee       string `json:"mch_in_fee"`
+	MchInType      string `json:"mch_in_type"`
 	Sign           string `json:"sign"`
 }
 
@@ -544,9 +550,9 @@ func (notify *PayNotify) VerifySignature(mchId string, signKey string) bool {
 		"notify_url":       notify.NotifyUrl,
 		"version":          notify.Version,
 		"user_id":          notify.UserId,
-		"exchange_rate":	notify.ExchangeRate,
-		"mch_in_fee":	notify.MchInFee,
-		"mch_in_type":	notify.MchInType,
+		"exchange_rate":    notify.ExchangeRate,
+		"mch_in_fee":       notify.MchInFee,
+		"mch_in_type":      notify.MchInType,
 	}
 
 	mySign := GenerateAipaySignature(params, signKey)
