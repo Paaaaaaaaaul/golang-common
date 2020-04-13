@@ -415,7 +415,7 @@ func Transfer(orgId int, fromAccountId, toAccountId int64, amount string) *base_
 	params := make(map[string]string)
 	params["orgId"] = strconv.Itoa(orgId)
 	params["fromAccountId"] = strconv.FormatInt(fromAccountId, 10)
-	params["fromAccountId"] = strconv.FormatInt(toAccountId, 10)
+	params["toAccountId"] = strconv.FormatInt(toAccountId, 10)
 	params["amount"] = amount
 
 	client := base_server_sdk.Instance
