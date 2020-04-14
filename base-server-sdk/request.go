@@ -4,9 +4,6 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"github.com/becent/golang-common"
-	"github.com/becent/golang-common/gin-handler"
-	"github.com/becent/golang-common/grpc-end"
 	"io"
 	"io/ioutil"
 	"mime/multipart"
@@ -15,6 +12,10 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/becent/golang-common"
+	"github.com/becent/golang-common/gin-handler"
+	"github.com/becent/golang-common/grpc-end"
 )
 
 var (
@@ -45,6 +46,11 @@ type Response struct {
 type Error struct {
 	Code    int    `json:"code"`
 	Message string `json:"message"`
+}
+
+type Option struct {
+	Key   string
+	Value string
 }
 
 func (e *Error) String() string {

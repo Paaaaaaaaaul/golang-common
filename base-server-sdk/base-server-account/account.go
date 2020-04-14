@@ -2,10 +2,11 @@ package base_server_account
 
 import (
 	"encoding/json"
-	common "github.com/becent/golang-common"
-	"github.com/becent/golang-common/base-server-sdk"
 	"strconv"
 	"strings"
+
+	common "github.com/becent/golang-common"
+	"github.com/becent/golang-common/base-server-sdk"
 )
 
 type OpType int
@@ -37,18 +38,18 @@ type Account struct {
 }
 
 type LogList struct {
-	LogId      int64  `json:"logId"`
-	AccountId  int64  `json:"accountLog"`
-	AccountType int  `json:"accountType"`
-	UserId     int64  `json:"userId"`
-	Currency   string `json:"currency"`
-	LogType    int    `json:"logType"`
-	BsType     int    `json:"bsType"`
-	Amount     string `json:"amount"`
-	CreateTime int64  `json:"createTime"`
-	Detail     string `json:"detail"`
-	Ext        string `json:"ext"`
-	AttachId   int64  `json:"attachId"`
+	LogId       int64  `json:"logId"`
+	AccountId   int64  `json:"accountLog"`
+	AccountType int    `json:"accountType"`
+	UserId      int64  `json:"userId"`
+	Currency    string `json:"currency"`
+	LogType     int    `json:"logType"`
+	BsType      int    `json:"bsType"`
+	Amount      string `json:"amount"`
+	CreateTime  int64  `json:"createTime"`
+	Detail      string `json:"detail"`
+	Ext         string `json:"ext"`
+	AttachId    int64  `json:"attachId"`
 }
 
 type TaskDetail struct {
@@ -106,7 +107,7 @@ func CreateAccount(orgId int, userId int64, currency []string) ([]*Account, *bas
 //	异常错误:
 //	1001 参数错误
 //	2003 账户不存在
-func AccountInfo(orgId int, userId int64, currency string) ([]*Account, *base_server_sdk.Error) {
+func AccountInfo(orgId int, userId int64, currency string, opts ...base_server_sdk.Option) ([]*Account, *base_server_sdk.Error) {
 	if orgId <= 0 || userId <= 0 {
 		return nil, base_server_sdk.ErrInvalidParams
 	}
@@ -115,6 +116,10 @@ func AccountInfo(orgId int, userId int64, currency string) ([]*Account, *base_se
 	userIdsMarshal, _ := json.Marshal([]int64{userId})
 	params["userIds"] = string(userIdsMarshal)
 	params["currency"] = currency
+
+	for _, o := range opts {
+		params[o.Key] = o.Value
+	}
 
 	client := base_server_sdk.Instance
 	data, err := client.DoRequest(client.Hosts.AccountServerHost, "account", "accountInfo", params)
