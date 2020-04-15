@@ -19,6 +19,6 @@ const (
 	BusinessSell               BusinessId = 2005 //otc 卖出
 )
 
-func GetBusinessId(id int) BusinessId {
-	return BusinessId(id)
+func GetBusinessId(id int) (BusinessId, error) {
+	return BusinessId(id), nil
 }
