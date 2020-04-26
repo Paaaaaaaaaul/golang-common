@@ -2,13 +2,14 @@ package base_server_sdk
 
 import (
 	"context"
-	"github.com/SongLiangChen/grpc_pool"
-	"google.golang.org/grpc"
 	"net"
 	"net/http"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/SongLiangChen/grpc_pool"
+	"google.golang.org/grpc"
 )
 
 type Hosts struct {
@@ -79,10 +80,11 @@ func InitBaseServerSdk(c *Config) {
 			Transport: &http.Transport{
 				DialContext: (&net.Dialer{
 					Timeout:   c.RequestTimeout,
-					KeepAlive: -1,
+					KeepAlive: 15 * time.Second, // defaultTCPKeepAlive = 15 * time.Second
 				}).DialContext,
 				IdleConnTimeout:       c.IdleConnTimeout,
 				ResponseHeaderTimeout: c.RequestTimeout,
+				DisableKeepAlives:     true,
 			},
 		},
 
