@@ -492,7 +492,7 @@ type PayNotify struct {
 	Attach         string `json:"attach"`
 	NotifyUrl      string `json:"notify_url"`
 	Version        string `json:"version"`
-	UserId         string `json:"user_id"`
+	UserId         string `json:"userId"`
 	ExchangeRate   string `json:"exchange_rate"`
 	MchInFee       string `json:"mch_in_fee"`
 	MchInType      string `json:"mch_in_type"`
@@ -549,7 +549,7 @@ func (notify *PayNotify) VerifySignature(mchId string, signKey string) bool {
 		"attach":           notify.Attach,
 		"notify_url":       notify.NotifyUrl,
 		"version":          notify.Version,
-		"user_id":          notify.UserId,
+		"userId":           notify.UserId,
 		"exchange_rate":    notify.ExchangeRate,
 		"mch_in_fee":       notify.MchInFee,
 		"mch_in_type":      notify.MchInType,
