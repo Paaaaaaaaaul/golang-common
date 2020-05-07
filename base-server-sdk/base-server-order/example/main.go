@@ -52,7 +52,6 @@ func main() {
 		Quantity:       "10000000000000000000",
 		UnitPrice:      "10000000000000000000",
 		TotalPrice:     "10000000000000000000",
-		ServiceFee:     "0",
 		BusinessStatus: 1,
 		Remark:         "remark",
 		Extra:          "extra",

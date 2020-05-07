@@ -70,6 +70,22 @@ func InfoLog(action string, mates interface{}, msg string) {
 	}).Info(msg)
 }
 
+func PanicLog(action string, mates interface{}, msg string) {
+	log.WithFields(log.Fields{
+		"app":    _appName,
+		"action": action,
+		"mates":  mates,
+	}).Panic(msg)
+}
+
+func FatalLog(action string, mates interface{}, msg string) {
+	log.WithFields(log.Fields{
+		"app":    _appName,
+		"action": action,
+		"mates":  mates,
+	}).Fatal(msg)
+}
+
 func DebugLog(action string, mates interface{}, msg string) {
 	log.WithFields(log.Fields{
 		"app":    _appName,
