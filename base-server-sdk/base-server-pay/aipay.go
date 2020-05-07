@@ -111,6 +111,12 @@ type BankAccount struct {
 	QrCodeImgType  string
 }
 
+//数字货币账户
+type BitcoinAccount struct {
+	Address string
+	UserId  string
+}
+
 //代付订单
 type WithdrawOrder struct {
 	PayMethod      string `json:"pay_method"`
@@ -407,7 +413,7 @@ func SubmitWithdrawOrder(mchId string,
 	detail string,
 	attach string,
 	notifyUrl string,
-	signKey string, bankAccount *BankAccount, version string) (*WithdrawOrder, *base_server_sdk.Error) {
+	signKey string, bankAccount *BankAccount, bitcoinAccount *BitcoinAccount, version string) (*WithdrawOrder, *base_server_sdk.Error) {
 
 	request := map[string]string{}
 	request["mch_id"] = mchId
@@ -433,6 +439,9 @@ func SubmitWithdrawOrder(mchId string,
 	request["bank_city"] = bankAccount.BankCity
 	request["qr_code"] = bankAccount.QrCode
 	request["qr_code_img_type"] = bankAccount.QrCodeImgType
+
+	request["receive_address"] = bitcoinAccount.Address
+	request["user_id"] = bitcoinAccount.UserId
 
 	response, err := SendAipayRequest("withdraw", "submit", signKey, request)
 	if err != nil {
