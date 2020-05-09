@@ -55,7 +55,7 @@ func G_model(projectName string) error {
 
 		buf.WriteString(fmt.Sprintf("type %s struct {\n", strings.Title(camelTableName)))
 
-		structRows, err := db.DB().Query("select column_name,COLUMN_TYPE,COLUMN_KEY,COLUMN_COMMENT from information_schema.columns where table_schema=? and table_name=?", curDatabase, tableName)
+		structRows, err := db.DB().Query("select column_name,COLUMN_TYPE,COLUMN_KEY,COLUMN_COMMENT from information_schema.columns where table_schema=? and table_name=? order by ordinal_position", curDatabase, tableName)
 		if err != nil {
 			return err
 		}
