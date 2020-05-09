@@ -390,7 +390,7 @@ func AccountLogListByBsType(orgId int, userId int64, opType OpType, bsType strin
 	params["limit"] = strconv.Itoa(limit)
 
 	client := base_server_sdk.Instance
-	data, err := client.DoRequest(client.Hosts.AccountServerHost, "account", "AccountLogListByBsType", params)
+	data, err := client.DoRequest(client.Hosts.AccountServerHost, "account", "accountLogList", params)
 	if err != nil {
 		return nil, err
 	}
