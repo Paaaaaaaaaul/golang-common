@@ -144,13 +144,16 @@ type WithdrawOrder struct {
 }
 
 //发送Aipay请求
-func SendAipayRequest(controller string, action string, signKey string, params map[string]string) (res []byte, err *base_server_sdk.Error) {
+func SendAipayRequest(controller string, action string, signKey string, params map[string]string, apiHost string) (res []byte, err *base_server_sdk.Error) {
+	client := base_server_sdk.Instance
+	if apiHost == "" {
+		apiHost = client.Hosts.AiPayServerHost
+	}
+
 	params["sign_type"] = "MD5"
 	params["sign"] = GenerateAipaySignature(params, signKey)
 
-	fmt.Println(params)
-	client := base_server_sdk.Instance
-	response, err := client.DoRequest(client.Hosts.AiPayServerHost, controller, action, params)
+	response, err := client.DoRequest(apiHost, controller, action, params)
 	if err != nil {
 		return nil, err
 	}
@@ -187,14 +190,14 @@ func GenerateAipaySignature(params map[string]string, signKey string) string {
 }
 
 //查询余额
-func QueryBalance(mchId string, currency string, signKey string, version string) (*Account, *base_server_sdk.Error) {
+func QueryBalance(mchId string, currency string, signKey string, version string, apiHost string) (*Account, *base_server_sdk.Error) {
 	request := map[string]string{}
 	request["mch_id"] = mchId
 	request["nonce_str"] = strconv.FormatInt(time.Now().Unix(), 10)
 	request["currency"] = currency
 	request["version"] = version
 
-	response, err := SendAipayRequest("account", "query", signKey, request)
+	response, err := SendAipayRequest("account", "query", signKey, request, apiHost)
 	if err != nil {
 		return nil, err
 	}
@@ -209,7 +212,7 @@ func QueryBalance(mchId string, currency string, signKey string, version string)
 }
 
 //查询可用支付方式
-func SelectPayMethods(mchId string, userOutType string, userOutFee string, signKey string, version string) ([]PayMethod, *base_server_sdk.Error) {
+func SelectPayMethods(mchId string, userOutType string, userOutFee string, signKey string, version string, apiHost string) ([]PayMethod, *base_server_sdk.Error) {
 	request := map[string]string{}
 	request["mch_id"] = mchId
 	request["nonce_str"] = strconv.FormatInt(time.Now().Unix(), 10)
@@ -217,7 +220,7 @@ func SelectPayMethods(mchId string, userOutType string, userOutFee string, signK
 	request["user_out_fee"] = userOutFee
 	request["version"] = version
 
-	response, err := SendAipayRequest("pay", "selectMethod", signKey, request)
+	response, err := SendAipayRequest("pay", "selectMethod", signKey, request, apiHost)
 	if err != nil {
 		return nil, err
 	}
@@ -232,7 +235,7 @@ func SelectPayMethods(mchId string, userOutType string, userOutFee string, signK
 }
 
 //查询可用通道
-func SelectPayChannels(mchId string, payMethod string, userOutFee string, userOutType string, mchInType string, signKey string, version string) ([]PayChannel, *base_server_sdk.Error) {
+func SelectPayChannels(mchId string, payMethod string, userOutFee string, userOutType string, mchInType string, signKey string, version string, apiHost string) ([]PayChannel, *base_server_sdk.Error) {
 	request := map[string]string{}
 	request["mch_id"] = mchId
 	request["nonce_str"] = strconv.FormatInt(time.Now().Unix(), 10)
@@ -242,7 +245,7 @@ func SelectPayChannels(mchId string, payMethod string, userOutFee string, userOu
 	request["mch_in_type"] = mchInType
 	request["version"] = version
 
-	response, err := SendAipayRequest("pay", "selectChannel", signKey, request)
+	response, err := SendAipayRequest("pay", "selectChannel", signKey, request, apiHost)
 	if err != nil {
 		return nil, err
 	}
@@ -268,7 +271,8 @@ func SubmitPayOrder(mchId string,
 	attach string,
 	notifyUrl string,
 	signKey string,
-	version string) (*PayOrder, *base_server_sdk.Error) {
+	version string,
+	apiHost string) (*PayOrder, *base_server_sdk.Error) {
 
 	request := map[string]string{}
 	request["mch_id"] = mchId
@@ -284,7 +288,7 @@ func SubmitPayOrder(mchId string,
 	request["notify_url"] = notifyUrl
 	request["version"] = version
 
-	response, err := SendAipayRequest("pay", "submit", signKey, request)
+	response, err := SendAipayRequest("pay", "submit", signKey, request, apiHost)
 	if err != nil {
 		return nil, err
 	}
@@ -300,7 +304,7 @@ func SubmitPayOrder(mchId string,
 }
 
 //查询支付订单
-func QueryPayOrder(mchId string, outTradeNo string, transactionId string, signKey string, version string) (*PayOrder, *base_server_sdk.Error) {
+func QueryPayOrder(mchId string, outTradeNo string, transactionId string, signKey string, version string, apiHost string) (*PayOrder, *base_server_sdk.Error) {
 	request := map[string]string{}
 	request["mch_id"] = mchId
 	request["nonce_str"] = strconv.FormatInt(time.Now().Unix(), 10)
@@ -308,7 +312,7 @@ func QueryPayOrder(mchId string, outTradeNo string, transactionId string, signKe
 	request["out_trade_no"] = outTradeNo
 	request["version"] = version
 
-	response, err := SendAipayRequest("pay", "query", signKey, request)
+	response, err := SendAipayRequest("pay", "query", signKey, request, apiHost)
 	if err != nil {
 		return nil, err
 	}
@@ -324,7 +328,7 @@ func QueryPayOrder(mchId string, outTradeNo string, transactionId string, signKe
 
 //生成聚合支付链接
 func GenerateUnionPayUrl(mchId string, currency string, userId string, reqTime string,
-	amount string, notifyUrl string, redirectUrl string, attach string, signKey string, version string) (string, *base_server_sdk.Error) {
+	amount string, notifyUrl string, redirectUrl string, attach string, signKey string, version string, apiHost string) (string, *base_server_sdk.Error) {
 	request := map[string]string{}
 	request["mch_id"] = mchId
 	request["nonce_str"] = strconv.FormatInt(time.Now().Unix(), 10)
@@ -338,7 +342,7 @@ func GenerateUnionPayUrl(mchId string, currency string, userId string, reqTime s
 	request["attach"] = attach
 	request["version"] = version
 
-	response, err := SendAipayRequest("union", "generateUrl", signKey, request)
+	response, err := SendAipayRequest("union", "generateUrl", signKey, request, apiHost)
 	if err != nil {
 		return "", err
 	}
@@ -353,14 +357,14 @@ func GenerateUnionPayUrl(mchId string, currency string, userId string, reqTime s
 }
 
 //查询可用提现方式
-func SelectWithdrawMethods(mchId string, userInType string, signKey string, version string) ([]PayMethod, *base_server_sdk.Error) {
+func SelectWithdrawMethods(mchId string, userInType string, signKey string, version string, apiHost string) ([]PayMethod, *base_server_sdk.Error) {
 	request := map[string]string{}
 	request["mch_id"] = mchId
 	request["nonce_str"] = strconv.FormatInt(time.Now().Unix(), 10)
 	request["user_in_type"] = userInType
 	request["version"] = version
 
-	response, err := SendAipayRequest("withdraw", "selectMethod", signKey, request)
+	response, err := SendAipayRequest("withdraw", "selectMethod", signKey, request, apiHost)
 	if err != nil {
 		return nil, err
 	}
@@ -375,7 +379,17 @@ func SelectWithdrawMethods(mchId string, userInType string, signKey string, vers
 }
 
 //查询可用提现通道
-func SelectWithdrawChannels(mchId string, payMethod string, userInFee string, userInType string, mchOutType string, mchOutFee string, signKey string, walletType string, version string) ([]PayChannel, *base_server_sdk.Error) {
+func SelectWithdrawChannels(mchId string,
+	payMethod string,
+	userInFee string,
+	userInType string,
+	mchOutType string,
+	mchOutFee string,
+	signKey string,
+	walletType string,
+	version string,
+	apiHost string) ([]PayChannel, *base_server_sdk.Error) {
+
 	request := map[string]string{}
 	request["mch_id"] = mchId
 	request["nonce_str"] = strconv.FormatInt(time.Now().Unix(), 10)
@@ -387,7 +401,7 @@ func SelectWithdrawChannels(mchId string, payMethod string, userInFee string, us
 	request["version"] = version
 	request["walletType"] = walletType
 
-	response, err := SendAipayRequest("withdraw", "selectChannel", signKey, request)
+	response, err := SendAipayRequest("withdraw", "selectChannel", signKey, request, apiHost)
 	if err != nil {
 		return nil, err
 	}
@@ -413,7 +427,11 @@ func SubmitWithdrawOrder(mchId string,
 	detail string,
 	attach string,
 	notifyUrl string,
-	signKey string, bankAccount *BankAccount, bitcoinAccount *BitcoinAccount, version string) (*WithdrawOrder, *base_server_sdk.Error) {
+	signKey string,
+	bankAccount *BankAccount,
+	bitcoinAccount *BitcoinAccount,
+	version string,
+	apiHost string) (*WithdrawOrder, *base_server_sdk.Error) {
 
 	request := map[string]string{}
 	request["mch_id"] = mchId
@@ -443,7 +461,7 @@ func SubmitWithdrawOrder(mchId string,
 	request["receive_address"] = bitcoinAccount.Address
 	request["user_id"] = bitcoinAccount.UserId
 
-	response, err := SendAipayRequest("withdraw", "submit", signKey, request)
+	response, err := SendAipayRequest("withdraw", "submit", signKey, request, apiHost)
 	if err != nil {
 		return nil, err
 	}
@@ -459,7 +477,13 @@ func SubmitWithdrawOrder(mchId string,
 }
 
 //查询支付订单
-func QueryWithdrawOrder(mchId string, outTradeNo string, transactionId string, signKey string, version string) (*WithdrawOrder, *base_server_sdk.Error) {
+func QueryWithdrawOrder(mchId string,
+	outTradeNo string,
+	transactionId string,
+	signKey string,
+	version string,
+	apiHost string) (*WithdrawOrder, *base_server_sdk.Error) {
+
 	request := map[string]string{}
 	request["mch_id"] = mchId
 	request["nonce_str"] = strconv.FormatInt(time.Now().Unix(), 10)
@@ -467,7 +491,7 @@ func QueryWithdrawOrder(mchId string, outTradeNo string, transactionId string, s
 	request["out_trade_no"] = outTradeNo
 	request["version"] = version
 
-	response, err := SendAipayRequest("withdraw", "query", signKey, request)
+	response, err := SendAipayRequest("withdraw", "query", signKey, request, apiHost)
 	if err != nil {
 		return nil, err
 	}
