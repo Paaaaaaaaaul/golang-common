@@ -331,7 +331,7 @@ func (ct *Handler) StringParamDefault(key string, defVal string) string {
 
 // IsParamExist returns true is request's param exist for the given key
 func (ct *Handler) IsParamExist(key string) bool {
-	_, ok := ct.GetContext().GetPostForm(key)
+	_, ok := ct.GetContext().GetQuery(key)
 	if !ok {
 		_, ok = ct.GetContext().GetPostForm(key)
 	}
