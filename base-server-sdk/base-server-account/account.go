@@ -358,6 +358,52 @@ func AccountLogList(orgId int, userId int64, opType OpType, bsType int, currency
 	return logList, nil
 }
 
+
+// 账户日志列表
+// post account/accountLogListAll
+//
+//	类型枚举:
+//	1	可用-加
+//	2	可用-减
+//	3	冻结-加
+//	4	冻结-减
+//	5	解冻-冻结进可用
+//
+//	异常错误:
+//	1001 参数错误
+//	2003 账户不存在
+func AccountLogListAll(orgId int, userId int64, userIds string, opType OpType, bsType int, currency string, beginTime, endTime int, page, limit int, accountType ...int) ([]*LogList, *base_server_sdk.Error) {
+	if orgId <= 0 || opType < 0 || page <= 0 || limit > 1000 {
+		return nil, base_server_sdk.ErrInvalidParams
+	}
+
+	params := make(map[string]string)
+	params["orgId"] = strconv.Itoa(orgId)
+	params["userId"] = strconv.FormatInt(userId, 10)
+	params["userIds"] = userIds
+	params["opType"] = strconv.Itoa(int(opType))
+	params["bsType"] = strconv.Itoa(bsType)
+	params["accountType"] = strconv.Itoa(accountType[0])
+	params["currency"] = currency
+	params["beginTime"] = strconv.Itoa(beginTime)
+	params["endTime"] = strconv.Itoa(endTime)
+	params["page"] = strconv.Itoa(page)
+	params["limit"] = strconv.Itoa(limit)
+
+	client := base_server_sdk.Instance
+	data, err := client.DoRequest(client.Hosts.AccountServerHost, "account", "accountLogList", params)
+	if err != nil {
+		return nil, err
+	}
+
+	var logList []*LogList
+	if err := json.Unmarshal(data, &logList); err != nil {
+		common.ErrorLog("baseServerSdk_AccountLogList", params, "unmarshal account list fail"+string(data))
+		return nil, base_server_sdk.ErrServiceBusy
+	}
+	return logList, nil
+}
+
 // 账户日志列表
 // post account/AccountLogListByBsType
 //
