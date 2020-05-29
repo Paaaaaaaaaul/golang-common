@@ -3,6 +3,7 @@ package registry
 
 import (
 	"errors"
+	"time"
 )
 
 var (
@@ -24,6 +25,7 @@ type Registry interface {
 	ListServices() ([]*Service, error)
 	Watch(...WatchOption) (Watcher, error)
 	KeepAliveOnce() error
+	KeepAlive(TTL time.Duration)
 	String() string
 }
 

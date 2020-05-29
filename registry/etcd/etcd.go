@@ -398,3 +398,18 @@ func (e *etcdRegistry) Watch(opts ...registry.WatchOption) (registry.Watcher, er
 func (e *etcdRegistry) String() string {
 	return "etcd"
 }
+
+func (e *etcdRegistry) KeepAlive(TTL time.Duration) {
+	go func() {
+		TTL = TTL / 3
+		ticker := time.NewTicker(TTL)
+		defer ticker.Stop()
+
+		for {
+			select {
+			case <-ticker.C:
+				e.KeepAliveOnce()
+			}
+		}
+	}()
+}

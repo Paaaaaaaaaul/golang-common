@@ -1,16 +1,19 @@
 package loadBalance
 
 import (
-	"github.com/becent/golang-common/registry"
 	"time"
+
+	"github.com/becent/golang-common/registry"
 )
 
 type LoadBalance interface {
 	Ready() bool
 	SetServiceName(name string)
 	SetRegistry(reg registry.Registry)
+	SetEndPoints(nodes []*registry.Node)
 	SetReloadFunc(func() error)
-	GetService(key string) *registry.Node
+	GetNode(key string) *registry.Node
+	GetNodes() []*registry.Node
 	Start(TTL time.Duration) error
 	Close()
 }

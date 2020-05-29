@@ -1,12 +1,13 @@
 package roundRobin
 
 import (
-	"github.com/becent/golang-common"
-	"github.com/becent/golang-common/registry"
 	"sort"
 	"sync"
 	"sync/atomic"
 	"time"
+
+	"github.com/becent/golang-common"
+	"github.com/becent/golang-common/registry"
 )
 
 // 轮训模式负载均衡实现
@@ -31,6 +32,10 @@ func (b *RoundRobinLoadBalance) SetRegistry(reg registry.Registry) {
 	b.Reg = reg
 }
 
+func (b *RoundRobinLoadBalance) SetEndPoints(nodes []*registry.Node) {
+	panic("not implement")
+}
+
 func (b *RoundRobinLoadBalance) SetReloadFunc(f func() error) {
 	b.ReloadFunc = f
 }
@@ -39,7 +44,7 @@ func (b *RoundRobinLoadBalance) Ready() bool {
 	return atomic.LoadInt32(&b.ReadyFlag) == 1
 }
 
-func (b *RoundRobinLoadBalance) GetService(key string) *registry.Node {
+func (b *RoundRobinLoadBalance) GetNode(key string) *registry.Node {
 	if atomic.LoadInt32(&b.CloseFlag) == 1 {
 		return nil
 	}
@@ -51,6 +56,17 @@ func (b *RoundRobinLoadBalance) GetService(key string) *registry.Node {
 
 	i = i % int32(len(b.Nodes))
 	return b.Nodes[int(i)]
+}
+
+func (b *RoundRobinLoadBalance) GetNodes() []*registry.Node {
+	if atomic.LoadInt32(&b.CloseFlag) == 1 {
+		return nil
+	}
+
+	b.RLock()
+	defer b.RUnlock()
+
+	return b.Nodes
 }
 
 func (b *RoundRobinLoadBalance) Start(TTL time.Duration) error {

@@ -1,12 +1,14 @@
 package loadBalance
 
 import (
-	"github.com/becent/golang-common/loadBalance/roundRobin"
-	"github.com/becent/golang-common/registry"
-	"github.com/becent/golang-common/registry/etcd"
 	"strconv"
 	"testing"
 	"time"
+
+	"github.com/becent/golang-common/loadBalance/localRoundRobin"
+	"github.com/becent/golang-common/loadBalance/roundRobin"
+	"github.com/becent/golang-common/registry"
+	"github.com/becent/golang-common/registry/etcd"
 )
 
 func TestRemainder(t *testing.T) {
@@ -41,7 +43,33 @@ func TestRemainder(t *testing.T) {
 	}
 
 	for i := 0; i < 100; i++ {
-		ser := lb.GetService(strconv.Itoa(i))
+		ser := lb.GetNode(strconv.Itoa(i))
+		if ser != nil {
+			println("get server:", i, ser.Id, ser.Address)
+		}
+		time.Sleep(time.Second)
+	}
+}
+
+func TestLocalRoundRobin(t *testing.T) {
+	lb := &localRoundRobin.RoundRobin{}
+	lb.SetServiceName("test")
+	nodes := make([]*registry.Node, 0)
+	nodes = append(nodes, &registry.Node{
+		Id:       "1",
+		Address:  "8080",
+		Metadata: nil,
+	})
+	nodes = append(nodes, &registry.Node{
+		Id:       "2",
+		Address:  "8090",
+		Metadata: nil,
+	})
+	lb.SetEndPoints(nodes)
+	lb.Start(0)
+
+	for i := 0; i < 100; i++ {
+		ser := lb.GetNode(strconv.Itoa(i))
 		if ser != nil {
 			println("get server:", i, ser.Id, ser.Address)
 		}
