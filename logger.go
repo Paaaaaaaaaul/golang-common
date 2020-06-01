@@ -59,6 +59,7 @@ func ErrorLog(action string, mates interface{}, msg string) {
 		"app":    _appName,
 		"action": action,
 		"mates":  mates,
+		"logId":  GetGorouterIDFlag(),
 	}).Error(msg)
 }
 
@@ -67,6 +68,7 @@ func InfoLog(action string, mates interface{}, msg string) {
 		"app":    _appName,
 		"action": action,
 		"mates":  mates,
+		"logId":  GetGorouterIDFlag(),
 	}).Info(msg)
 }
 
@@ -75,6 +77,7 @@ func PanicLog(action string, mates interface{}, msg string) {
 		"app":    _appName,
 		"action": action,
 		"mates":  mates,
+		"logId":  GetGorouterIDFlag(),
 	}).Panic(msg)
 }
 
@@ -83,6 +86,7 @@ func FatalLog(action string, mates interface{}, msg string) {
 		"app":    _appName,
 		"action": action,
 		"mates":  mates,
+		"logId":  GetGorouterIDFlag(),
 	}).Fatal(msg)
 }
 
@@ -91,6 +95,7 @@ func DebugLog(action string, mates interface{}, msg string) {
 		"app":    _appName,
 		"action": action,
 		"mates":  mates,
+		"logId":  GetGorouterIDFlag(),
 	}).Debug(msg)
 }
 
@@ -99,5 +104,6 @@ func WarningLog(action string, mates interface{}, msg string) {
 		"app":    _appName,
 		"action": action,
 		"mates":  mates,
+		"logId":  GetGorouterIDFlag(),
 	}).Warn(msg)
 }
