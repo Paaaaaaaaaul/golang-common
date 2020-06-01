@@ -13,7 +13,6 @@ import (
 
 	"github.com/becent/golang-common/registry"
 	consul "github.com/hashicorp/consul/api"
-	mnet "github.com/micro/go-micro/v2/util/net"
 	hash "github.com/mitchellh/hashstructure"
 )
 
@@ -355,7 +354,7 @@ func (c *consulRegistry) GetService(name string) ([]*registry.Service, error) {
 
 		svc.Nodes = append(svc.Nodes, &registry.Node{
 			Id:       id,
-			Address:  mnet.HostPort(address, s.Service.Port),
+			Address:  s.Service.Address,
 			Metadata: decodeMetadata(s.Service.Tags),
 		})
 	}

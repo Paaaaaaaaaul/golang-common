@@ -34,6 +34,16 @@ func BcSub(a string, b string, precision int32) (string, error) {
 	return aa.StringFixedBank(precision), nil
 }
 
+func BcAbs(a string, precision int32) string {
+	aa, err := decimal.NewFromString(a)
+	if err != nil {
+		return "0"
+	}
+
+	aa = aa.Abs()
+	return aa.StringFixedBank(precision)
+}
+
 func BcAbsSub(a string, b string, precision int32) (string, error) {
 	aa, err := decimal.NewFromString(a)
 	if err != nil {

@@ -6,9 +6,9 @@ import (
 	"os"
 	"sync"
 
+	"github.com/becent/golang-common/registry"
 	"github.com/hashicorp/consul/api"
 	"github.com/hashicorp/consul/api/watch"
-	"github.com/becent/golang-common/registry"
 )
 
 type consulWatcher struct {
