@@ -1,13 +1,12 @@
 package base_server_order
 
 import (
-	"base-server-order/model"
 	"encoding/json"
 	"fmt"
 	base_server_sdk "github.com/becent/golang-common/base-server-sdk"
 )
 
-type Orders struct {
+type Order struct {
 	OrderId    int64  `gorm:"column:orderId;primary_key;AUTO_INCREMENT" json:"orderId"` // 订单id
 	OrgId      int    `gorm:"column:orgId" json:"orgId"`                                // 项目id
 	UserId     int64  `gorm:"column:userId" json:"userId"`                              // 用户id
@@ -71,29 +70,29 @@ type Orders struct {
 
 //创建订单
 type CreateOrder struct {
-	Order          *Orders
+	Order          *Order
 	OperateAmounts []*TaskOperateAmount `json:"operateAmounts"`
 	BeforeCheck    *BeforeCheck
 }
 
 //更新订单
 type UpdateOrder struct {
-	Order          *Orders
+	Order          *Order
 	OperateAmounts []*TaskOperateAmount `json:"operateAmounts"`
 	BeforeCheck    *BeforeCheck
 }
 
 //查询订单
 type FindOrder struct {
-	Order *Orders `json:"order"`
-	Limit int     `json:"limit"`
-	Page  int     `json:"page"`
+	Order *Order `json:"order"`
+	Limit int    `json:"limit"`
+	Page  int    `json:"page"`
 }
 
 //查询订单结果
 type FindOrderRs struct {
 	FindParams *FindOrder `json:"findParams"`
-	Orders     []*Orders  `json:"orders"`
+	Order      []*Order   `json:"order"`
 }
 
 //创建/更新 前置检查
@@ -116,12 +115,12 @@ type TaskOperateAmount struct {
 }
 
 //创建订单
-func CreateOrders(orders string) (map[string]bool, *base_server_sdk.Error) {
+func Create(orders string) (map[string]bool, *base_server_sdk.Error) {
 	request := map[string]string{}
 	request["orders"] = orders
 
 	client := base_server_sdk.Instance
-	response, err := client.DoRequest(client.Hosts.OrderServerHost, "order", "CreateOrder", request)
+	response, err := client.DoRequest(client.Hosts.OrderServerHost, "order", "Create", request)
 	if err != nil {
 		return nil, err
 	}
@@ -138,12 +137,12 @@ func CreateOrders(orders string) (map[string]bool, *base_server_sdk.Error) {
 }
 
 //更新订单
-func UpdateOrders(orders string) (map[string]bool, *base_server_sdk.Error) {
+func Update(orders string) (map[string]bool, *base_server_sdk.Error) {
 	request := map[string]string{}
 	request["orders"] = orders
 
 	client := base_server_sdk.Instance
-	response, err := client.DoRequest(client.Hosts.OrderServerHost, "order", "UpdateOrder", request)
+	response, err := client.DoRequest(client.Hosts.OrderServerHost, "order", "Update", request)
 	if err != nil {
 		return nil, err
 	}
@@ -160,17 +159,17 @@ func UpdateOrders(orders string) (map[string]bool, *base_server_sdk.Error) {
 }
 
 //查询订单
-func FindOrders(orders string) ([]*model.FindOrderRs, *base_server_sdk.Error) {
+func Find(orders string) ([]*FindOrderRs, *base_server_sdk.Error) {
 	request := map[string]string{}
 	request["orders"] = orders
 
 	client := base_server_sdk.Instance
-	response, err := client.DoRequest(client.Hosts.OrderServerHost, "order", "FindOrder", request)
+	response, err := client.DoRequest(client.Hosts.OrderServerHost, "order", "Find", request)
 	if err != nil {
 		return nil, err
 	}
 
-	var data []*model.FindOrderRs
+	var data []*FindOrderRs
 
 	err1 := json.Unmarshal(response, &data)
 	if err1 != nil {
