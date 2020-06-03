@@ -80,6 +80,7 @@ type UpdateOrder struct {
 	Order          *Order
 	OperateAmounts []*TaskOperateAmount `json:"operateAmounts"`
 	BeforeCheck    *BeforeCheck
+	AfterAction    *AfterAction
 }
 
 //查询订单
@@ -98,6 +99,11 @@ type FindOrderRs struct {
 //创建/更新 前置检查
 type BeforeCheck struct {
 	Status int `json:"status"`
+}
+
+//后置操作
+type AfterAction struct {
+	CreateOrder []*CreateOrder
 }
 
 //账户操作
