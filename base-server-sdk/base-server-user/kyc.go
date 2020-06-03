@@ -2,7 +2,7 @@ package base_server_user
 
 import (
 	"encoding/json"
-	common "github.com/becent/golang-common"
+	"fmt"
 	base_server_sdk "github.com/becent/golang-common/base-server-sdk"
 	"strconv"
 )
@@ -44,34 +44,156 @@ const (
 	CERT_ID_TYPE_PASSPORT = 2 //护照
 	CERT_ID_TYPE_LICENSE  = 3 //营业执照
 
-	KYC_CERT_STAT_BASIC_YES = 1			//初级完成
-	KYC_CERT_STAT_ADVANCE_AUDIT = 2		//高级审核中
-	KYC_CERT_STAT_ADVANCE_YES = 3		//高级完成
-	KYC_CERT_STAT_ENTERPRISE_AUDIT = 4	//企业审核
-	KYC_CERT_STAT_ENTERPRISE_YES = 5	//企业完成
-
+	KYC_CERT_STAT_BASIC_YES        = 1 //初级完成
+	KYC_CERT_STAT_ADVANCE_AUDIT    = 2 //高级审核中
+	KYC_CERT_STAT_ADVANCE_YES      = 3 //高级完成
+	KYC_CERT_STAT_ENTERPRISE_AUDIT = 4 //企业审核
+	KYC_CERT_STAT_ENTERPRISE_YES   = 5 //企业完成
 )
 
+//申请
+func Apply(orgId int, userId int64, certType, certIdType int, nationality string, certLevel int,
+	certNo, certName, imgFront, imgBack, imgHandheld, imgLicense string) (map[string]bool, *base_server_sdk.Error) {
 
+	request := map[string]string{}
+	request["orgId"] = strconv.Itoa(orgId)
+	request["userId"] = strconv.FormatInt(userId, 10)
+	request["certType"] = strconv.Itoa(certType)
+	request["certIdType"] = strconv.Itoa(certIdType)
+	request["nationality"] = nationality
+	request["certLevel"] = strconv.Itoa(certLevel)
+	request["certNo"] = certNo
+	request["certName"] = certName
+	request["imgFront"] = imgFront
+	request["imgBack"] = imgBack
+	request["imgHandheld"] = imgHandheld
+	request["imgLicense"] = imgLicense
 
-func Apply() (int64, *base_server_sdk.Error) {
-	params := make(map[string]string)
 	client := base_server_sdk.Instance
-	data, err := client.DoRequest(client.Hosts.UserServerHost, "user", "reserveUserId", params)
+	response, err := client.DoRequest(client.Hosts.UserServerHost, "kyc", "apply", request)
 	if err != nil {
-		return 0, err
+		return nil, err
 	}
 
-	ret := make(map[string]string)
-	if err := json.Unmarshal(data, &ret); err != nil {
-		common.ErrorLog("baseServerSdk_ReserveUserId", params, "unmarshal data fail: "+string(data))
-		return 0, base_server_sdk.ErrServiceBusy
+	var rs map[string]bool
+
+	err1 := json.Unmarshal(response, &rs)
+	if err1 != nil {
+		fmt.Println(err1.Error())
+		return nil, base_server_sdk.ErrServiceBusy
 	}
 
-	userId, e := strconv.ParseInt(ret["userId"], 10, 64)
-	if e != nil {
-		return 0, base_server_sdk.ErrServiceBusy
+	return rs, nil
+}
+
+
+//审核
+func Audit(orgId int, userId int64, kycId int64, status int, failReason string) (map[string]bool, *base_server_sdk.Error) {
+
+	request := map[string]string{}
+	request["orgId"] = strconv.Itoa(orgId)
+	request["userId"] = strconv.FormatInt(userId, 10)
+	request["kycId"] = strconv.FormatInt(kycId, 10)
+	request["status"] = strconv.Itoa(status)
+	request["failReason"] = failReason
+
+	client := base_server_sdk.Instance
+	response, err := client.DoRequest(client.Hosts.UserServerHost, "kyc", "audit", request)
+	if err != nil {
+		return nil, err
 	}
 
-	return userId, nil
+	var rs map[string]bool
+
+	err1 := json.Unmarshal(response, &rs)
+	if err1 != nil {
+		fmt.Println(err1.Error())
+		return nil, base_server_sdk.ErrServiceBusy
+	}
+
+	return rs, nil
+}
+
+
+//详情
+func Detail(orgId int, userId int64, kycId int64) (*UserKyc, *base_server_sdk.Error) {
+
+	request := map[string]string{}
+	request["orgId"] = strconv.Itoa(orgId)
+	request["userId"] = strconv.FormatInt(userId, 10)
+	request["kycId"] = strconv.FormatInt(kycId, 10)
+
+	client := base_server_sdk.Instance
+	response, err := client.DoRequest(client.Hosts.UserServerHost, "kyc", "detail", request)
+	if err != nil {
+		return nil, err
+	}
+
+	var rs UserKyc
+
+	err1 := json.Unmarshal(response, &rs)
+	if err1 != nil {
+		fmt.Println(err1.Error())
+		return nil, base_server_sdk.ErrServiceBusy
+	}
+
+	return &rs, nil
+}
+
+//列表
+func Find(orgId int, userId, kycId int64, certType, certIdType int, nationality string, certLevel int, certNo, certName string,
+	page, limit int) ([]*UserKyc, *base_server_sdk.Error) {
+
+	request := map[string]string{}
+	request["orgId"] = strconv.Itoa(orgId)
+	request["userId"] = strconv.FormatInt(userId, 10)
+	request["kycId"] = strconv.FormatInt(kycId, 10)
+	request["certType"] = strconv.Itoa(certType)
+	request["certIdType"] = strconv.Itoa(certIdType)
+	request["nationality"] = nationality
+	request["certLevel"] = strconv.Itoa(certLevel)
+	request["certNo"] = certNo
+	request["certName"] = certName
+	request["page"] = strconv.Itoa(page)
+	request["limit"] = strconv.Itoa(limit)
+
+	client := base_server_sdk.Instance
+	response, err := client.DoRequest(client.Hosts.UserServerHost, "kyc", "find", request)
+	if err != nil {
+		return nil, err
+	}
+
+	var rs []*UserKyc
+
+	err1 := json.Unmarshal(response, &rs)
+	if err1 != nil {
+		fmt.Println(err1.Error())
+		return nil, base_server_sdk.ErrServiceBusy
+	}
+
+	return rs, nil
+}
+
+
+//重置
+func Reset(orgId int, userId int64) (map[string]bool, *base_server_sdk.Error) {
+
+	request := map[string]string{}
+	request["orgId"] = strconv.Itoa(orgId)
+	request["userId"] = strconv.FormatInt(userId, 10)
+
+	client := base_server_sdk.Instance
+	response, err := client.DoRequest(client.Hosts.UserServerHost, "kyc", "reset", request)
+	if err != nil {
+		return nil, err
+	}
+
+	var rs map[string]bool
+
+	err1 := json.Unmarshal(response, &rs)
+	if err1 != nil {
+		return nil, base_server_sdk.ErrServiceBusy
+	}
+
+	return rs, nil
 }
