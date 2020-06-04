@@ -106,7 +106,7 @@ type FindOrder struct {
 //查询订单结果
 type FindOrderRs struct {
 	FindParams *FindOrder `json:"findParams"`
-	Order      []*Order   `json:"order"`
+	Orders      []*Order   `json:"order"`
 }
 
 //创建/更新 前置检查
@@ -116,7 +116,7 @@ type BeforeCheck struct {
 
 //后置操作
 type AfterAction struct {
-	CreateOrder []*CreateOrder `json:"createOrder"`
+	CreateOrders []*CreateOrder `json:"createOrder"`
 }
 
 //自定义查询参数
