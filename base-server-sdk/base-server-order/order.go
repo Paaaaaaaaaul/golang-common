@@ -11,7 +11,7 @@ type Order struct {
 	OrgId      int    `gorm:"column:orgId" json:"orgId"`                                // 项目id
 	UserId     int64  `gorm:"column:userId" json:"userId"`                              // 用户id
 	OrderType  int    `gorm:"column:orderType" json:"orderType"`                        // 订单类型 1:合约 2:otc ..
-	OrderNo    string `gorm:"column:orderNo" json:"orderNo"`                            // 订单号
+	OrderNo    int64  `gorm:"column:orderNo" json:"orderNo"`                            // 订单号
 	Status     int    `gorm:"column:status" json:"status"`                              // 状态
 	Remark     string `gorm:"column:remark" json:"remark"`                              // 备注
 	CreateTime int64  `gorm:"column:createTime" json:"createTime"`                      // 创建时间
@@ -106,7 +106,7 @@ type FindOrder struct {
 //查询订单结果
 type FindOrderRs struct {
 	FindParams *FindOrder `json:"findParams"`
-	Orders      []*Order   `json:"order"`
+	Orders     []*Order   `json:"order"`
 }
 
 //创建/更新 前置检查
