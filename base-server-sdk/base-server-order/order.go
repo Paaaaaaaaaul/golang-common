@@ -83,6 +83,12 @@ type UpdateOrder struct {
 	AfterAction    *AfterAction
 }
 
+//更新,新增订单
+type SaveOrUpdateOrder struct {
+	SaveOrders   []*CreateOrder
+	UpdateOrders []*UpdateOrder
+}
+
 //查询订单
 type FindOrder struct {
 	Order *Order `json:"order"`
@@ -106,6 +112,18 @@ type AfterAction struct {
 	CreateOrder []*CreateOrder
 }
 
+//自定义查询参数
+type FindByCustomParams struct {
+	Select string
+	Where  string
+	Params []interface{}
+	Order  string
+	Group  string
+	Having string
+	Result interface{}
+}
+
+
 //账户操作
 type TaskOperateAmount struct {
 	OpType        int    `json:"opType"`
@@ -126,7 +144,7 @@ func Create(orders string) (map[string]bool, *base_server_sdk.Error) {
 	request["orders"] = orders
 
 	client := base_server_sdk.Instance
-	response, err := client.DoRequest(client.Hosts.OrderServerHost, "order", "Create", request)
+	response, err := client.DoRequest(client.Hosts.OrderServerHost, "order", "create", request)
 	if err != nil {
 		return nil, err
 	}
@@ -148,7 +166,29 @@ func Update(orders string) (map[string]bool, *base_server_sdk.Error) {
 	request["orders"] = orders
 
 	client := base_server_sdk.Instance
-	response, err := client.DoRequest(client.Hosts.OrderServerHost, "order", "Update", request)
+	response, err := client.DoRequest(client.Hosts.OrderServerHost, "order", "update", request)
+	if err != nil {
+		return nil, err
+	}
+
+	var rs map[string]bool
+
+	err1 := json.Unmarshal(response, &rs)
+	if err1 != nil {
+		fmt.Println(err1.Error())
+		return nil, base_server_sdk.ErrServiceBusy
+	}
+
+	return rs, nil
+}
+
+//创建/更新
+func CreateUpdateBoth(orders string)  (map[string]bool, *base_server_sdk.Error) {
+	request := map[string]string{}
+	request["orders"] = orders
+
+	client := base_server_sdk.Instance
+	response, err := client.DoRequest(client.Hosts.OrderServerHost, "order", "createUpdateBoth", request)
 	if err != nil {
 		return nil, err
 	}
@@ -170,12 +210,34 @@ func Find(orders string) ([]*FindOrderRs, *base_server_sdk.Error) {
 	request["orders"] = orders
 
 	client := base_server_sdk.Instance
-	response, err := client.DoRequest(client.Hosts.OrderServerHost, "order", "Find", request)
+	response, err := client.DoRequest(client.Hosts.OrderServerHost, "order", "find", request)
 	if err != nil {
 		return nil, err
 	}
 
 	var data []*FindOrderRs
+
+	err1 := json.Unmarshal(response, &data)
+	if err1 != nil {
+		fmt.Println(err1.Error())
+		return nil, base_server_sdk.ErrServiceBusy
+	}
+
+	return data, nil
+}
+
+//自定义查询
+func FindByCustom(params string) ([]map[string]interface{}, *base_server_sdk.Error) {
+	request := map[string]string{}
+	request["params"] = params
+
+	client := base_server_sdk.Instance
+	response, err := client.DoRequest(client.Hosts.OrderServerHost, "order", "findByCustom", request)
+	if err != nil {
+		return nil, err
+	}
+
+	var data []map[string]interface{}
 
 	err1 := json.Unmarshal(response, &data)
 	if err1 != nil {
