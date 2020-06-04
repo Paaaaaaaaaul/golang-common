@@ -77,23 +77,23 @@ type Order struct {
 
 //创建订单
 type CreateOrder struct {
-	Order          *Order
+	Order          *Order               `json:"order"`
 	OperateAmounts []*TaskOperateAmount `json:"operateAmounts"`
-	BeforeCheck    *BeforeCheck
+	BeforeCheck    *BeforeCheck         `json:"beforeCheck"`
 }
 
 //更新订单
 type UpdateOrder struct {
 	Order          *Order
 	OperateAmounts []*TaskOperateAmount `json:"operateAmounts"`
-	BeforeCheck    *BeforeCheck
-	AfterAction    *AfterAction
+	BeforeCheck    *BeforeCheck         `json:"beforeCheck"`
+	AfterAction    *AfterAction         `json:"afterAction"`
 }
 
 //更新,新增订单
 type SaveOrUpdateOrder struct {
-	SaveOrders   []*CreateOrder
-	UpdateOrders []*UpdateOrder
+	SaveOrders   []*CreateOrder `json:"saveOrders"`
+	UpdateOrders []*UpdateOrder `json:"updateOrders"`
 }
 
 //查询订单
@@ -116,20 +116,19 @@ type BeforeCheck struct {
 
 //后置操作
 type AfterAction struct {
-	CreateOrder []*CreateOrder
+	CreateOrder []*CreateOrder `json:"createOrder"`
 }
 
 //自定义查询参数
 type FindByCustomParams struct {
-	Select string
-	Where  string
-	Params []interface{}
-	Order  string
-	Group  string
-	Having string
-	Result interface{}
+	Select string        `json:"select"`
+	Where  string        `json:"where"`
+	Params []interface{} `json:"params"`
+	Order  string        `json:"order"`
+	Group  string        `json:"group"`
+	Having string        `json:"having"`
+	Result interface{}   `json:"result"`
 }
-
 
 //账户操作
 type TaskOperateAmount struct {
@@ -190,7 +189,7 @@ func Update(orders string) (map[string]bool, *base_server_sdk.Error) {
 }
 
 //创建/更新
-func CreateUpdateBoth(orders string)  (map[string]bool, *base_server_sdk.Error) {
+func CreateUpdateBoth(orders string) (map[string]bool, *base_server_sdk.Error) {
 	request := map[string]string{}
 	request["orders"] = orders
 
