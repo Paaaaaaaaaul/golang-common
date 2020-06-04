@@ -16,36 +16,43 @@ type Order struct {
 	Remark     string `gorm:"column:remark" json:"remark"`                              // 备注
 	CreateTime int64  `gorm:"column:createTime" json:"createTime"`                      // 创建时间
 	UpdateTime int64  `gorm:"column:updateTime" json:"updateTime"`                      // 更新时间
-	ExtStr1    string `gorm:"column:extStr1" json:"extStr1"`                            // 扩展字段STR1
-	ExtStr2    string `gorm:"column:extStr2" json:"extStr2"`                            // 扩展字段STR2
-	ExtStr3    string `gorm:"column:extStr3" json:"extStr3"`                            // 扩展字段STR3
-	ExtStr4    string `gorm:"column:extStr4" json:"extStr4"`                            // 扩展字段STR4
-	ExtStr5    string `gorm:"column:extStr5" json:"extStr5"`                            // 扩展字段STR5
-	ExtStr6    string `gorm:"column:extStr6" json:"extStr6"`                            // 扩展字段STR6
-	ExtStr7    string `gorm:"column:extStr7" json:"extStr7"`                            // 扩展字段STR7
-	ExtStr8    string `gorm:"column:extStr8" json:"extStr8"`                            // 扩展字段STR8
-	ExtStr9    string `gorm:"column:extStr9" json:"extStr9"`                            // 扩展字段STR9
-	ExtStr10   string `gorm:"column:extStr10" json:"extStr10"`                          // 扩展字段STR10
-	ExtStr11   string `gorm:"column:extStr11" json:"extStr11"`                          // 扩展字段STR11
-	ExtStr12   string `gorm:"column:extStr12" json:"extStr12"`                          // 扩展字段STR12
-	ExtStr13   string `gorm:"column:extStr13" json:"extStr13"`                          // 扩展字段STR13
-	ExtStr14   string `gorm:"column:extStr14" json:"extStr14"`                          // 扩展字段STR14
-	ExtStr15   string `gorm:"column:extStr15" json:"extStr15"`                          // 扩展字段STR15
-	ExtStr16   string `gorm:"column:extStr16" json:"extStr16"`                          // 扩展字段STR16
-	ExtStr17   string `gorm:"column:extStr17" json:"extStr17"`                          // 扩展字段STR17
-	ExtStr18   string `gorm:"column:extStr18" json:"extStr18"`                          // 扩展字段STR18
-	ExtStr19   string `gorm:"column:extStr19" json:"extStr19"`                          // 扩展字段STR19
-	ExtStr20   string `gorm:"column:extStr20" json:"extStr20"`                          // 扩展字段STR20
-	ExtStr21   string `gorm:"column:extStr21" json:"extStr21"`                          // 扩展字段STR21
-	ExtStr22   string `gorm:"column:extStr22" json:"extStr22"`                          // 扩展字段STR22
-	ExtStr23   string `gorm:"column:extStr23" json:"extStr23"`                          // 扩展字段STR23
-	ExtStr24   string `gorm:"column:extStr24" json:"extStr24"`                          // 扩展字段STR24
-	ExtStr25   string `gorm:"column:extStr25" json:"extStr25"`                          // 扩展字段STR25
-	ExtStr26   string `gorm:"column:extStr26" json:"extStr26"`                          // 扩展字段STR25
-	ExtStr27   string `gorm:"column:extStr27" json:"extStr27"`                          // 扩展字段STR27
-	ExtStr28   string `gorm:"column:extStr28" json:"extStr28"`                          // 扩展字段STR28
-	ExtStr29   string `gorm:"column:extStr29" json:"extStr29"`                          // 扩展字段STR29
-	ExtStr30   string `gorm:"column:extStr30" json:"extStr30"`                          // 扩展字段STR30
+	ExtStr1    string `gorm:"column:extStr1" json:"extStr1"`                            // 扩展字段STR1 255
+	ExtStr2    string `gorm:"column:extStr2" json:"extStr2"`                            // 扩展字段STR2 255
+	ExtStr3    string `gorm:"column:extStr3" json:"extStr3"`                            // 扩展字段STR3 255
+	ExtStr4    string `gorm:"column:extStr4" json:"extStr4"`                            // 扩展字段STR4 255
+	ExtStr5    string `gorm:"column:extStr5" json:"extStr5"`                            // 扩展字段STR5 255
+	ExtStr6    string `gorm:"column:extStr6" json:"extStr6"`                            // 扩展字段STR6 255
+	ExtStr7    string `gorm:"column:extStr7" json:"extStr7"`                            // 扩展字段STR7 255
+	ExtStr8    string `gorm:"column:extStr8" json:"extStr8"`                            // 扩展字段STR8 255
+	ExtStr9    string `gorm:"column:extStr9" json:"extStr9"`                            // 扩展字段STR9 255
+	ExtStr10   string `gorm:"column:extStr10" json:"extStr10"`                          // 扩展字段STR10 255
+	ExtStr11   string `gorm:"column:extStr11" json:"extStr11"`                          // 扩展字段STR11 255
+	ExtStr12   string `gorm:"column:extStr12" json:"extStr12"`                          // 扩展字段STR12 255
+	ExtStr13   string `gorm:"column:extStr13" json:"extStr13"`                          // 扩展字段STR13 255
+	ExtStr14   string `gorm:"column:extStr14" json:"extStr14"`                          // 扩展字段STR14 255
+	ExtStr15   string `gorm:"column:extStr15" json:"extStr15"`                          // 扩展字段STR15 255
+	ExtStr16   string `gorm:"column:extStr16" json:"extStr16"`                          // 扩展字段STR16 255
+	ExtStr17   string `gorm:"column:extStr17" json:"extStr17"`                          // 扩展字段STR17 255
+	ExtStr18   string `gorm:"column:extStr18" json:"extStr18"`                          // 扩展字段STR18 255
+	ExtStr19   string `gorm:"column:extStr19" json:"extStr19"`                          // 扩展字段STR19 255
+	ExtStr20   string `gorm:"column:extStr20" json:"extStr20"`                          // 扩展字段STR20 255
+	ExtStr21   string `gorm:"column:extStr21" json:"extStr21"`                          // 扩展字段STR21 255
+	ExtStr22   string `gorm:"column:extStr22" json:"extStr22"`                          // 扩展字段STR22 255
+	ExtStr23   string `gorm:"column:extStr23" json:"extStr23"`                          // 扩展字段STR23 255
+	ExtStr24   string `gorm:"column:extStr24" json:"extStr24"`                          // 扩展字段STR24 255
+	ExtStr25   string `gorm:"column:extStr25" json:"extStr25"`                          // 扩展字段STR25 255
+	ExtStr26   string `gorm:"column:extStr26" json:"extStr26"`                          // 扩展字段STR25 255
+	ExtStr27   string `gorm:"column:extStr27" json:"extStr27"`                          // 扩展字段STR27 255
+	ExtStr28   string `gorm:"column:extStr28" json:"extStr28"`                          // 扩展字段STR28 255
+	ExtStr29   string `gorm:"column:extStr29" json:"extStr29"`                          // 扩展字段STR29 255
+	ExtStr30   string `gorm:"column:extStr30" json:"extStr30"`                          // 扩展字段STR30 255
+	ExtBigStr1 string `gorm:"column:extBigStr1" json:"extBigStr1"`                      // 扩展字段STR30 1024
+	ExtBigStr2 string `gorm:"column:extBigStr2" json:"extBigStr2"`                      // 扩展字段STR30 1024
+	ExtBigStr3 string `gorm:"column:extBigStr3" json:"extBigStr3"`                      // 扩展字段STR30 1024
+	ExtBigStr4 string `gorm:"column:extBigStr4" json:"extBigStr4"`                      // 扩展字段STR30 1024
+	ExtBigStr5 string `gorm:"column:extBigStr5" json:"extBigStr5"`                      // 扩展字段STR30 1024
+	ExtText1   string `gorm:"column:extText1" json:"extText1"`                          // 扩展字段Text1
+	ExtText2   string `gorm:"column:extText2" json:"extText1"`                          // 扩展字段Text2
 	ExtInt1    int64  `gorm:"column:extInt1" json:"extInt1"`                            // 扩展字段INT1
 	ExtInt2    int64  `gorm:"column:extInt2" json:"extInt2"`                            // 扩展字段INT2
 	ExtInt3    int64  `gorm:"column:extInt3" json:"extInt3"`                            // 扩展字段INT3
