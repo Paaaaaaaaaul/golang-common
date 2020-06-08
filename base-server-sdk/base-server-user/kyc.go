@@ -25,6 +25,8 @@ type UserKyc struct {
 	FailReason  string `gorm:"column:failReason" json:"failReason"`                  // 审核失败原因
 	CreateTime  int64  `gorm:"column:createTime" json:"createTime"`                  // 创建时间
 	UpdateTime  int64  `gorm:"column:updateTime" json:"updateTime"`                  // 更新时间
+	ExtInt      int64  `gorm:"column:extInt" json:"extInt"`                          // 扩展Int
+	ExtStr      string `gorm:"column:extStr" json:"extStr"`                          // 扩展String
 }
 
 const (
@@ -53,7 +55,7 @@ const (
 
 //申请
 func Apply(orgId int, userId int64, certType, certIdType int, nationality string, certLevel int,
-	certNo, certName, imgFront, imgBack, imgHandheld, imgLicense string) (map[string]bool, *base_server_sdk.Error) {
+	certNo, certName, imgFront, imgBack, imgHandheld, imgLicense string, extInt int64, extStr string) (map[string]bool, *base_server_sdk.Error) {
 
 	request := map[string]string{}
 	request["orgId"] = strconv.Itoa(orgId)
@@ -68,6 +70,8 @@ func Apply(orgId int, userId int64, certType, certIdType int, nationality string
 	request["imgBack"] = imgBack
 	request["imgHandheld"] = imgHandheld
 	request["imgLicense"] = imgLicense
+	request["extInt"] = strconv.FormatInt(extInt, 10)
+	request["extStr"] = extStr
 
 	client := base_server_sdk.Instance
 	response, err := client.DoRequest(client.Hosts.UserServerHost, "kyc", "apply", request)
@@ -85,7 +89,6 @@ func Apply(orgId int, userId int64, certType, certIdType int, nationality string
 
 	return rs, nil
 }
-
 
 //审核
 func Audit(orgId int, userId int64, kycId int64, status int, failReason string) (map[string]bool, *base_server_sdk.Error) {
@@ -114,7 +117,6 @@ func Audit(orgId int, userId int64, kycId int64, status int, failReason string) 
 	return rs, nil
 }
 
-
 //详情
 func Detail(orgId int, userId int64, kycId int64) (*UserKyc, *base_server_sdk.Error) {
 
@@ -142,7 +144,7 @@ func Detail(orgId int, userId int64, kycId int64) (*UserKyc, *base_server_sdk.Er
 
 //列表
 func Find(orgId int, userId, kycId int64, certType, certIdType int, nationality string, certLevel int, certNo, certName string,
-	page, limit int) ([]*UserKyc, *base_server_sdk.Error) {
+	page, limit int, extInt int64, extStr string) ([]*UserKyc, *base_server_sdk.Error) {
 
 	request := map[string]string{}
 	request["orgId"] = strconv.Itoa(orgId)
@@ -156,6 +158,8 @@ func Find(orgId int, userId, kycId int64, certType, certIdType int, nationality 
 	request["certName"] = certName
 	request["page"] = strconv.Itoa(page)
 	request["limit"] = strconv.Itoa(limit)
+	request["extInt"] = strconv.FormatInt(extInt, 10)
+	request["extStr"] = extStr
 
 	client := base_server_sdk.Instance
 	response, err := client.DoRequest(client.Hosts.UserServerHost, "kyc", "find", request)
@@ -173,7 +177,6 @@ func Find(orgId int, userId, kycId int64, certType, certIdType int, nationality 
 
 	return rs, nil
 }
-
 
 //重置
 func Reset(orgId int, userId int64) (map[string]bool, *base_server_sdk.Error) {
