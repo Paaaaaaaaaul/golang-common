@@ -147,7 +147,10 @@ type TaskOperateAmount struct {
 //创建订单
 func Create(cos []*CreateOrder) (map[string]bool, *base_server_sdk.Error) {
 	request := map[string]string{}
-	t, _ := json.Marshal(cos)
+	t, me := json.Marshal(cos)
+	if me != nil {
+		return nil, base_server_sdk.ErrServiceBusy
+	}
 	request["orders"] = string(t)
 
 	client := base_server_sdk.Instance
@@ -160,7 +163,6 @@ func Create(cos []*CreateOrder) (map[string]bool, *base_server_sdk.Error) {
 
 	err1 := json.Unmarshal(response, &rs)
 	if err1 != nil {
-		fmt.Println(err1.Error())
 		return nil, base_server_sdk.ErrServiceBusy
 	}
 
@@ -170,7 +172,10 @@ func Create(cos []*CreateOrder) (map[string]bool, *base_server_sdk.Error) {
 //更新订单
 func Update(uos []*UpdateOrder) (map[string]bool, *base_server_sdk.Error) {
 	request := map[string]string{}
-	t, _ := json.Marshal(uos)
+	t, me := json.Marshal(uos)
+	if me != nil {
+		return nil, base_server_sdk.ErrServiceBusy
+	}
 	request["orders"] = string(t)
 
 	client := base_server_sdk.Instance
@@ -193,7 +198,10 @@ func Update(uos []*UpdateOrder) (map[string]bool, *base_server_sdk.Error) {
 //创建/更新
 func CreateUpdateBoth(suo  []*SaveOrUpdateOrder) (map[string]bool, *base_server_sdk.Error) {
 	request := map[string]string{}
-	t, _ := json.Marshal(suo)
+	t, me := json.Marshal(suo)
+	if me != nil {
+		return nil, base_server_sdk.ErrServiceBusy
+	}
 	request["orders"] = string(t)
 
 	client := base_server_sdk.Instance
@@ -216,7 +224,10 @@ func CreateUpdateBoth(suo  []*SaveOrUpdateOrder) (map[string]bool, *base_server_
 //查询订单
 func Find(fo []*FindOrder) ([]*FindOrderRs, *base_server_sdk.Error) {
 	request := map[string]string{}
-	t, _ := json.Marshal(fo)
+	t, me := json.Marshal(fo)
+	if me != nil {
+		return nil, base_server_sdk.ErrServiceBusy
+	}
 	request["orders"] = string(t)
 
 	client := base_server_sdk.Instance
@@ -239,7 +250,10 @@ func Find(fo []*FindOrder) ([]*FindOrderRs, *base_server_sdk.Error) {
 //自定义查询
 func FindByCustom(fcp *FindByCustomParams) ([]map[string]interface{}, *base_server_sdk.Error) {
 	request := map[string]string{}
-	t, _ := json.Marshal(fcp)
+	t, me := json.Marshal(fcp)
+	if me != nil {
+		return nil, base_server_sdk.ErrServiceBusy
+	}
 	request["params"] = string(t)
 
 	client := base_server_sdk.Instance
