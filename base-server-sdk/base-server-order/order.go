@@ -99,6 +99,8 @@ type SaveOrUpdateOrder struct {
 //查询订单
 type FindOrder struct {
 	Order *Order `json:"order"`
+	BeginTime int64  `json:"beginTime"`
+	EndTime   int64  `json:"endTime"`
 	Limit int    `json:"limit"`
 	Page  int    `json:"page"`
 }
@@ -127,7 +129,6 @@ type FindByCustomParams struct {
 	Order  string        `json:"order"`
 	Group  string        `json:"group"`
 	Having string        `json:"having"`
-	Result interface{}   `json:"result"`
 }
 
 //账户操作
