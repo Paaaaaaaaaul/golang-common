@@ -145,9 +145,10 @@ type TaskOperateAmount struct {
 }
 
 //创建订单
-func Create(orders string) (map[string]bool, *base_server_sdk.Error) {
+func Create(cos []*CreateOrder) (map[string]bool, *base_server_sdk.Error) {
 	request := map[string]string{}
-	request["orders"] = orders
+	t, _ := json.Marshal(cos)
+	request["orders"] = string(t)
 
 	client := base_server_sdk.Instance
 	response, err := client.DoRequest(client.Hosts.OrderServerHost, "order", "create", request)
@@ -167,9 +168,10 @@ func Create(orders string) (map[string]bool, *base_server_sdk.Error) {
 }
 
 //更新订单
-func Update(orders string) (map[string]bool, *base_server_sdk.Error) {
+func Update(uos []*UpdateOrder) (map[string]bool, *base_server_sdk.Error) {
 	request := map[string]string{}
-	request["orders"] = orders
+	t, _ := json.Marshal(uos)
+	request["orders"] = string(t)
 
 	client := base_server_sdk.Instance
 	response, err := client.DoRequest(client.Hosts.OrderServerHost, "order", "update", request)
@@ -189,9 +191,10 @@ func Update(orders string) (map[string]bool, *base_server_sdk.Error) {
 }
 
 //创建/更新
-func CreateUpdateBoth(orders string) (map[string]bool, *base_server_sdk.Error) {
+func CreateUpdateBoth(suo  []*SaveOrUpdateOrder) (map[string]bool, *base_server_sdk.Error) {
 	request := map[string]string{}
-	request["orders"] = orders
+	t, _ := json.Marshal(suo)
+	request["orders"] = string(t)
 
 	client := base_server_sdk.Instance
 	response, err := client.DoRequest(client.Hosts.OrderServerHost, "order", "createUpdateBoth", request)
@@ -211,9 +214,10 @@ func CreateUpdateBoth(orders string) (map[string]bool, *base_server_sdk.Error) {
 }
 
 //查询订单
-func Find(orders string) ([]*FindOrderRs, *base_server_sdk.Error) {
+func Find(fo []*FindOrder) ([]*FindOrderRs, *base_server_sdk.Error) {
 	request := map[string]string{}
-	request["orders"] = orders
+	t, _ := json.Marshal(fo)
+	request["orders"] = string(t)
 
 	client := base_server_sdk.Instance
 	response, err := client.DoRequest(client.Hosts.OrderServerHost, "order", "find", request)
@@ -233,9 +237,10 @@ func Find(orders string) ([]*FindOrderRs, *base_server_sdk.Error) {
 }
 
 //自定义查询
-func FindByCustom(params string) ([]map[string]interface{}, *base_server_sdk.Error) {
+func FindByCustom(fcp *FindByCustomParams) ([]map[string]interface{}, *base_server_sdk.Error) {
 	request := map[string]string{}
-	request["params"] = params
+	t, _ := json.Marshal(fcp)
+	request["params"] = string(t)
 
 	client := base_server_sdk.Instance
 	response, err := client.DoRequest(client.Hosts.OrderServerHost, "order", "findByCustom", request)
