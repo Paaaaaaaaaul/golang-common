@@ -149,7 +149,7 @@ func Find(orgIds []int, userId, kycId int64, certType, certIdType int, nationali
 	page, limit int, extInt int64, extStr string) ([]*UserKyc, *base_server_sdk.Error) {
 
 	request := map[string]string{}
-	request["orgId"] = strings.Join(common.IntSliceToStringSlice(orgIds), ",")
+	request["orgIds"] = strings.Join(common.IntSliceToStringSlice(orgIds), ",")
 	request["userId"] = strconv.FormatInt(userId, 10)
 	request["kycId"] = strconv.FormatInt(kycId, 10)
 	request["certType"] = strconv.Itoa(certType)
