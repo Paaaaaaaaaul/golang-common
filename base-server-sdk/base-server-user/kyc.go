@@ -3,8 +3,10 @@ package base_server_user
 import (
 	"encoding/json"
 	"fmt"
+	common "github.com/becent/golang-common"
 	base_server_sdk "github.com/becent/golang-common/base-server-sdk"
 	"strconv"
+	"strings"
 )
 
 type UserKyc struct {
@@ -143,11 +145,11 @@ func Detail(orgId int, userId int64, kycId int64) (*UserKyc, *base_server_sdk.Er
 }
 
 //列表
-func Find(orgId int, userId, kycId int64, certType, certIdType int, nationality string, certLevel int, certNo, certName string,
+func Find(orgIds []int, userId, kycId int64, certType, certIdType int, nationality string, certLevel int, certNo, certName string,
 	page, limit int, extInt int64, extStr string) ([]*UserKyc, *base_server_sdk.Error) {
 
 	request := map[string]string{}
-	request["orgId"] = strconv.Itoa(orgId)
+	request["orgId"] = strings.Join(common.IntSliceToStringSlice(orgIds), ",")
 	request["userId"] = strconv.FormatInt(userId, 10)
 	request["kycId"] = strconv.FormatInt(kycId, 10)
 	request["certType"] = strconv.Itoa(certType)
