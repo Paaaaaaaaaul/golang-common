@@ -31,6 +31,7 @@ import (
 )
 
 const (
+	ENV_LOCAL  = "local"
 	ENV_DEV    = "dev"
 	ENV_TEST   = "test"
 	ENV_ONLINE = "online"
@@ -50,7 +51,7 @@ func InitConfig() {
 	if mode == "" {
 		panic("env " + ModeEnv + " not set")
 	}
-	if mode != ENV_DEV && mode != ENV_TEST && mode != ENV_ONLINE && mode != ENV_PRE {
+	if mode != ENV_LOCAL && mode != ENV_DEV && mode != ENV_TEST && mode != ENV_ONLINE && mode != ENV_PRE {
 		panic("env " + ModeEnv + " should be: dev, test, online, and pre")
 	}
 	CURMODE = mode

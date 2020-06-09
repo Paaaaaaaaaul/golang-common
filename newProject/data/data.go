@@ -54,6 +54,15 @@ func G_data(projectName string) error {
 		return err
 	}
 
+	// local
+	file, err = os.OpenFile(projectName+"/data/ini/local.ini", os.O_CREATE|os.O_RDWR, 755)
+	if err != nil {
+		return err
+	}
+	if _, err := file.WriteString(strings.Replace(data_temple, "{{projectName}}", projectName, -1)); err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -104,6 +113,8 @@ base_service_octopus_host = 127.0.0.1:15051
 base_service_statistic_host = 127.0.0.1:15052
 base_service_user_host = 127.0.0.1:15053
 base_service_interact_host = 127.0.0.1:15054
+base_service_order_host = 127.0.0.1:15055
+base_service_otc_host = 127.0.0.1:19095
 
 
 
