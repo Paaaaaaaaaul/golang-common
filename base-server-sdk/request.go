@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"mime/multipart"
@@ -78,6 +79,8 @@ func (c *BaseServerSdkClient) DoRequest(host string, controller, action string, 
 	} else {
 		data, err = c.doHttpRequest(host, controller, action, params, files)
 	}
+	fmt.Println(1)
+	fmt.Println(string(data))
 	if err != nil {
 		common.ErrorLog("baseServerSdk_DoRequest", map[string]interface{}{
 			"host":       host,
@@ -89,7 +92,9 @@ func (c *BaseServerSdkClient) DoRequest(host string, controller, action string, 
 	}
 
 	resp := &Response{}
-	if err = json.Unmarshal(data, resp); err != nil {
+	d := json.NewDecoder(bytes.NewReader(data))
+	d.UseNumber()
+	if err = d.Decode(resp); err != nil {
 		common.ErrorLog("baseServerSdk_DoRequest", map[string]interface{}{
 			"host":       host,
 			"controller": controller,
@@ -102,7 +107,6 @@ func (c *BaseServerSdkClient) DoRequest(host string, controller, action string, 
 	if !resp.Success {
 		return nil, resp.Err
 	}
-
 	if data, err = json.Marshal(resp.PayLoad); err != nil {
 		common.ErrorLog("baseServerSdk_DoRequest", map[string]interface{}{
 			"host":       host,
@@ -112,7 +116,6 @@ func (c *BaseServerSdkClient) DoRequest(host string, controller, action string, 
 		}, err.Error())
 		return nil, ErrServiceBusy
 	}
-
 	return data, nil
 }
 

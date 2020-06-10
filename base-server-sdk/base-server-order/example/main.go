@@ -24,7 +24,7 @@ func main() {
 		RequestTimeout:  5 * time.Second,
 		IdleConnTimeout: 10 * time.Minute,
 		Hosts: base_server_sdk.Hosts{
-			OrderServerHost: "http://localhost:8083",
+			OrderServerHost: "http://localhost:5055",
 		},
 	})
 	defer base_server_sdk.ReleaseBaseServerSdk()
@@ -34,134 +34,88 @@ func main() {
 		println(time.Since(now).String())
 	}(now)
 
-	response, err := base_server_order.GetPayMethods()
-	if err != nil {
-		println(err.String())
-	} else {
-		fmt.Printf("获取支付方式成功：[%v]\n", response)
+
+	findParams := &base_server_order.FindOrder{
+		Order:     &base_server_order.Order{
+			OrderId:    0,
+			OrgId:      200,
+			UserId:     0,
+			OrderType:  0,
+			OrderNo:    0,
+			Status:     0,
+			Remark:     "",
+			CreateTime: 0,
+			UpdateTime: 0,
+			ExtStr1:    "",
+			ExtStr2:    "",
+			ExtStr3:    "",
+			ExtStr4:    "",
+			ExtStr5:    "",
+			ExtStr6:    "",
+			ExtStr7:    "",
+			ExtStr8:    "",
+			ExtStr9:    "",
+			ExtStr10:   "",
+			ExtStr11:   "",
+			ExtStr12:   "",
+			ExtStr13:   "",
+			ExtStr14:   "",
+			ExtStr15:   "",
+			ExtStr16:   "",
+			ExtStr17:   "",
+			ExtStr18:   "",
+			ExtStr19:   "",
+			ExtStr20:   "",
+			ExtStr21:   "",
+			ExtStr22:   "",
+			ExtStr23:   "",
+			ExtStr24:   "",
+			ExtStr25:   "",
+			ExtStr26:   "",
+			ExtStr27:   "",
+			ExtStr28:   "",
+			ExtStr29:   "",
+			ExtStr30:   "",
+			ExtBigStr1: "",
+			ExtBigStr2: "",
+			ExtBigStr3: "",
+			ExtBigStr4: "",
+			ExtBigStr5: "",
+			ExtText1:   "",
+			ExtText2:   "",
+			ExtInt1:    0,
+			ExtInt2:    0,
+			ExtInt3:    0,
+			ExtInt4:    0,
+			ExtInt5:    0,
+			ExtInt6:    0,
+			ExtInt7:    0,
+			ExtInt8:    0,
+			ExtInt9:    0,
+			ExtInt10:   0,
+			ExtInt11:   0,
+			ExtInt12:   0,
+			ExtInt13:   0,
+			ExtInt14:   0,
+			ExtInt15:   0,
+			ExtInt16:   0,
+			ExtInt17:   0,
+			ExtInt18:   0,
+			ExtInt19:   0,
+			ExtInt20:   0,
+		},
+		BeginTime: 0,
+		EndTime:   0,
+		Limit:     0,
+		Page:      0,
 	}
 
-	var orderDetails []*base_server_order.OrderDetailParam
-	orderDetails = append(orderDetails, &base_server_order.OrderDetailParam{
-		SellerId:       1,
-		SellerName:     "sellerName",
-		GoodsId:        1,
-		GoodsInfo:      "goodsInfo",
-		GoodsSkuId:     123,
-		GoodsSkuInfo:   "skuInfo",
-		Quantity:       "10000000000000000000",
-		UnitPrice:      "10000000000000000000",
-		TotalPrice:     "10000000000000000000",
-		BusinessStatus: 1,
-		Remark:         "remark",
-		Extra:          "extra",
-	})
+	var p []*base_server_order.FindOrder
+	p = append(p, findParams)
 
-	response3, err := base_server_order.CreateOrder(1, &base_server_order.OrderParam{
-		BusinessType:       1,
-		BuyerId:            1,
-		BuyerName:          "buyerName",
-		PaymentCurrency:    "CC",
-		TotalPrice:         "10000000000000000000",
-		PayableTotalPrice:  "10000000000000000000",
-		Remark:             "123",
-		OrderDetailParams:  orderDetails,
-		IsSubStock:         2,
-		NeedAutoCancel:     2,
-		AutoCancelSeconds:  20,
-		NeedAutoDeliver:    2,
-		NeedAutoConfirm:    2,
-		AutoConfirmSeconds: 2,
-	})
+	response, _ := base_server_order.Find(p)
 
-	if err != nil {
-		println(err.String())
-	} else {
-		fmt.Printf("创建订单成功：[%v]\n", response3)
-	}
-	fmt.Println(response3)
-	response1, err := base_server_order.GetThirdPartyPayMethods(1, 1, response3.OrderNo)
-	if err != nil {
-		println(err.String())
-	} else {
-		fmt.Printf("获取三方支付方式成功：[%v]\n", response1)
-	}
+	fmt.Println(response)
 
-	response2, err := base_server_order.GetThirdPartyPayChannels(1, 1, response3.OrderNo, "alipay_qr_code_cny")
-	if err != nil {
-		println(err.String())
-	} else {
-		fmt.Printf("获取三方支付通道成功：[%v]\n", response2)
-	}
-
-	response4, err := base_server_order.GetOrderInfo(1, 1, response3.OrderNo)
-	if err != nil {
-		println(err.String())
-	} else {
-		fmt.Printf("获取订单信息成功：[%v]\n", response4)
-	}
-
-	response5, err := base_server_order.GetUserOrders(1, 1, 0, 10)
-	if err != nil {
-		println(err.String())
-	} else {
-		fmt.Printf("获取用户订单成功：[%v]\n", response5)
-	}
-
-	response6, err := base_server_order.ThirdPartyPay(1, 1, response3.OrderNo, "alipay_qr_code_cny", "5")
-	if err != nil {
-		println(err.String())
-	} else {
-		fmt.Printf("三方支付下单成功：[%v]\n", response6)
-	}
-
-	err = base_server_order.BalancePay(1, 1, response3.OrderNo)
-	if err != nil {
-		println(err.String())
-	} else {
-		fmt.Printf("余额支付成功：[%v]\n", "")
-	}
-
-	err = base_server_order.DeliverOrderGoods(1, 1, response3.OrderNo, "deliverInfo")
-	if err != nil {
-		println(err.String())
-	} else {
-		fmt.Printf("发货成功：[%v]\n", "")
-	}
-
-	response7, err := base_server_order.GetDeliverOrderByGoodsOrder(1, 1, response3.OrderNo)
-	if err != nil {
-		println(err.String())
-	} else {
-		fmt.Printf("查询发货单：[%v]\n", response7)
-	}
-
-	err = base_server_order.ModifyDeliverInfo(1, 1, response3.OrderNo, "新发货信息")
-	if err != nil {
-		println(err.String())
-	} else {
-		fmt.Printf("修改发货单成功：[%v]\n", "")
-	}
-
-	err = base_server_order.ReceiptOrderGoods(1, 1, response3.OrderNo)
-	if err != nil {
-		println(err.String())
-	} else {
-		fmt.Printf("确认收货成功：[%v]\n", "")
-	}
-
-	err = base_server_order.CancelDeliverOrder(1, 1, response3.OrderNo)
-	if err != nil {
-		println(err.String())
-	} else {
-		fmt.Printf("取消发货成功：[%v]\n", "")
-	}
-
-	err = base_server_order.BusinessUpdate(1, 1, response3.OrderNo, response4.Details[0].OrderNo, 1, 2, "新extra", nil)
-	if err != nil {
-		println(err.String())
-	} else {
-		fmt.Printf("业务更新成功：[%v]\n", "")
-	}
 
 }
