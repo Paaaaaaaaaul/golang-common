@@ -98,11 +98,11 @@ type SaveOrUpdateOrder struct {
 
 //查询订单
 type FindOrder struct {
-	Order *Order `json:"order"`
+	Order     *Order `json:"order"`
 	BeginTime int64  `json:"beginTime"`
 	EndTime   int64  `json:"endTime"`
-	Limit int    `json:"limit"`
-	Page  int    `json:"page"`
+	Limit     int    `json:"limit"`
+	Page      int    `json:"page"`
 }
 
 //查询订单结果
@@ -129,6 +129,8 @@ type FindByCustomParams struct {
 	Order  string        `json:"order"`
 	Group  string        `json:"group"`
 	Having string        `json:"having"`
+	Offset int           `json:"offset"`
+	Limit  int           `json:"limit"`
 }
 
 //账户操作
@@ -197,7 +199,7 @@ func Update(uos []*UpdateOrder) (map[string]bool, *base_server_sdk.Error) {
 }
 
 //创建/更新
-func CreateUpdateBoth(suo  []*SaveOrUpdateOrder) (map[string]bool, *base_server_sdk.Error) {
+func CreateUpdateBoth(suo []*SaveOrUpdateOrder) (map[string]bool, *base_server_sdk.Error) {
 	request := map[string]string{}
 	t, me := json.Marshal(suo)
 	if me != nil {
