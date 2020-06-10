@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"github.com/becent/golang-common"
 	"github.com/becent/golang-common/grpc-end"
 	"github.com/sirupsen/logrus"
 	"time"
@@ -28,5 +29,6 @@ func Logger(c *grpc_end.GRpcContext) {
 		"response":     string(logResp),
 		"responseSize": len(c.GetResponse().Data),
 		"useTime":      time.Since(now).String(),
+		"logId":        common.GetGorouterIDFlag(),
 	}).Info()
 }
