@@ -134,6 +134,7 @@ func NewHandler(cfg *Config) gin.HandlerFunc {
 			"clientIp": c.ClientIP(),
 			"response": resp,
 			"useTime":  time.Since(now).String(),
+			"logId":    common.GetGorouterIDFlag(),
 		})
 
 		err := c.Errors.Last()
