@@ -103,6 +103,7 @@ type FindOrder struct {
 	EndTime   int64  `json:"endTime"`
 	Limit     int    `json:"limit"`
 	Page      int    `json:"page"`
+	OrderBy   string `json:"orderBy"`
 }
 
 //查询订单结果
