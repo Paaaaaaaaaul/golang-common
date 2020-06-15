@@ -29,6 +29,8 @@ type User struct {
 	Status           int    `json:"status"`
 	CreateTime       int64  `json:"createTime"`
 	Ext              string `json:"ext"`
+	KycCertStat      int    `gorm:"column:kycCertStat" json:"kycCertStat"`
+	KycCertType      int    `gorm:"column:kycCertType" json:"kycCertType"`
 }
 
 func ReserveUserId() (int64, *base_server_sdk.Error) {
