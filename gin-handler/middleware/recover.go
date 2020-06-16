@@ -1,10 +1,13 @@
 package middleware
 
 import (
+	"fmt"
+	"runtime"
+
+	common "github.com/becent/golang-common"
 	"github.com/becent/golang-common/gin-handler"
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
-	"runtime"
 )
 
 // Recover the first gin'middleware to handle request,
@@ -15,10 +18,21 @@ import (
 func Recover(c *gin.Context) {
 	defer func() {
 		if err := recover(); err != nil {
+			logId := common.GetGorouterIDFlag()
 			log.WithFields(log.Fields{
 				"app":   c.GetString(gin_handler.KEY_APPNAME),
+				"logId": logId,
 				"stack": stack(),
 			}).Error(err)
+
+			c.JSON(200, gin_handler.EResponse{
+				GatewayRet: false,
+				Success:    false,
+				Err: gin_handler.Error{
+					Code:    1,
+					Message: fmt.Sprintf("panic logId:%d", logId),
+				},
+			})
 		}
 	}()
 
