@@ -276,6 +276,30 @@ func GetUsersInfo(orgId int, userIds []int64) (map[int64]*User, []int64, *base_s
 	return info.Users, info.NotFound, nil
 }
 
+func FindUser(orgId, page, pageSize int) ([]*User, *base_server_sdk.Error) {
+	if orgId <= 0 || page <= 0 || pageSize <= 0 {
+		return nil, base_server_sdk.ErrInvalidParams
+	}
+	params := make(map[string]string)
+	params["orgId"] = strconv.Itoa(orgId)
+	params["page"] = strconv.Itoa(page)
+	params["pageSize"] = strconv.Itoa(pageSize)
+
+	client := base_server_sdk.Instance
+	data, err := client.DoRequest(client.Hosts.UserServerHost, "user", "findUser", params)
+	if err != nil {
+		return nil, err
+	}
+
+	var users []*User
+	if err := json.Unmarshal(data, users); err != nil {
+		common.ErrorLog("baseServerSdk_FindUser", params, "unmarshal user fail: "+string(data))
+		return nil, base_server_sdk.ErrServiceBusy
+	}
+
+	return users, nil
+}
+
 // GetBackLoginPwdByPhone 通过手机找回登录密码
 //
 // 1、code有值的话会进行短信校验，为空则忽略
